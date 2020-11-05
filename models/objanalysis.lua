@@ -43,11 +43,19 @@ function M.facePatterns(objs)
     end
   end
 
-  --[[local ptncsv = io.open("patterns.csv", "wb")
+  -- Convert to array
+  local pArray = {}
   for ptn, count in pairs(patterns) do
-    ptncsv:write(count .. "," .. ptn .. ",\n")
+    table.insert(pArray, {count, ptn})
   end
-  ptncsv:close()]]
+
+  table.sort(pArray, function(a, b) return b[1] < a[1] end)
+
+  local ptncsv = io.open("patterns.tsv", "wb")
+  for _, values in pairs(pArray) do
+    ptncsv:write(values[1] .. "\t" .. values[2] .. "\n")
+  end
+  ptncsv:close()
 
   --print(inspect(patterns))
 end

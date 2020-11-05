@@ -33,7 +33,7 @@ local function readFrames(framesCount)
       for c = 15, 0, -1 do
         if bitMask & (1 << c) ~= 0 then
           local color = readWord()
-          palette[16 - c] = {r = color >> 8, g = color >> 4 & 7, b = color & 7}
+          palette[16 - c] = {r = color >> 8 & 7, g = color >> 4 & 7, b = color & 7}
         end
       end
 
@@ -113,60 +113,59 @@ end
 
 -- Save frames
 local function saveFrames(frames, filename)
+  local palette = {}
+
   local output = io.open(filename, "wb")
-  output:write("local frames = {\n")
+  output:write("const frames = [\n")
 
   for i, frame in ipairs(frames) do
-    output:write("-- Frame " .. i .. "\n{\n")
+    output:write("// Frame " .. i .. "\n{\n")
     if frame.palette ~= nil then
-      output:write("  palette = {")
-
       for color, rgb in pairs(frame.palette) do
-        output:write("[" ..color .. "] = {" .. rgb.r .. "," .. rgb.g .. "," .. rgb.b .. "}, ")
+        palette[color] = rgb
       end
-
-      output:write("},\n")
     end
 
     local indexed = frame.vertices ~= nil
 
     if indexed then
-      output:write("  vertices = {")
+      output:write("  vertices: [")
 
       for i, v in ipairs(frame.vertices) do
-        output:write("{" .. v.x .. "," .. v.y .. "}, ")
+        output:write("[" .. v.x .. "," .. v.y .. "], ")
       end
 
-      output:write("},\n")
+      output:write("],\n")
     end
 
-    output:write("  polys = {\n")
+    output:write("  polys: [\n")
     for i, poly in ipairs(frame.polys) do
-      output:write("    {")
+      output:write("    [")
       -- Poly vertices
       for i, v in ipairs(poly) do
         if i == 1 then
           -- Color
-          output:write(v .. ",  ")
+          local color = palette[v]
+          output:write("\"#" .. color.r .. "f" .. color.g .. "f" .. color.b .. "f\",  ")
         else
           if indexed then
             output:write(v .. ",")
           else
-            output:write("{" .. v.x .. "," .. v.y .. "},")
+            output:write("[" .. v.x .. "," .. v.y .. "],")
           end
         end
       end
 
-      output:write("},\n")
+      output:write("],\n")
     end
 
-    output:write("  }\n")
+    output:write("  ]\n")
 
     output:write("},\n")
   end
-  output:write("}\n")
+  output:write("]\n")
   output:close()
 end
 
 local frames = readFrames(1800)
-saveFrames(frames, "scene1frames.lua")
+saveFrames(frames, "scene1frames.js")

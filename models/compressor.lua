@@ -41,6 +41,41 @@ function M.compress(objs)
     obj.o = offsets
     obj.s = scales
   end
+
+  -- Simple writing data to memory, no compression
+  local bytes = {}
+  local meta = {}
+
+  for name, obj in pairs(objs) do
+    local objMeta = {
+      name = name,
+      f = #obj.f,
+      v = #obj.v,
+      o = obj.o,
+      s = obj.s,
+      addr = #bytes
+    }
+    --table.insert(meta, objMeta)
+    meta[objMeta.name] = objMeta
+
+    -- Write vertices
+    for _, v in ipairs(obj.v) do
+      table.insert(bytes, v[1])
+      table.insert(bytes, v[2])
+      table.insert(bytes, v[3])
+    end
+
+    -- Write faces
+    for _, f in ipairs(obj.f) do
+      table.insert(bytes, f[1])
+      table.insert(bytes, f[2])
+      table.insert(bytes, f[3])
+      table.insert(bytes, f[4])
+    end
+
+  end
+
+  return meta, bytes
 end
 
 return M

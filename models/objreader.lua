@@ -7,6 +7,7 @@ local palette = {
   {0x29, 0xad, 0xff}, {0x83, 0x76, 0x9c}, {0xff, 0x77, 0xa8}, {0xff, 0xcc, 0xaa},
 }
 
+
 function rgb_to_pico16(r, g, b)
   local col = 0
   local mindiff = 10000
@@ -67,11 +68,13 @@ local function loadMaterials(filename)
 end
 
 
-function M.loadObj(filename, reverseFaces, objects)
+function M.loadObj(filename, objects)
   local lines = loadFile(filename)
   local materials = {}
   local obj = nil
   local color = 7
+  local vertexOffset = 0
+  local curObject = {v = {}, f = {}}
 
   for i, line in ipairs(lines) do
     if line:len() > 2 then
@@ -79,6 +82,7 @@ function M.loadObj(filename, reverseFaces, objects)
       local cmd = tokens[1]
 
       if cmd == "o" then
+        vertexOffset = vertexOffset + #curObject.v
         curObject = {v = {}, f = {}}
         objects[tokens[2]] = curObject
       elseif cmd == "mtllib" then
@@ -91,12 +95,9 @@ function M.loadObj(filename, reverseFaces, objects)
       elseif cmd == "usemtl" then
         color = materials[tokens[2]]
       elseif cmd == "f" then
-        local v1 = vnumber(tokens[2])
-        local v2 = vnumber(tokens[3])
-        local v3 = vnumber(tokens[4])
-        if reverseFaces then
-          v1, v3 = v3, v1
-        end
+        local v1 = vnumber(tokens[2]) - vertexOffset
+        local v2 = vnumber(tokens[3]) - vertexOffset
+        local v3 = vnumber(tokens[4]) - vertexOffset
         table.insert(curObject.f, {v1, v2, v3, color})
       end
     end

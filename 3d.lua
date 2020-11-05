@@ -1,10 +1,51 @@
 dither = {0x1000.0000,0x1000.8000,0x1000.8020,0x1000.a020,0x1000.a0a0,0x1000.a4a0,0x1000.a4a1,0x1000.a5a1,0x1000.a5a5,0x1000.e5a5,0x1000.e5b5,0x1000.f5b5,0x1000.f5f5,0x1000.fdf5,0x1000.fdf7,0x1000.fff7,0x1000.ffff,0x1000.ffff}
+v2d, lighting = {}, {}
 
-function tmatrix(angles, scale, offsets)
-	local c1, c2, c3, s1, s2, s3 = cos(angles[1]), cos(angles[2]), cos(angles[3]), sin(angles[1]), sin(angles[2]), sin(angles[3])
-	return mmult({2,0,0,0,0,2,0,0,0,0,-1,1,0,0,0.02,0},
-		mmult({scale,0,0,offsets[1],0,scale,0,offsets[2],0,0,scale,offsets[3],0,0,0,1},
-			{c2,s2*s3,c3*s2,0,s1*s2,c1*c3-c2*s1*s3,-c1*s3-c2*c3*s1,0,-c1*s2,c3*s1+c1*c2*s3,c1*c2*c3-s1*s3,0,0,0,0,1}))
+-- Projection matrix
+pnear, pfar = 1, 200
+rangeInv = 1 / (pnear - pfar)
+sc = 100
+projection_matrix = {
+	6, 0, 0, 0,
+	0, 6, 0, 0,
+	0, 0, (pnear+pfar)*rangeInv, -1,
+	0, 0, pnear*pfar*rangeInv*2, 0
+}
+
+function create_lighting()
+	for c = 12, 1, -1 do
+		for d = 1, 14 do
+			add(lighting, 0x10 + dither[c])
+		end
+	end
+	for d = 1, 32 do
+		add(lighting, dither[1])
+	end
+	for c = 1, 4 do
+		for d = 1, 16 do
+			add(lighting, 0x70 + dither[c])
+		end
+	end
+end
+
+function updlimits(v)
+	if (v < minv) minv = v
+	if (v > maxv) maxv = v
+end
+
+function normalize(v)
+	local x,y,z = v[1],v[2],v[3]
+	local len = sqrt(x*x+y*y+z*z)
+	return {x/len,y/len,z/len}
+end
+
+function cross(v1, v2)
+	local x1,y1,z1,x2,y2,z2 = v1[1],v1[2],v1[3],v2[1],v2[2],v2[3]
+	return {y1*z2-z1*y2, z1*x2-x1*z2, x1*y2-y1*x2}
+end
+
+function dot(v1, v2)
+	return v1[1]*v2[1] + v1[2]*v2[2] + v1[3]*v2[3]
 end
 
 function is_cw(p1, p2, p3)
@@ -12,15 +53,17 @@ function is_cw(p1, p2, p3)
 end
 
 function normal(p1, p2, p3)
-	local ux, uy, uz, vx, vy, vz = p2[1]-p1[1], p2[2]-p1[2], p2[3]-p1[3], p3[1]-p1[1], p3[2]-p1[2], p3[3]-p1[3]
-	local x, y, z = (uy * vz - uz * vy) / 256, (uz * vx - ux * vz) / 256, (ux * vy - uy * vx) / 256
+	local w1,w2,w3 = p1[4],p2[4],p3[4]
+	local x1,y1,z1,x2,y2,z2,x3,y3,z3 = p1[1]*w1,p1[2]*w1,p1[3]*w1,p2[1]*w2,p2[2]*w2,p2[3]*w2,p3[1]*w3,p3[2]*w3,p3[3]*w3
+	local ux, uy, uz, vx, vy, vz = x2-x1,y2-y1,z2-z1,x3-x1,y3-y1,z3-z1
+	local x, y, z = uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx
 	local len = sqrt(x*x+y*y+z*z)
-	return {x/len,y/len,z/len}
+	return (len < 0.001) and {0, 0, 0} or {x/len,y/len,z/len}
 end
 
-function vmmult(v, m)
-	local v1, v2, v3 = v[1], v[2], v[3]
-	return {m[1]*v1+m[2]*v2+m[3]*v3+m[4],m[5]*v1+m[6]*v2+m[7]*v3+m[8],m[9]*v1+m[10]*v2+m[11]*v3+m[12],m[13]*v1+m[14]*v2+m[15]*v3+m[16]}
+function inrange(p)
+	local x,y,z,w = p[1], p[2], p[3], p[4]
+	return w < 0 and x > -1 and x < 1 and y > -1 and y < 1 and z > -1 and z < 1
 end
 
 function mmult(m1, m2)
@@ -49,59 +92,58 @@ function radix_sort(arr, mask, idx1, idx2)
 		end
 		c += 1
 	end
-	if mask ~= 1 then
+	if mask >= 0x0.08 then
 		mask /= 2
 		if (rb - 1 > idx1) radix_sort(arr, mask, idx1, rb - 1)
 		if (rb < idx2) radix_sort(arr, mask, rb, idx2)
 	end
 end
 
-function get_v2d(vertices, matrix)
-	local v2d = {}
-	for v in all(vertices) do
-		local pv = vmmult(v, matrix)
-		add(v2d, {8 * pv[1] / pv[4], -8 * pv[2] / pv[4], pv[3]})
-	end
-	return v2d
-end
+function m3d_shaded(objects, eye, dir, angle)
+	minv = 32767
+	maxv = -32767
 
-function m3d_tex(vertices, tris, angles, scale, offsets)
-	local v2d = get_v2d(vertices, tmatrix(angles, scale, offsets))
+	-- Calculate camera matrix
+	local up = {sin(angle), cos(angle), 0}
+	local zaxis = normalize(dir)
+	local xaxis = normalize(cross(zaxis, up))
+	local yaxis = cross(xaxis, zaxis)
+	local m = mmult(projection_matrix, {
+		xaxis[1], xaxis[2], xaxis[3], -dot(xaxis, eye),
+		yaxis[1], yaxis[2], yaxis[3], -dot(yaxis, eye),
+		zaxis[1], zaxis[2], zaxis[3], -dot(zaxis, eye),
+		0, 0, 0, 1
+	})
 
-	for tri in all(tris) do
-		local p1, p2, p3 = v2d[tri[1]], v2d[tri[2]], v2d[tri[3]]
-		if is_cw(p1, p2, p3) then
-			tex_triangle(p1[1], p1[2], p2[1], p2[2], p3[1], p3[2], -ssin(abs(normal(p1, p2, p3)[3]), 8, 4), tri[4], tri[5], tri[6], tri[7], tri[8], tri[9])
+	local sorted = {}
+
+	-- Tranform all objects
+	for obj in all(objects) do
+		for c = 1, #obj.vertices do
+			local v = obj.vertices[c]
+			local v1, v2, v3 = v[1], v[2], v[3]
+			local w = m[13]*v1+m[14]*v2+m[15]*v3+m[16]
+			local x, y, z = (m[1]*v1+m[2]*v2+m[3]*v3+m[4]) / w, (m[5]*v1+m[6]*v2+m[7]*v3+m[8]) / w, (m[9]*v1+m[10]*v2+m[11]*v3+m[12]) / w
+			v2d[c] = {x, y, z, w, 64 + sc * x, 64 + sc * y}
+		end
+
+		for tri in all(obj.faces) do
+			local p1, p2, p3 = v2d[tri[1]], v2d[tri[2]], v2d[tri[3]]
+			if (inrange(p1) and inrange(p2) and inrange(p3)) and is_cw(p1, p2, p3) then
+				local pv3 = normal(p1, p2, p3)[3]
+				local light = min(256, flr(1 + 255 * abs(pv3)))
+				add(sorted, {(min(min(p1[3], p2[3]), p3[3])), p1, p2, p3, tri[4] + lighting[light]})
+				--updlimits(sorted[#sorted][1])
+			end
 		end
 	end
-end
 
-function m3d_shaded(vertices, tris, angles, scale, offsets)
-	local sorted, v2d = {}, get_v2d(vertices, tmatrix(angles, scale, offsets))
-
-	local minl, maxl = 1000, -1000
-
-	for tri in all(tris) do
-		local p1, p2, p3 = v2d[tri[1]], v2d[tri[2]], v2d[tri[3]]
-		if is_cw(p1, p2, p3) and p1[3] < 0 and p2[3] < 0 and p3[3] < 0 then
-			local pv3 = normal(p1, p2, p3)[3]
-			local light = min(1, abs(pv3 * pv3)) -- min(1, abs(tri[5] < 2 and (pv3 * tri[5]) or (pv3 * pv3)))
-			add(sorted, {p1[3] + p2[3] + p3[3], p1, p2, p3, tri[4] + (light < 0.9 and (0x10 + dither[9 - flr(light * 0.9)]) or (0x70 + dither[ceil(light * 10)]))})
-			--add(sorted, {p1[3] + p2[3] + p3[3], p1, p2, p3, tri[4]})
-
-			if light < minl then minl = light end
-			if light > maxl then maxl = light end
-		end
-	end
-
-	radix_sort(sorted, 0x400, 1, #sorted)
-
-	local cpu = stat(1)
-
+	-- Sort faces and draw them
+	radix_sort(sorted, 2, 1, #sorted)
 	for tri in all(sorted) do
 		local p1, p2, p3 = tri[2], tri[3], tri[4]
-		triangle(p1[1], p1[2], p2[1], p2[2], p3[1], p3[2], tri[5])
+		triangle(p1[5], p1[6], p2[5], p2[6], p3[5], p3[6], tri[5])
 	end
 
-	oprint(cpu .. " " .. minl .. " " .. maxl, -64, -64, 7)
+	--oprint(minv .. " - " .. maxv, 0, 16, 7)
 end
