@@ -11,5 +11,35 @@
 </head>
 <body onload="init();">
   <canvas id="visuals" width="512" height="512"></canvas>
+  <canvas id="visuals3d" width="512" height="512"></canvas>
+
+  <div>
+    <br>
+    <button onclick="plSet(0);">begin [0]</button>
+    <button onclick="plSet(89);">tonnel-1 [89]</button>
+    <button onclick="plSet(173);">tonnel-2 [173]</button>
+    <button onclick="plSet(204);">squad [204]</button>
+    <button onclick="plSet(267);">tonnel-3 [267]</button>
+    <button onclick="plSet(320);">rotor [320]</button>
+    <button onclick="plSet(580);">tonnel-4 [580]</button>
+    <button onclick="plSet(713);">arch-1 [713]</button>
+    <button onclick="plSet(925);">arch-2 [925]</button>
+    <button onclick="plSet(1184);">tonnel-5 [1184]</button>
+    <button onclick="plSet(1298);">room [1298]</button>
+    <button onclick="plSet(1538);">cubes [1538]</button>
+  </div>
+
+  <div>
+    <br>
+    <button onclick="plWireframe();">wireframe</button>
+    <input type="text" id="frame" value="0" onchange="plSet(this.value);">
+    <button onclick="plChange(-10);">&lt;&lt;</button>
+    <button onclick="plChange(-1);">&lt;</button>
+    <button onclick="plPlay();">play</button>
+    <button onclick="plStop();">stop</button>
+    <button onclick="plChange(1);">&gt;</button>
+    <button onclick="plChange(10);">&gt;&gt;</button>
+  </div>
+
 </body>
 </html>
