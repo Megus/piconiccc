@@ -20,7 +20,6 @@ function drawFrame(time) {
   ctx.fillRect(0, 0, width, height);
 
   drawScene1Frame(ctx);
-  //drawPicoFrame(ctx);
   
   const canvas3d = document.getElementById("visuals3d")
   const ctx3d = canvas3d.getContext("2d");
@@ -30,8 +29,11 @@ function drawFrame(time) {
   ctx3d.fillStyle = "#000000";
   ctx3d.fillRect(0, 0, width3d, height3d);
 
-  //draw3dFrame(ctx);
-
+  drawPicoFrame(ctx3d);
+  
+  //test
+  picoAngle += 1.5;
+  
   if (isPlay) {
     if (frameNumber < frames.length - 1) {
       let nowFrame = Math.floor((time / (1000 / 15))) % frames.length;
@@ -40,8 +42,6 @@ function drawFrame(time) {
         frameNumber++;
       }
     }
-    //frameNumber = Math.floor((time / (1000 / 15))) % frames.length;
-    picoEye[0] += 0.005;
     document.getElementById('frame').value = frameNumber;
   }
 
