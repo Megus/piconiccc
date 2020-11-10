@@ -21,7 +21,9 @@ function drawScene1Frame(ctx) {
         ctx.lineTo(vertex[0] * scale + offset, vertex[1] * scale);
       }
       ctx.closePath();
-      ctx.fill();
+      if (wireframe == 0) {
+        ctx.fill();
+      }
       ctx.stroke();
     }
   } else {
@@ -37,7 +39,9 @@ function drawScene1Frame(ctx) {
         ctx.lineTo(poly[d][0] * scale + offset, poly[d][1] * scale);
       }
       ctx.closePath();
-      ctx.fill();
+      if (wireframe == 0) {
+        ctx.fill();
+      }
       ctx.stroke();
     }
   }
