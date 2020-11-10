@@ -64,8 +64,8 @@ end
 
 -- Load objects
 local objs = {}
-reader.loadObj("oxygene_by_letters.obj", objs)
-reader.loadObj("tunnel01.obj", objs)
+reader.loadObj("../blender/oxygene_by_letters.obj", objs)
+reader.loadObj("../bldener/tunnel01.obj", objs)
 
 reverseFaces(objs["Cube"])
 
@@ -80,8 +80,8 @@ analysis.facePatterns(objs)
 
 -- Compress and write
 local meta, bytes = compressor.compress(objs)
-writer.writeP8("../piconiccc.p8", bytes)
-local metaFile = io.open("../objects.lua", "wb")
+writer.writeP8("../pico8/piconiccc.p8", bytes)
+local metaFile = io.open("../pico8/objects.lua", "wb")
 metaFile:write("objects = " .. inspect(meta))
 metaFile:close()
 
