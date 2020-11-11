@@ -65,8 +65,7 @@ function m3d_shaded(objects, eye, dir, up) {
 
 function drawPicoFrame(ctx) {
   const polys = m3d_shaded(
-    //[models["Test"], models["O"], models["X"], models["Y"], models["G"], models["E"], models["N"], models["E1"]],
-    [models["Test"]],
+    [models["Test"], models["O"], models["X"], models["Y"], models["G"], models["E"], models["N"], models["E1"]],
     picoEye, picoDir, picoUp
   );
 
