@@ -52,3 +52,25 @@ function mmult(m1, m2) {
   }
 	return r;
 }
+
+function rotX(v3, alpha) {
+	let L = alpha * Math.PI / 180;
+	let y = v3[1] * Math.cos(L) + v3[2] * Math.sin(L);
+	let z = - v3[1] * Math.sin(L) + v3[2] * Math.cos(L);
+	return [v3[0], y, z];
+}
+
+function rotY(v3, alpha) {
+	let L = alpha * Math.PI / 180;
+	let x = v3[0] * Math.cos(L) + v3[2] * Math.sin(L);
+	let z = - v3[0] * Math.sin(L) + v3[2] * Math.cos(L);
+	return [x, v3[1], z];
+}
+
+function rotZ(v3, alpha) {
+	let L = alpha * Math.PI / 180;
+	let x = v3[0] * Math.cos(L) - v3[1] * Math.sin(L);
+	let y = v3[0] * Math.sin(L) + v3[1] * Math.cos(L);
+	return [x, y, v3[2]];
+}
+

@@ -5,8 +5,31 @@ let frameNumber = 0;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
+let isHover = 0;
 
 function init() {
+	
+	// transform base model OXYGEN
+  let a = 0.5;
+  let nMult = [a, a, a, a, a, a, a, 0]
+  let n = 0;
+	for (var m in models) {
+		for (var v in models[m]['v']) {
+			models[m]['v'][v][0] = (models[m]['v'][v][0] - 4.5) + n * nMult[n] - 1.45;
+			models[m]['v'][v][1] -= 0;
+			models[m]['v'][v][2] += 1.565;
+      models[m]['v'][v][1] *= 1.5;
+      models[m]['v'][v][2] *= 1.05;
+      
+      
+			models[m]['v'][v] = rotX(models[m]['v'][v], -90);
+		}
+    n++;
+	}
+	
+	camSetLookAtDistRot([0,0,0], 8.70, 26, 14, -4.5);
+	
+
   window.requestAnimationFrame(drawFrame);
 }
 
@@ -31,9 +54,15 @@ function drawFrame(time) {
 
   drawPicoFrame(ctx3d);
   
-  //test
-  picoAngle += 1.5;
-  
+  if (isHover == 1) {
+    var dest = new Image;
+    dest.src = canvas3d.toDataURL("image/png");
+    ctx.globalAlpha = 0.6;
+    ctx.drawImage(dest, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+
+
   if (isPlay) {
     if (frameNumber < frames.length - 1) {
       let nowFrame = Math.floor((time / (1000 / 15))) % frames.length;
@@ -45,6 +74,7 @@ function drawFrame(time) {
     document.getElementById('frame').value = frameNumber;
   }
 
+  showCamData();
   window.requestAnimationFrame(drawFrame);
 }
 
@@ -70,4 +100,8 @@ function plSet(num) {
 
 function plWireframe() {
   wireframe ^= 1;
+}
+
+function plHover() {
+  isHover ^= 1;
 }

@@ -1,19 +1,20 @@
 'use strict';
 
-function m3d_shaded(objects, eye, dir, angle) {
+function m3d_shaded(objects, eye, dir, up) {
   const pnear = 1;
-  const pfar = 200;
+  const pfar = 2;
   const rangeInv = 1 / (pnear - pfar);
   const sc = 100;
-  const projection_matrix = [
-    6, 0, 0, 0,
-    0, 6, 0, 0,
+  var projection_matrix = [
+    4, 0, 0, 0,
+    0, 4, 0, 0,
     0, 0, (pnear+pfar)*rangeInv, -1,
     0, 0, pnear*pfar*rangeInv*2, 0
   ];
 
+  
+
   // Calculate camera matrix
-	const up = [Math.sin(angle*Math.PI/180), Math.cos(angle*Math.PI/180), 0];
 	const zaxis = normalize(dir);
 	const xaxis = normalize(cross(zaxis, up));
 	const yaxis = cross(xaxis, zaxis);
@@ -45,10 +46,10 @@ function m3d_shaded(objects, eye, dir, angle) {
       const p1 = v2d[tri[1] - 1];
       const p2 = v2d[tri[2] - 1];
       const p3 = v2d[tri[3] - 1];
-			if ((inrange(p1) && inrange(p2) && inrange(p3)) && is_cw(p1, p2, p3)) {
-				//const pv3 = normal(p1, p2, p3)[2]
-				//local light = min(256, flr(1 + 255 * abs(pv3)))
-				sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), p1, p2, p3, tri[0]]);
+      if ((inrange(p1) && inrange(p2) && inrange(p3)) && is_cw(p1, p2, p3)) {
+        //const pv3 = normal(p1, p2, p3)[2]
+        //local light = min(256, flr(1 + 255 * abs(pv3)))
+        sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), p1, p2, p3, tri[0]]);
       }
     });
   });
@@ -62,10 +63,10 @@ function m3d_shaded(objects, eye, dir, angle) {
 function drawPicoFrame(ctx) {
   const tris = m3d_shaded(
     [models["O"], models["X"], models["Y"], models["G"], models["E"], models["N"], models["E1"]],
-    picoEye, picoDir, picoAngle
+    picoEye, picoDir, picoUp
   );
 
-	tris.forEach((tri) => {
+  tris.forEach((tri) => {
     const p1 = tri[1];
     const p2 = tri[2];
     const p3 = tri[3];
@@ -77,7 +78,9 @@ function drawPicoFrame(ctx) {
     ctx.lineTo(p2[4] * 4, p2[5] * 4);
     ctx.lineTo(p3[4] * 4, p3[5] * 4);
     ctx.closePath();
-    ctx.fill();
+	if (wireframe == 0) {
+		ctx.fill();
+	}
     ctx.stroke();
  });
 }

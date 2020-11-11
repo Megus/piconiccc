@@ -2,7 +2,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
   <script type="text/javascript" src="scene1frames.js"></script>
   <script type="text/javascript" src="objects.js"></script>
   <script type="text/javascript" src="math3d.js"></script>
@@ -12,8 +11,9 @@
   <script type="text/javascript" src="picorender.js"></script>
 </head>
 <body onload="init();">
-  <canvas id="visuals" width="512" height="512"></canvas>
-  <canvas id="visuals3d" width="512" height="512"></canvas>
+  <div id="canvas-hover"><canvas id="visuals" width="512" height="512"></canvas>
+  <canvas id="visuals3d" width="512" height="512"></canvas></div>
+  <div id="camdata">camdata</div>
 
   <div>
     <br>
@@ -33,6 +33,7 @@
 
   <div>
     <br>
+    <button onclick="plHover();">hover</button>
     <button onclick="plWireframe();">wireframe</button>
     <input type="text" id="frame" value="0" onchange="plSet(this.value);">
     <button onclick="plChange(-10);">&lt;&lt;</button>
