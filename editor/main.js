@@ -16,6 +16,9 @@ const ctx3d = canvas3d.getContext("2d");
 const width3d = canvas3d.width;
 const height3d = canvas3d.width;
 
+let camPathId = 1;
+let camPathList = [];
+
 function init() {
 	
 	// transform base model OXYGEN
@@ -36,9 +39,41 @@ function init() {
     n++;
 	}
 	
-	camSetLookAtDistRot([0,0,0], 8.70, 26, 14, -4.5);
-	
+  //0
+  camSetLookAtDistRot([0,0,0], 8.70, 26, 14, -4.5);
+  // first for spline
+  camMovDir(0.1);
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camMovDir(-0.1);
+  // 0
+  camPathList.push({"frame":0, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  //25
+  camSetLookAtDistRot([0,0,0], 8.70, 44.5, 6, -3.0);
+  camMovDir(4.5);
+  camMov(-0.625, 0.2, 0);
+  camPathList.push({"frame":25, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  //50
+  camSetLookAtDistRot([0,0,0], 1.7, 61, -2, 2);
+  camMov(-0.55, 0, 0);
+  camMovUp(-0.45);
+  camPathList.push({"frame":50, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  //60
+  camSetLookAtDistRot([0,0,0], 1.372, 75, -3.2, 2);
+  camMov(-0.425, 0, 0);
+  camMovUp(-0.55);
+  camPathList.push({"frame":60, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  // last for spline
+  camMovDir(0.1);
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  // last for spline
+  camMovDir(0.1);
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
+  plPlay(); //autoplay
   window.requestAnimationFrame(drawFrame);
 }
 
@@ -47,9 +82,7 @@ function drawFrame(time) {
   ctx.fillRect(0, 0, width, height);
 
   drawScene1Frame(ctx);
-  
 
-  
   ctx3d.fillStyle = "#000000";
   ctx3d.fillRect(0, 0, width3d, height3d);
 
@@ -70,6 +103,44 @@ function drawFrame(time) {
       if (nowFrame != prevFrame) {
         prevFrame = nowFrame;
         frameNumber++;
+        
+        //check next camPathId
+        if (camPathList[camPathId + 1].frame == frameNumber) {
+            camPathId++;
+        }
+        //spline cam
+        if (camPathList[camPathId + 1].frame != -1) {
+            // warning! uneven movement detected (+0.5 is small fixing. need find the problem)
+            var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame + 0.5);
+            if (frameNumber == camPathList[camPathId + 0].frame) {
+                splineTime = 0;
+            }
+            
+            picoEye = spline(
+                camPathList[camPathId - 1].picoEye,
+                camPathList[camPathId + 0].picoEye,
+                camPathList[camPathId + 1].picoEye,
+                camPathList[camPathId + 2].picoEye,
+                splineTime
+            );
+            picoDir = spline(
+                camPathList[camPathId - 1].picoDir,
+                camPathList[camPathId + 0].picoDir,
+                camPathList[camPathId + 1].picoDir,
+                camPathList[camPathId + 2].picoDir,
+                splineTime
+            );
+            picoDir = normalize(picoDir);
+            picoUp = spline(
+                camPathList[camPathId - 1].picoUp,
+                camPathList[camPathId + 0].picoUp,
+                camPathList[camPathId + 1].picoUp,
+                camPathList[camPathId + 2].picoUp,
+                splineTime
+            );
+            picoUp = normalize(picoUp);
+        }
+
       }
     }
     document.getElementById('frame').value = frameNumber;
@@ -81,6 +152,10 @@ function drawFrame(time) {
 
 function plPlay() {
   frameNumber = frameNumberStart;
+  camPathId = 1;
+  picoEye = camPathList[1].picoEye;
+  picoDir = camPathList[1].picoDir;
+  picoUp = camPathList[1].picoUp;
   isPlay = 1;
 }
 
@@ -170,5 +245,3 @@ function controlMouseWheel (e) {
         camMovDir(dist);
     }
 }
-
-

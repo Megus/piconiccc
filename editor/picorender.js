@@ -46,7 +46,8 @@ function m3d_shaded(objects, eye, dir, up) {
       const p1 = v2d[tri[1] - 1];
       const p2 = v2d[tri[2] - 1];
       const p3 = v2d[tri[3] - 1];
-      if ((inrange(p1) && inrange(p2) && inrange(p3)) && is_cw(p1, p2, p3)) {
+      // (inrange(p1) && inrange(p2) && inrange(p3)) && 
+      if (is_cw(p1, p2, p3)) {
         //const pv3 = normal(p1, p2, p3)[2]
         //local light = min(256, flr(1 + 255 * abs(pv3)))
         sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), p1, p2, p3, tri[0]]);

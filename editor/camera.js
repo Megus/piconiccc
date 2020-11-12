@@ -14,6 +14,25 @@ let picoUp = [0, 1, 0];
 
 */
 
+
+function spline_coord_katmulrom(v0, v1, v2, v3, p) {
+    let k = [];
+	let t2 =  p * p;
+	let t3 = t2 * p;
+	k[0] = -1 * v0 + 3 * v1 - 3 * v2 + v3;
+	k[1] =  2 * v0 - 5 * v1 + 4 * v2 - v3;
+	k[2] = -1 * v0 + v2;
+	k[3] =  2 * v1;
+	return ((t3*k[0] + t2*k[1] + p*k[2] + k[3] ) * 0.5);
+}
+
+function spline(v0, v1, v2, v3, p) {
+    var x = spline_coord_katmulrom(v0[0], v1[0], v2[0], v3[0], p);
+    var y = spline_coord_katmulrom(v0[1], v1[1], v2[1], v3[1], p);
+    var z = spline_coord_katmulrom(v0[2], v1[2], v2[2], v3[2], p);
+    return [x, y, z];
+}
+
 function showCamData() {
 	document.getElementById('camdata').innerHTML = 
 		'eye:[' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + ']'
@@ -107,5 +126,14 @@ function camSetLookAtDistRot(lookAt, dist, rX, rY, rZ) {
 	camRotY(rY);
 	camRotZ(rZ);
 	camMovDir(-dist);
+}
+
+
+
+// bad functions
+function camMov(x, y, z) {
+	picoEye[0] += x;
+	picoEye[1] += y;
+	picoEye[2] += z;
 }
 
