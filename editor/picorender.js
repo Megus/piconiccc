@@ -12,7 +12,6 @@ function m3d_shaded(objects, eye, dir, up) {
     0, 0, pnear*pfar*rangeInv*2, 0
   ];
 
-  
 
   // Calculate camera matrix
 	const zaxis = normalize(dir);
@@ -42,15 +41,19 @@ function m3d_shaded(objects, eye, dir, up) {
 			v2d.push([x, y, z, w, 64 + sc * x, 64 + sc * y]);
     });
 
-    obj.f.forEach((tri) => {
-      const p1 = v2d[tri[1] - 1];
-      const p2 = v2d[tri[2] - 1];
-      const p3 = v2d[tri[3] - 1];
-      // (inrange(p1) && inrange(p2) && inrange(p3)) && 
+    obj.f.forEach((poly) => {
+      const p1 = v2d[poly[1] - 1];
+      const p2 = v2d[poly[2] - 1];
+      const p3 = v2d[poly[3] - 1];
+      let p4;
+      if (poly.length == 5) {
+        p4 = v2d[poly[4] - 1];
+      }
+      // (inrange(p1) && inrange(p2) && inrange(p3)) &&
       if (is_cw(p1, p2, p3)) {
         //const pv3 = normal(p1, p2, p3)[2]
         //local light = min(256, flr(1 + 255 * abs(pv3)))
-        sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), p1, p2, p3, tri[0]]);
+        sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), poly[0], p1, p2, p3, p4]);
       }
     });
   });
@@ -62,22 +65,24 @@ function m3d_shaded(objects, eye, dir, up) {
 }
 
 function drawPicoFrame(ctx) {
-  const tris = m3d_shaded(
+  const polys = m3d_shaded(
     [models["O"], models["X"], models["Y"], models["G"], models["E"], models["N"], models["E1"]],
     picoEye, picoDir, picoUp
   );
 
-  tris.forEach((tri) => {
-    const p1 = tri[1];
-    const p2 = tri[2];
-    const p3 = tri[3];
+  polys.forEach((poly) => {
+    const p1 = poly[2];
+    const p2 = poly[3];
+    const p3 = poly[4];
+    const p4 = poly[5];
 
-    ctx.fillStyle = tri[4];
-    ctx.strokeStyle = tri[4];
+    ctx.fillStyle = poly[1];
+    ctx.strokeStyle = poly[1];
     ctx.beginPath();
     ctx.moveTo(p1[4] * 4, p1[5] * 4);
     ctx.lineTo(p2[4] * 4, p2[5] * 4);
     ctx.lineTo(p3[4] * 4, p3[5] * 4);
+    if (p4 != null) ctx.lineTo(p4[4] * 4, p4[5] * 4);
     ctx.closePath();
 	if (wireframe == 0) {
 		ctx.fill();
