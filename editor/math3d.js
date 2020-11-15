@@ -36,7 +36,8 @@ function inrange(p) {
   const y = p[1];
   const z = p[2];
   const w = p[3];
-	return w < 0 && x > -1 && x < 1 && y > -1 && y < 1 && z > -1 && z < 1;
+  //return w < 0 && x > -1 && x < 1 && y > -1 && y < 1 && z > -1 && z < 1;
+	return w <= 0 && x >= -1 && x <= 1 && y >= -1 && y <= 1 && z >= -1 && z <= 1;
 }
 
 function mmult(m1, m2) {
@@ -74,3 +75,34 @@ function rotZ(v3, alpha) {
 	return [x, y, v3[2]];
 }
 
+/**
+ * Generates a perspective projection matrix with the given bounds
+ *
+ * @param {number} fovy Vertical field of view in radians
+ * @param {number} aspect Aspect ratio. typically viewport width/height
+ * @param {number} near Near bound of the frustum
+ * @param {number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function perspective(fovy, aspect, near, far) {
+  let f = 1.0 / Math.tan(fovy / 2);
+  let nf = 1 / (near - far);
+  let out = [];
+  out[0] = f / aspect;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = f;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 0;
+  out[9] = 0;
+  out[10] = (far + near) * nf;
+  out[11] = -1;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = 2 * far * near * nf;
+  out[15] = 0;
+  return out;
+}

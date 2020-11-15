@@ -4,8 +4,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body onload="init();" onkeydown="controlKey(event, 1)" onkeyup="controlKey(event, 0)">
-  <div id="canvas-hover"><canvas id="visuals" width="512" height="512"></canvas>
-  <canvas id="visuals3d" width="512" height="512" onmousemove="controlMouseMove(event)" onwheel="controlMouseWheel(event)"></canvas></div>
+  <div id="canvas-hover">
+    <canvas id="visuals" width="512" height="512"></canvas>
+    <canvas id="visuals3d" width="512" height="512" onmousemove="controlMouseMove(event)" onwheel="controlMouseWheel(event)"></canvas>
+    <canvas id="visualsgl" width="256" height="256"></canvas>
+  </div>
   <div id="camdata">camdata</div>
 
   <div>
@@ -46,3 +49,4 @@
 <script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="scene1render.js"></script>
 <script type="text/javascript" src="picorender.js"></script>
+<script type="text/javascript" src="glrender.js"></script>

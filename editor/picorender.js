@@ -4,14 +4,14 @@ function m3d_shaded(objects, eye, dir, up) {
   const pnear = 1;
   const pfar = 2;
   const rangeInv = 1 / (pnear - pfar);
-  const sc = 100;
+  const sc = 81.3;
+  const fov = 180 * Math.PI / 180;
   var projection_matrix = [
-    4, 0, 0, 0,
-    0, 4, 0, 0,
+    fov, 0, 0, 0,
+    0, fov, 0, 0,
     0, 0, (pnear+pfar)*rangeInv, -1,
     0, 0, pnear*pfar*rangeInv*2, 0
   ];
-
 
   // Calculate camera matrix
 	const zaxis = normalize(dir);
@@ -49,8 +49,8 @@ function m3d_shaded(objects, eye, dir, up) {
       if (poly.length == 5) {
         p4 = v2d[poly[4] - 1];
       }
-      // (inrange(p1) && inrange(p2) && inrange(p3)) &&
-      if (is_cw(p1, p2, p3)) {
+      // 
+      if ((inrange(p1) && inrange(p2) && inrange(p3)) && is_cw(p1, p2, p3)) {
         //const pv3 = normal(p1, p2, p3)[2]
         //local light = min(256, flr(1 + 255 * abs(pv3)))
         sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), poly[0], p1, p2, p3, p4]);
@@ -65,8 +65,14 @@ function m3d_shaded(objects, eye, dir, up) {
 }
 
 function drawPicoFrame(ctx) {
+  let models_render = [];
+  for (let m in models) {
+    //if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
+      models_render.push(models[m]);
+    //}
+  }
   const polys = m3d_shaded(
-    [models["O"], models["X"], models["Y"], models["G"], models["E"], models["N"], models["E1"]],
+    models_render,
     picoEye, picoDir, picoUp
   );
 

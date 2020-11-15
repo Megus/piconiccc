@@ -1,6 +1,6 @@
 'use strict';
 
-let picoEye = [2, 0, -25];
+let picoEye = [0, 0, -2];
 let picoDir = [0, 0, 1];
 let picoUp = [0, 1, 0];
 
@@ -13,7 +13,6 @@ let picoUp = [0, 1, 0];
 6. setCamLookAt(x,y,z) - установка направления взгляда (при этом надо вычилять изменение camUp = [0, 1, 0] как будто изменили camDir = [0, 0, 1]) — просто установка camDir = LookAt - camEye
 
 */
-
 
 function spline_coord_katmulrom(v0, v1, v2, v3, p) {
     let k = [];
@@ -33,12 +32,53 @@ function spline(v0, v1, v2, v3, p) {
     return [x, y, z];
 }
 
+function spline_cam() {
+  if (camPathList[camPathId + 1].frame != -1) {
+    // warning! uneven movement detected (+0.5 is small fixing. need find the problem)
+    var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame + 0.5);
+    if (frameNumber == camPathList[camPathId + 0].frame) {
+      splineTime = 0;
+    }
+    picoEye = spline(
+      camPathList[camPathId - 1].picoEye,
+      camPathList[camPathId + 0].picoEye,
+      camPathList[camPathId + 1].picoEye,
+      camPathList[camPathId + 2].picoEye,
+      splineTime
+    );
+    picoDir = spline(
+      camPathList[camPathId - 1].picoDir,
+      camPathList[camPathId + 0].picoDir,
+      camPathList[camPathId + 1].picoDir,
+      camPathList[camPathId + 2].picoDir,
+      splineTime
+    );
+    picoDir = normalize(picoDir);
+    picoUp = spline(
+      camPathList[camPathId - 1].picoUp,
+      camPathList[camPathId + 0].picoUp,
+      camPathList[camPathId + 1].picoUp,
+      camPathList[camPathId + 2].picoUp,
+      splineTime
+    );
+    picoUp = normalize(picoUp);
+  }
+  
+}
+
 function showCamData() {
 	document.getElementById('camdata').innerHTML = 
 		'eye:[' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + ']'
 		+ 'dir:[' + picoDir[0] + ', ' + picoDir[1] + ', ' + picoDir[2] + ']'
 		+ 'up:[' + picoUp[0] + ', ' + picoUp[1] + ', ' + picoUp[2] + ']'
 		;
+}
+
+// reset cam
+function resetCam() {
+  picoEye = [0, 0, -2];
+  picoDir = [0, 0, 1];
+  picoUp = [0, 1, 0];
 }
 
 // cam rotate
@@ -127,8 +167,6 @@ function camSetLookAtDistRot(lookAt, dist, rX, rY, rZ) {
 	camRotZ(rZ);
 	camMovDir(-dist);
 }
-
-
 
 // bad functions
 function camMov(x, y, z) {
