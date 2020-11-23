@@ -35,7 +35,7 @@ function spline(v0, v1, v2, v3, p) {
 function spline_cam() {
   if (camPathList[camPathId + 1].frame != -1) {
     // warning! uneven movement detected (+0.5 is small fixing. need find the problem)
-    var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame + 0.5);
+    var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame); // + 0.5
     if (frameNumber == camPathList[camPathId + 0].frame) {
       splineTime = 0;
     }
@@ -67,11 +67,14 @@ function spline_cam() {
 }
 
 function showCamData() {
-	document.getElementById('camdata').innerHTML = 
-		'eye:[' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + ']'
-		+ 'dir:[' + picoDir[0] + ', ' + picoDir[1] + ', ' + picoDir[2] + ']'
-		+ 'up:[' + picoUp[0] + ', ' + picoUp[1] + ', ' + picoUp[2] + ']'
+	let html = 
+		'picoEye = [' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + '];<br>'
+		+ 'picoDir = [' + picoDir[0] + ', ' + picoDir[1] + ', ' + picoDir[2] + '];<br>'
+		+ 'picoUp = [' + picoUp[0] + ', ' + picoUp[1] + ', ' + picoUp[2] + '];'
 		;
+  if (document.getElementById('camdata').innerHTML != html) {
+    document.getElementById('camdata').innerHTML = html;
+  }
 }
 
 // reset cam

@@ -1,12 +1,12 @@
 'use strict';
 
-let frameNumberStart = 0;
-let frameNumber = 0;
+let frameNumberStart = 173;
+let frameNumber = 173;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
 let isHover = 0;
-let isSplineCam = 0;
+let isSplineCam = 1;
 
 const canvas = document.getElementById("visuals")
 const ctx = canvas.getContext("2d");
@@ -27,15 +27,19 @@ let camPathId = 1;
 let camPathList = [];
 
 function init() {
-	
-	init_models();
-	//init_cam_path();
+  
+  init_cam_path();
 
   //reset cam
-  resetCam();
-  
+  resetCam();	
+
+	init_models();
+	
+
   //plPlay(); //autoplay
   
+  showCamData();
+  document.getElementById('frame').value = frameNumber;
   window.requestAnimationFrame(drawFrame);
 }
 
@@ -62,7 +66,7 @@ function drawFrame(time) {
 
   if (isPlay) {
     if (frameNumber < frames.length - 1) {
-      let nowFrame = Math.floor((time / (1000 / 15))) % frames.length;
+      let nowFrame = Math.floor((time / (1000 / 10))) % frames.length;
       if (nowFrame != prevFrame) {
         prevFrame = nowFrame;
         frameNumber++;
@@ -181,42 +185,6 @@ function controlMouseWheel (e) {
     }
 }
 
-
-
-
-
 function init_cam_path() {
-  //0
-  camSetLookAtDistRot([0,0,0], 8.70, 26, 14, -4.5);
-  // first for spline
-  camMovDir(0.1);
-  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  camMovDir(-0.1);
-  // 0
-  camPathList.push({"frame":0, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  //25
-  camSetLookAtDistRot([0,0,0], 8.70, 44.5, 6, -3.0);
-  camMovDir(4.5);
-  camMov(-0.625, 0.2, 0);
-  camPathList.push({"frame":25, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  //50
-  camSetLookAtDistRot([0,0,0], 1.7, 61, -2, 2);
-  camMov(-0.55, 0, 0);
-  camMovUp(-0.45);
-  camPathList.push({"frame":50, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  //60
-  camSetLookAtDistRot([0,0,0], 1.372, 75, -3.2, 2);
-  camMov(-0.425, 0, 0);
-  camMovUp(-0.55);
-  camPathList.push({"frame":60, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  // last for spline
-  camMovDir(0.1);
-  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  // last for spline
-  camMovDir(0.1);
-  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  init_cam_path_tunnel4();
 }
