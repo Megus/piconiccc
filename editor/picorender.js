@@ -24,7 +24,7 @@ function m3d_shaded(objects, eye, dir, up) {
 		0, 0, 0, 1
   ]);
 
-  const sorted = []
+  const sorted = [];
 
   // Tranform all objects
   objects.forEach((obj) => {

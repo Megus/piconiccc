@@ -34,8 +34,7 @@ function spline(v0, v1, v2, v3, p) {
 
 function spline_cam() {
   if (camPathList[camPathId + 1].frame != -1) {
-    // warning! uneven movement detected (+0.5 is small fixing. need find the problem)
-    var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame); // + 0.5
+    var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame);
     if (frameNumber == camPathList[camPathId + 0].frame) {
       splineTime = 0;
     }
@@ -66,6 +65,23 @@ function spline_cam() {
   
 }
 
+// Установка положения камеры по сплайну в зависимости от фрейма
+function changeCamPath() {
+  for (let cp in camPathList) {
+    if (camPathList[cp]['frame'] != -1 &&
+    frameNumber >= camPathList[cp]['frame']) {
+      camPathId = parseInt(cp);
+    }
+  }
+  if (isSplineCam) {
+    spline_cam();
+  }
+  //console.log(camPathId);
+}
+
+
+
+
 function showCamData() {
 	let html = 
 		'picoEye = [' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + '];<br>'
@@ -82,37 +98,6 @@ function resetCam() {
   picoEye = [0, 0, -2];
   picoDir = [0, 0, 1];
   picoUp = [0, 1, 0];
-}
-
-// cam rotate
-function camRotX(alpha) {
-	let L = (alpha%360) * Math.PI / 180;
-	let y = picoDir[1] * Math.cos(L) + picoDir[2] * Math.sin(L);
-	let z = - picoDir[1] * Math.sin(L) + picoDir[2] * Math.cos(L);
-	picoDir = normalize([picoDir[0], y, z]);
-	y = picoUp[1] * Math.cos(L) + picoUp[2] * Math.sin(L);
-	z = - picoUp[1] * Math.sin(L) + picoUp[2] * Math.cos(L);
-	picoUp = normalize([picoUp[0], y, z]);
-}
-
-function camRotY(alpha) {
-	let L = (alpha%360) * Math.PI / 180;
-	let x = picoDir[0] * Math.cos(L) + picoDir[2] * Math.sin(L);
-	let z = - picoDir[0] * Math.sin(L) + picoDir[2] * Math.cos(L);
-	picoDir = normalize([x, picoDir[1], z]);
-	x = picoUp[0] * Math.cos(L) + picoUp[2] * Math.sin(L);
-	z = - picoUp[0] * Math.sin(L) + picoUp[2] * Math.cos(L);
-	picoUp = normalize([x, picoUp[1], z]);
-}
-
-function camRotZ(alpha) {
-	let L = (alpha%360) * Math.PI / 180;
-	let x = picoDir[0] * Math.cos(L) - picoDir[1] * Math.sin(L);
-	let y = picoDir[0] * Math.sin(L) + picoDir[1] * Math.cos(L);
-	picoDir = normalize([x, y, picoDir[2]]);
-	x = picoUp[0] * Math.cos(L) - picoUp[1] * Math.sin(L);
-	y = picoUp[0] * Math.sin(L) + picoUp[1] * Math.cos(L);
-	picoUp = normalize([x, y, picoUp[2]]);
 }
 
 // cam move
@@ -135,31 +120,20 @@ function camMovH(dist) {
 	picoEye[2] += v3[2] * dist;
 }
 
-//cam self rotate
+// cam rotate
 function camRotDir(alpha) {
-	let L = (alpha%360) * Math.PI / 180;
-	let x = picoUp[0] * Math.cos(L) - picoUp[1] * Math.sin(L);
-	let y = picoUp[0] * Math.sin(L) + picoUp[1] * Math.cos(L);
-	picoUp = normalize([x, y, picoUp[2]]);
+  picoUp = normalize(rotVec(picoUp, picoDir, alpha));
 }
 
 function camRotUp(alpha) {
-	let L = (alpha%360) * Math.PI / 180;
-	let x = picoDir[0] * Math.cos(L) + picoDir[2] * Math.sin(L);
-	let z = - picoDir[0] * Math.sin(L) + picoDir[2] * Math.cos(L);
-	picoDir = normalize([x, picoDir[1], z]);
+  picoDir = normalize(rotVec(picoDir, picoUp, alpha));
 }
 
 function camRotH(alpha) {
-	let L = (alpha%360) * Math.PI / 180;
-	let y = picoDir[1] * Math.cos(L) + picoDir[2] * Math.sin(L);
-	let z = - picoDir[1] * Math.sin(L) + picoDir[2] * Math.cos(L);
-	picoDir = normalize([picoDir[0], y, z]);
-	y = picoUp[1] * Math.cos(L) + picoUp[2] * Math.sin(L);
-	z = - picoUp[1] * Math.sin(L) + picoUp[2] * Math.cos(L);
-	picoUp = normalize([picoUp[0], y, z]);
+  let picoH = normalize(cross(picoUp, picoDir));
+  picoDir = normalize(rotVec(picoDir, picoH, alpha));
+  picoUp = normalize(rotVec(picoUp, picoH, alpha));
 }
-
 
 function camSetLookAtDistRot(lookAt, dist, rX, rY, rZ) {
 	picoEye = [0, 0, 0];

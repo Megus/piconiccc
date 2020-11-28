@@ -7,7 +7,7 @@
   <div id="canvas-hover" style="white-sapce:nowrap;">
     <canvas id="visuals" width="512" height="512"></canvas>
     <canvas id="visuals3d" width="512" height="512" onmousemove="controlMouseMove(event)" onwheel="controlMouseWheel(event)"></canvas>
-    <canvas id="visualsgl" width="256" height="256" style="display:none;"></canvas>
+    <canvas id="visualsgl" width="512" height="512" ></canvas>
   </div>
   <div id="camdata">camdata</div>
 
@@ -22,7 +22,7 @@
     <button onclick="plSet(580);">tonnel-4 [580]</button>
     <button onclick="plSet(713);">arch-1 [713]</button>
     <button onclick="plSet(925);">arch-2 [925]</button>
-    <button onclick="plSet(1184);">tonnel-5 [1184]</button>
+    <button onclick="plSet(1190);">tonnel-5 [1190]</button>
     <button onclick="plSet(1298);">room [1298]</button>
     <button onclick="plSet(1538);">cubes [1538]</button>
   </div>
@@ -46,8 +46,8 @@
 <script type="text/javascript" src="objects.js"></script>
 <script type="text/javascript" src="math3d.js"></script>
 <script type="text/javascript" src="camera.js"></script>
-<script type="text/javascript" src="camera_path.js"></script>
 <script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="scene1render.js"></script>
 <script type="text/javascript" src="picorender.js"></script>
+<script type="text/javascript" src="gl-matrix.js"></script>
 <script type="text/javascript" src="glrender.js"></script>

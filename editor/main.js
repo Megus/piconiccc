@@ -1,11 +1,11 @@
 'use strict';
 
-let frameNumberStart = 173;
-let frameNumber = 173;
+let frameNumberStart = 1190;//1190
+let frameNumber = 1190;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 0;
+let isHover = 1;
 let isSplineCam = 1;
 
 const canvas = document.getElementById("visuals")
@@ -19,16 +19,18 @@ const width3d = canvas3d.width;
 const height3d = canvas3d.width;
 
 const canvasgl = document.getElementById("visualsgl")
-const ctxgl = canvas3d.getContext("webgl");
-const widthgl = canvas3d.width;
-const heightgl = canvas3d.width;
+const gl = canvasgl.getContext("webgl");
+const widthgl = canvasgl.width;
+const heightgl = canvasgl.width;
+console.log(gl);
+
 
 let camPathId = 1;
 let camPathList = [];
 
 function init() {
   
-  init_cam_path();
+  //init_cam_path();
 
   //reset cam
   resetCam();	
@@ -37,6 +39,9 @@ function init() {
 	
 
   //plPlay(); //autoplay
+  
+  
+  glInit(gl);
   
   showCamData();
   document.getElementById('frame').value = frameNumber;
@@ -53,7 +58,7 @@ function drawFrame(time) {
   ctx3d.fillRect(0, 0, width3d, height3d);
   drawPicoFrame(ctx3d);
   
-  glDrawFrame(ctxgl);
+  glDrawFrame(gl);
   
   if (isHover == 1) {
     var dest = new Image;
@@ -91,10 +96,7 @@ function drawFrame(time) {
 
 function plPlay() {
   frameNumber = frameNumberStart;
-  camPathId = 1;
-  picoEye = camPathList[1].picoEye;
-  picoDir = camPathList[1].picoDir;
-  picoUp = camPathList[1].picoUp;
+  changeCamPath();
   isPlay = 1;
 }
 
@@ -104,6 +106,7 @@ function plStop() {
 
 function plChange(num) {
   frameNumber = (frameNumber + num) % frames.length;
+  changeCamPath();
   document.getElementById('frame').value = frameNumber;
 }
 
@@ -111,6 +114,7 @@ function plSet(num) {
   frameNumberStart = parseInt(0 + num) % frames.length;
   frameNumber = frameNumberStart;
   document.getElementById('frame').value = frameNumber;
+  changeCamPath();
 }
 
 function plWireframe() {
@@ -183,8 +187,4 @@ function controlMouseWheel (e) {
         let dist = e.deltaY < 0 ? 0.25 : -0.25;
         camMovDir(dist);
     }
-}
-
-function init_cam_path() {
-  init_cam_path_tunnel4();
 }

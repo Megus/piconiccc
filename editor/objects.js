@@ -4,10 +4,474 @@ const models_oxygen_fstart = 0;
 const models_oxygen_fend = 99999;
 
 function init_models() {
-	init_tonnel1();
+  init_testcube();
+  
+	//init_tonnel2(); //tonnel-2 + squad
+  //init_tonnel3();
+  //init_tonnel5();
 }
 
-function init_tonnel1() {
+function vSub(v1,v2) {
+  return [
+    v1[0] - v2[0],
+    v1[1] - v2[1],
+    v1[2] - v2[2],
+  ];
+}
+
+function vecHalf(v1,v2) {
+  return [
+    (v1[0]+v2[0])/2,
+    (v1[1]+v2[1])/2,
+    (v1[2]+v2[2])/2,
+  ];
+}
+
+function init_tonnel5() {
+  let model = {
+		fstart: 0,
+		fend: 9999,
+    v: [],
+    f: [],
+  }
+
+  let colors = [
+    [
+      '#3F4F5F','#7F7F0F','#4F5F6F','#3F4F5F','#2F3F4F',
+      '#1F2F3F','#0F1F2F','#0F0F1F','#1F2F3F','#7F7F0F'
+    ],[
+      '#2F3F4F','#0F0F1F','#3F4F5F','#2F3F4F','#1F2F3F',
+      '#0F1F2F','#0F0F1F','#000000','#0F1F2F','#0F0F1F'
+    ]
+  ];
+  colors[0] = changeColors(colors[0]);
+  colors[1] = changeColors(colors[1]);
+
+  let nqty = 16;
+  let sx = 1.5;
+  let sy = 0.7;
+  
+  let d1 = 0.685;
+  let dx2 = 0.8;
+  let dy2 = 0.275;
+  let d3 = 0;
+  let d4 = 0.7;
+  let d5 = 0.685;
+  
+  let mDz = 1.5;
+  let mRot = -15;
+  let mRotF = 25;
+  
+  for (let n = 0; n < nqty; n++) {
+    let points = [
+      [-sx*d1, -sy, 0],
+      [-sx*dx2, -sy*dy2, 0],
+      [-sx, -sy*d3, 0],
+      [-sx, sy*d4, 0],
+      [-sx*d5, sy, 0],
+
+      [sx*d5, sy, 0],
+      [sx, sy*d4, 0],
+      [sx, -sy*d3, 0],
+      [sx*dx2, -sy*dy2, 0],
+      [sx*d1, -sy, 0],
+    ];
+    for (p in points) {
+      model.v.push(points[p]);
+    }
+
+    // modify points
+    for (v in model.v) {
+      model.v[v][2] += mDz;
+      if (n < 6) {
+        model.v[v][2] += 0.5*mDz;
+      }
+      
+      
+      if (n == 6 || n == 7) {
+        model.v[v] = rotX(model.v[v], mRot/2);
+      }
+      if (n > 7) {
+        model.v[v] = rotX(model.v[v], mRot);
+      }
+    }
+
+    // push polygons
+    if (n < nqty - 1) {
+      let nn = n*10;
+      clr = n%2 == 0 ? 0 : 1;
+      model.f.push([colors[clr][0], nn+1, nn+10, nn+20]);
+      model.f.push([colors[clr][0], nn+20, nn+11, nn+1]);      
+      for (let i = 0; i < 9; i++) {
+        model.f.push([colors[clr][1+i], nn+2+i, nn+1+i, nn+11+i]);
+        model.f.push([colors[clr][1+i], nn+11+i, nn+12+i, nn+2+i]);
+      }
+    }
+  }
+
+  for (v in model.v) {
+    //model.v[v][2] -= 1;
+    //model.v[v] = rotX(model.v[v], mRotF);
+    //model.v[v][2] -= 1.65;
+    //model.v[v][1] -= 0.2;
+  }
+
+  models['tonnel5'] = model;
+
+  let len = 1340-1190; //(150)
+  let frm = 0;
+  const frmStep = 11;
+  for (let n = 0; n < nqty-1; n++) {
+    let nn = (nqty-n-2)*10;
+    
+    let upp = normalize(vSub(model.v[nn+4-1], model.v[nn+3-1]));
+    let hrz = normalize(vSub(model.v[nn+6-1], model.v[nn+5-1]));
+    picoDir = normalize(cross(hrz, upp));
+    picoUp = normalize(upp);
+    picoEye = [
+      (model.v[nn+3-1][0] + model.v[nn+8-1][0]) / 2,
+      (model.v[nn+3-1][1] + model.v[nn+8-1][1]) / 2,
+      (model.v[nn+3-1][2] + model.v[nn+8-1][2]) / 2,
+    ];
+    if (n==0) {
+      camMovDir(-1.9);
+      camRotDir(17);
+      camRotUp(4);
+      camRotH(8);
+      camMovUp(0.2);
+    }
+    if (n==1) {
+      camMovDir(-1.9);
+      camRotDir(17);
+      camRotUp(4);
+      camRotH(6);
+      camMovUp(0.4);
+      camMovDir(0.5);
+    }
+    if (n==2) {
+      camMovDir(-1.9);
+      camRotDir(17);
+      camRotUp(4);
+      camRotH(0);
+      camMovUp(0.4);
+      camMovDir(0.5);
+    }
+    if (n==3) {
+      camMovDir(-1.9);
+      camRotDir(17);
+      camRotUp(4);
+      camRotH(0);
+      camMovUp(0.4);
+      camMovDir(0.5);
+    }
+    if (n==4) {
+      camMovDir(-1.9);
+      camRotDir(17);
+      camRotUp(4);
+      camRotH(0);
+      camMovUp(0.2);
+      camMovDir(0.5);
+    }
+    
+    if (n > 4) {
+      camMovDir(-1.9);
+      camRotDir(17);
+      camRotUp(4);
+      camRotH(0);
+      camMovUp(0.0);
+      camMovDir(0.5);
+    }
+    
+    if (n >= 6) {
+      picoUp = camPathList[camPathList.length-1].picoUp;
+      picoDir = camPathList[camPathList.length-1].picoDir;
+    }
+    if (n >= 6) {
+      
+      //camMovUp(-0.05 * (n-6));
+      camMovDir(-0.05 * (n-6));
+      camRotUp(2.5);
+    }
+    if (n >= 8) {
+      camRotDir(-2.0);
+    }
+    
+    if (n >= 10) {
+      camRotH(-5);
+      camRotUp(0.5);
+    }
+    if (n == 0) {
+      camMovDir(-0.1);
+      camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+      camMovDir(0.1);
+    }
+    camPathList.push({"frame":1190+frm, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+    frm += frmStep;
+  }
+  
+  let vdir = normalize(vSub(camPathList[camPathList.length-1].picoEye, camPathList[camPathList.length-2].picoEye));
+  picoEye[0] += vdir[0];
+  picoEye[1] += vdir[1];
+  picoEye[2] += vdir[2];
+  camRotH(-5);
+  
+  camPathList.push({"frame":1190+frm+frmStep, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  changeCamPath();
+
+}
+
+
+
+
+
+function init_tonnel3() {
+  let model = {
+		fstart: 0,
+		fend: 9999,
+    v: [],
+    f: [],
+  }
+  
+  let nqty = 4;
+  let sx = 2.0;
+  let sy = 0.75;
+  let sz = 4;
+  let bsz = 0.5;
+  
+  let dd = 0.275;
+  let uu = 0.125;
+  let ddd = 0.5;
+  let uuu = 0.1;
+  let uuu1 = 0.075;
+  
+  
+  let mDx = sx*5.0;
+  let mDy = sx*1.0;
+  let mA1 = 22;
+  let mA2 = 2;
+  let mA3 = 5;
+  let mRz = 8;
+  
+  colors = [
+    [
+      '#5F4F4F', '#4F3F3F', '#3F2F2F',
+      '#2F1F1F', '#7F7F0F',
+      '#6F5F5F', '#5F4F4F',
+      '#2F1F1F', '#3F2F2F', '#4F3F3F', '#5F4F4F', '#6F5F5F',
+      '#3F2F2F', '#4F3F3F', '#5F4F4F', '#6F5F5F', '#7F6F6F',
+      
+    ],[
+      '#4F4F3F', '#3F3F2F', '#2F2F1F',
+      '#2F1F1F', '#7F7F0F',
+      '#5F5F4F', '#4F4F3F',
+      '#1F1F0F', '#2F2F1F', '#3F3F2F', '#4F4F3F', '#5F5F4F',
+      '#2F2F1F', '#3F3F2F', '#4F4F3F', '#5F5F4F', '#6F6F5F',
+    ]
+  ];
+
+  resetCam();
+  picoEye = [-0.06718303398527865, 0.03999999999999998, -1.4435166996832427];
+  picoDir = [-0.21132479645538899, 0, 0.9774158942860958];
+  picoUp = [0, 1, 0];
+  camMovDir(0.1);
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camMovDir(-0.1);
+  camPathList.push({"frame":272, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [-0.30598005397986805, 0.03999999999999998, -0.3390367391399551];
+  picoDir = [-0.21132479645538899, 0, 0.9774158942860958];
+  picoUp = [0, 1, 0];
+  //camPathList.push({"frame":277, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+picoEye = [-0.6193606275118955, -0.12684675901290243, 1.3174718397112632];
+picoDir = [-0.3534270836006363, 0.1530375805469429, 0.9228590333945303];
+picoUp = [0, 0.9865721616069695, -0.1633259622416223];
+  //camPathList.push({"frame":285, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  
+picoEye = [-1.804354578929214, 0.28226430843378136, 4.547565758933419];
+picoDir = [-0.615510802711745, 0.19924050494728418, 0.7625284735231169];
+picoUp = [0, 0.9739759672790517, -0.2266513074368552];
+  camPathList.push({"frame":300, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+picoEye = [-3.811842109674175, 1.1825834544576832, 6.976862602438046];
+picoDir = [-0.7828435715133802, 0.26176466536299364, 0.5644778140082879];
+picoUp = [0, 0.9414705448120377, -0.3370952584230825];
+  //camPathList.push({"frame":315, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+picoEye = [-5.728650436362118, 1.5415470277654413, 7.969150459874183];
+picoDir = [-0.868298849657964, 0.24594325287849586, 0.43077723250678046];
+picoUp = [0, 0.953190667792947, -0.30236989075044496];
+  //camPathList.push({"frame":330, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+picoEye = [-7.917669572509831, 1.8741860903599386, 8.619666991434878];
+picoDir = [-0.9659035291590949, 0.2517437892575516, 0.06046020946254634];
+picoUp = [0, 0.925209718385782, -0.37945615952900547];
+  camPathList.push({"frame":345, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  camMovDir(0.1);
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  for (let n = 0; n < nqty; n++) {
+    // create points
+    let points = [
+      [-sx+dd, -sy, 0], //1-8
+      [-sx, -sy+dd, 0],
+      [-sx, sy-uu, 0],
+      [-sx+uu, sy, 0],
+      [sx-uu, sy, 0],
+      [sx, sy-uu, 0],
+      [sx, -sy+dd, 0],
+      [sx-dd, -sy, 0],
+      
+      [-sx+dd, -sy, 0],
+      [-sx, -sy+dd, 0],
+      [-sx, sy-uu, 0],
+      [-sx+uu, sy, 0],
+      [sx-uu, sy, 0],
+      [sx, sy-uu, 0],
+      [sx, -sy+dd, 0],
+      [sx-dd, -sy, 0],
+      
+      [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0],
+
+      [-sx+dd+ddd, -sy+uuu, 0],
+      [-sx+ddd, -sy+dd+uuu, 0],
+      [-sx+ddd, sy-uu-uuu1, 0],
+      [-sx+uu+ddd, sy-uuu1, 0],
+      [sx-uu-ddd, sy-uuu1, 0],
+      [sx-ddd, sy-uu-uuu1, 0],
+      [sx-ddd, -sy+dd+uuu, 0],
+      [sx-dd-ddd, -sy+uuu, 0],
+
+      [-sx+dd+ddd, -sy+uuu, 0],
+      [-sx+ddd, -sy+dd+uuu, 0],
+      [-sx+ddd, sy-uu-uuu1, 0],
+      [-sx+uu+ddd, sy-uuu1, 0],
+      [sx-uu-ddd, sy-uuu1, 0],
+      [sx-ddd, sy-uu-uuu1, 0],
+      [sx-ddd, -sy+dd+uuu, 0],
+      [sx-dd-ddd, -sy+uuu, 0],
+
+    ];
+    // modify points
+    let mRx = 5;
+    for (let p in points) {
+      points[p][0] += mDx;
+      points[p][1] += mDy;
+      let alpha = n*mA1;
+      let alpha2 = n*mRx;
+      if (p >= 8) {
+        alpha = (n+1)*mA1 - mA2;
+        alpha2 = (n+1)*mRx;
+        if (p >= 28) {
+          alpha = (n+1)*mA1;
+        }
+      }
+      if (points[p][0] > 0 && alpha > 0) {
+        alpha -= mA3;
+      }
+      points[p] = rotY(points[p], -alpha);
+      points[p][0] -= mDx;
+      points[p] = rotX(points[p], alpha2);
+      points[p][1] -= mDy;
+      points[p] = rotZ(points[p], mRz);
+      
+      
+      if (points[p][2] == 0) {
+        points[p][2] -= 0.25; //немного не хватает in для сцены
+      }
+    }
+
+    points[16] = vecHalf(points[2-1], points[10-1]);
+    points[17] = vecHalf(points[1-1], points[9-1]);
+    points[18] = vecHalf(points[8-1], points[16-1]);
+    points[19] = vecHalf(points[7-1], points[15-1]);
+
+    // push points
+    for (let p in points) {
+      model.v.push(points[p]);
+    }
+    // push polygons
+    let nn = n*36;
+    clr = n%2 == 0 ? 0 : 1;
+
+    model.f.push([colors[clr][0], nn+2, nn+3, nn+11]);
+    model.f.push([colors[clr][0], nn+11, nn+10, nn+2]);
+    model.f.push([colors[clr][1], nn+3, nn+4, nn+12]);
+    model.f.push([colors[clr][1], nn+12, nn+11, nn+3]);
+    model.f.push([colors[clr][2], nn+4, nn+5, nn+13]);
+    model.f.push([colors[clr][2], nn+13, nn+12, nn+4]);
+    model.f.push([colors[clr][1], nn+5, nn+6, nn+14]);
+    model.f.push([colors[clr][1], nn+14, nn+13, nn+5]);
+    model.f.push([colors[clr][0], nn+6, nn+7, nn+15]);
+    model.f.push([colors[clr][0], nn+15, nn+14, nn+6]);
+    
+    model.f.push([colors[clr][3], nn+18, nn+1, nn+2]);
+    model.f.push([colors[clr][4], nn+2, nn+17, nn+18]);
+    model.f.push([colors[clr][4], nn+9, nn+18, nn+17]);
+    model.f.push([colors[clr][3], nn+17, nn+10, nn+9]);
+
+    model.f.push([colors[clr][3], nn+20, nn+7, nn+8]);
+    model.f.push([colors[clr][4], nn+8, nn+19, nn+20]);
+    model.f.push([colors[clr][4], nn+15, nn+20, nn+19]);
+    model.f.push([colors[clr][3], nn+19, nn+16, nn+15]);
+
+    model.f.push([colors[clr][5], nn+1, nn+18, nn+19]);
+    model.f.push([colors[clr][5], nn+19, nn+8, nn+1]);
+    model.f.push([colors[clr][6], nn+18, nn+9, nn+16]);
+    model.f.push([colors[clr][6], nn+16, nn+19, nn+18]);
+
+    model.f.push([colors[clr][10], nn+10, nn+22, nn+21]);
+    model.f.push([colors[clr][10], nn+21, nn+9, nn+10]);
+
+    model.f.push([colors[clr][9], nn+11, nn+23, nn+22]);
+    model.f.push([colors[clr][9], nn+22, nn+10, nn+11]);
+
+    model.f.push([colors[clr][8], nn+12, nn+24, nn+23]);    
+    model.f.push([colors[clr][8], nn+23, nn+11, nn+12]);
+
+    model.f.push([colors[clr][7], nn+13, nn+25, nn+24]);    
+    model.f.push([colors[clr][7], nn+24, nn+12, nn+13]);
+
+    model.f.push([colors[clr][8], nn+14, nn+26, nn+25]);    
+    model.f.push([colors[clr][8], nn+25, nn+13, nn+14]);
+
+    model.f.push([colors[clr][9], nn+15, nn+27, nn+26]);    
+    model.f.push([colors[clr][9], nn+26, nn+14, nn+15]);
+
+    model.f.push([colors[clr][10], nn+16, nn+28, nn+27]);
+    model.f.push([colors[clr][10], nn+27, nn+15, nn+16]);
+    
+    model.f.push([colors[clr][11], nn+9, nn+21, nn+28]);
+    model.f.push([colors[clr][11], nn+28, nn+16, nn+9]);
+
+    // border-h
+    model.f.push([colors[clr][12], nn+24, nn+25, nn+33]);
+    model.f.push([colors[clr][12], nn+33, nn+32, nn+24]);
+    for (let i = 1; i < 4; i++) {
+      model.f.push([colors[clr][12+i], nn+24+i, nn+25+i, nn+33+i]);
+      model.f.push([colors[clr][12+i], nn+33+i, nn+32+i, nn+24+i]);
+      model.f.push([colors[clr][12+i], nn+24-i, nn+25-i, nn+33-i]);
+      model.f.push([colors[clr][12+i], nn+33-i, nn+32-i, nn+24-i]);
+    }
+    model.f.push([colors[clr][16], nn+21, nn+29, nn+36]);
+    model.f.push([colors[clr][16], nn+36, nn+28, nn+21]);
+
+  }
+
+  picoEye = camPathList[1].picoEye;
+  picoDir = camPathList[1].picoDir;
+  picoUp = camPathList[1].picoUp;
+
+  models['tonnel3'] = model;
+}
+
+
+function init_tonnel2() {
   let model = {
 		fstart: 0,
 		fend: 9999,
@@ -26,13 +490,24 @@ function init_tonnel1() {
       '#2F5F7F', '#0F2F4F', '#0F3F5F', '#1F4F6F'
     ],
   ];
+  let colors2 = [
+    '#2F5F7F', '#0F2F4F', '#0F1F3F', '#0F3F5F', '#1F4F6F',
+  ];
+  
+  colors2 = [
+    '#7F5F2F', '#4F2F0F', '#3F1F0F', '#5F3F0F', '#6F4F1F',
+  ];
 
-  const nqty = 6;
-  const sx = 2;
-  const sy = 1.15;
-  const bsx = 0.6;
-  const bsy = 0.2;
-  const pqty = 16;
+  let nqty = 6;
+  let sx = 2;
+  let sy = 1.15;
+  let bsx = 0.6;
+  let bsy = 0.2;
+  let pqty = 16;
+
+  let mDx = sx*4.0;
+  let mA1 = 17;
+  let mA2 = 3;
 
   picoEye = [0.16315171008539667, 0.010040940234602069, -2.0926391519412997];
   picoDir = [-0.16676849271283986, 0.001745328365898307, 0.9859945353130425];
@@ -64,26 +539,19 @@ function init_tonnel1() {
   picoDir = [0.4430667905498216, 0.006727355024892057, 0.8964633633374259];
   picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
   camPathList.push({"frame":205, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-
  
-picoEye = [8.963592134986133, 0.08968896386227206, 8.28471780956231];
-picoDir = [0.7396185814480023, 0.006727355024892064, 0.6729926423603857];
-picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
-camPathList.push({"frame":211, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  picoEye = [8.963592134986133, 0.08968896386227206, 8.28471780956231];
+  picoDir = [0.7396185814480023, 0.006727355024892064, 0.6729926423603857];
+  picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
+  camPathList.push({"frame":211, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
+  picoEye = [9.83282340209979, 0.13176202032168793, 8.021395484392315];
+  picoDir = [0.7396185814480023, 0.006727355024892064, 0.6729926423603857];
+  picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
+  camPathList.push({"frame":217, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
-picoEye = [9.83282340209979, 0.13176202032168793, 8.021395484392315];
-picoDir = [0.7396185814480023, 0.006727355024892064, 0.6729926423603857];
-picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
-camPathList.push({"frame":217, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-
-
-camPathList.push({"frame":218, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-
-
-
-
+  camPathList.push({"frame":218, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
  
   for (let n = 0; n < nqty; n++) {
 
@@ -111,10 +579,6 @@ camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":pic
 
     ];
 
-
-    let mDx = sx*4.0;
-    let mA1 = 17;
-    let mA2 = 3;
     // modify points
     for (let p in points) {
       points[p][0] -= mDx;
@@ -127,11 +591,8 @@ camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":pic
       }
       points[p] = rotY(points[p], alpha);
       points[p][0] += mDx;
-      
-      
       points[p] = rotX(points[p], 2);
     }
-    
 
     // push points
     for (let p in points) {
@@ -169,15 +630,123 @@ camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":pic
       model.f.push([colors[n%2][11], nn+n2+4, nn+n2+1, nn+n2+5]);
       model.f.push([colors[n%2][11], nn+n2+5, nn+n2+8, nn+n2+4]);
     }
-
   }
-  models['tunnel'] = model;
 
-  picoEye = camPathList[1].picoEye;
-  picoDir = camPathList[1].picoDir;
-  picoUp = camPathList[1].picoUp;
+  sx = 2;
+  sy = 1.75;//1.75;
+  sz = 2.2;
+  let bs = 0.25;
+  bsx = 0.15;
+  //--- squad
+  points = [
+    [-sx, -sy, -sz],
+    [-sx,  0,  -sz],
+    [-sx,  sy, -sz],
 
+    [-sx, -sy, 0],
+    [-sx,  0,  0],
+    [-sx,  sy, 0],
 
+    [-sx, -sy, sz],
+    [-sx,  0,  sz],
+    [-sx,  sy, sz],
+
+    [-sx-bsx, -sy + bs, -sz + bs],
+    [-sx-bsx,  0 - bs,  -sz + bs],
+    [-sx-bsx,  0 - bs,  0 - bs],
+    [-sx-bsx, -sy + bs, 0 - bs],
+
+    [-sx-bsx,  0 + bs,  0 + bs],
+    [-sx-bsx,  sy - bs, 0 + bs],
+    [-sx-bsx,  sy - bs, sz - bs],
+    [-sx-bsx,  0 + bs,  sz - bs],
+  ];
+  let points2 = [];
+  for (let p in points) {
+    let pp = points[p];
+    pp = rotY(pp, 180);
+    points2.push(pp);
+  }
+
+  // modify points
+  let alpha2 = -15;
+  let nstp = 0.8;
+  for (let p in points) {
+    points[p] = rotY(points[p], alpha2);
+    alpha = (nqty+nstp)*mA1;
+    points[p][0] -= mDx;
+    points[p] = rotY(points[p], alpha);
+    points[p][0] += mDx;
+    points[p] = rotX(points[p], 2);
+  }
+  for (let p in points2) {
+    points2[p] = rotY(points2[p], alpha2);
+    alpha = (nqty+nstp)*mA1;
+    points2[p][0] -= mDx;
+    points2[p] = rotY(points2[p], alpha);
+    points2[p][0] += mDx;
+    points2[p] = rotX(points2[p], 2);
+  }
+
+  // push points
+  for (let p in points) {
+    model.v.push(points[p]);
+  }
+  for (let p in points2) {
+    model.v.push(points2[p]);
+  }
+  // push polygons
+  for (let k = 0; k < 2; k++) {
+    let nn = nqty*pqty + 17*k;
+    model.f.push([colors2[0], nn+2, nn+3, nn+6]);
+    model.f.push([colors2[0], nn+6, nn+5, nn+2]);
+    model.f.push([colors2[0], nn+4, nn+5, nn+8]);
+    model.f.push([colors2[0], nn+8, nn+7, nn+4]);
+    for (let m = 0; m < 2; m++) {
+      nn += m*4;
+      model.f.push([colors2[0], nn+10, nn+11, nn+12]);
+      model.f.push([colors2[0], nn+12, nn+13, nn+10]);
+      
+      model.f.push([colors2[1], nn+1, nn+2, nn+11]);
+      model.f.push([colors2[1], nn+11, nn+10, nn+1]);
+      model.f.push([colors2[2], nn+2, nn+5, nn+12]);
+      model.f.push([colors2[2], nn+12, nn+11, nn+2]);
+      model.f.push([colors2[3], nn+5, nn+4, nn+13]);
+      model.f.push([colors2[3], nn+13, nn+12, nn+5]);
+      model.f.push([colors2[4], nn+4, nn+1, nn+10]);
+      model.f.push([colors2[4], nn+10, nn+13, nn+4]);
+    }
+  }
+  let nn = nqty*pqty;
+  model.f.push([colors2[1], nn+3+17, nn+9, nn+3]);
+  model.f.push([colors2[1], nn+3, nn+9+17, nn+3+17]);
+  
+  model.f.push([colors2[3], nn+1, nn+7, nn+1+17]);
+  model.f.push([colors2[3], nn+1+17, nn+7+17, nn+1]);
+
+  models['tonnel2'] = model;
+
+  //picoEye = camPathList[1].picoEye;
+  //picoDir = camPathList[1].picoDir;
+  //picoUp = camPathList[1].picoUp;
+  
+  //picoEye = [-0.18309390581351148, -0.23779486421043888, -1.4302459843337882];
+  //picoDir = [-0.9408793359112283, 0.0017453283658983125, 0.3387374043180665];
+  //picoUp = [0.15988120863437394, 0.987134765271594, -0.0017188129062887837];
+
+  //picoEye = [8.662494761575521, -0.1451592137314297, 3.143610534563751];
+  //picoDir = [0.7396185814480023, 0.006727355024892064, 0.6729926423603857];
+  //picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
+  
+  //picoEye = [9.22480175923903, -8.932695441402243, 7.039894105514883];
+  //picoDir = [0.3831738375010581, -0.8752372531969722, -0.2951907194864563];
+  //picoUp = [0.14435282327591556, -0.31577230986897536, 0.9377900141994924];
+  
+  picoEye = [10.047052209884832, 0.1460246575318709, 7.883908775599021];
+  picoDir = [0.5548370928888576, 0.006727355024892074, 0.8319318139421105];
+  picoUp = [0.16332691990534992, 0.9865483178619379, -0.006836209330652075];
+
+  
 }
 
 
@@ -280,7 +849,7 @@ function init_tonnel4() {
   camMovDir(0.1);
   camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
-  models['tunnel4'] = model;
+  models['tonnel4'] = model;
 }
 
 
@@ -398,4 +967,16 @@ function init_oxygen() { 	// transform base model OXYGEN
   },*/
 
 
-
+// вспомогательная функция для смены палитры
+// чтобы лучше при наложении было видно
+function changeColors(colors) {
+  let colorsNew = [];
+  for (let c in colors) {
+    colorsNew.push(
+      '#' + colors[c].substr(5,2)
+          + colors[c].substr(3,2)
+          + colors[c].substr(1,2)
+    );
+  }
+  return colorsNew;
+}

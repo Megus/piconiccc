@@ -54,6 +54,7 @@ function mmult(m1, m2) {
 	return r;
 }
 
+// поворот вокруг оси X в базовой системе координат
 function rotX(v3, alpha) {
 	let L = alpha * Math.PI / 180;
 	let y = v3[1] * Math.cos(L) + v3[2] * Math.sin(L);
@@ -61,6 +62,7 @@ function rotX(v3, alpha) {
 	return [v3[0], y, z];
 }
 
+// поворот вокруг оси Y в базовой системе координат
 function rotY(v3, alpha) {
 	let L = alpha * Math.PI / 180;
 	let x = v3[0] * Math.cos(L) + v3[2] * Math.sin(L);
@@ -68,11 +70,42 @@ function rotY(v3, alpha) {
 	return [x, v3[1], z];
 }
 
+// поворот вокруг оси Z в базовой системе координат
 function rotZ(v3, alpha) {
 	let L = alpha * Math.PI / 180;
 	let x = v3[0] * Math.cos(L) - v3[1] * Math.sin(L);
 	let y = v3[0] * Math.sin(L) + v3[1] * Math.cos(L);
 	return [x, y, v3[2]];
+}
+
+// поворот точки вокруг произвольного вектора
+// https://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B2%D0%BE%D1%80%D0%BE%D1%82
+function rotVec(v3, vdir, alpha) {
+  let L = alpha * Math.PI / 180;
+  let cosL = Math.cos(L);
+  let sinL = Math.sin(L);
+  let x = vdir[0];
+  let y = vdir[1];
+  let z = vdir[2];
+  
+  let m = [
+    cosL + (1-cosL)*x*x,
+    (1-cosL)*x*y - (sinL)*z,
+    (1-cosL)*x*z + (sinL)*y,
+
+    (1-cosL)*y*x + (sinL)*z,
+    cosL + (1-cosL)*y*y,
+    (1-cosL)*y*z - (sinL)*x,
+
+    (1-cosL)*z*x - (sinL)*y,
+    (1-cosL)*z*y + (sinL)*x,
+    cosL + (1-cosL)*z*z
+  ];
+  
+  let xx = m[0]*v3[0] + m[1]*v3[1] + m[2]*v3[2];
+  let yy = m[3]*v3[0] + m[4]*v3[1] + m[5]*v3[2];
+  let zz = m[6]*v3[0] + m[7]*v3[1] + m[8]*v3[2];
+  return [xx,yy,zz];
 }
 
 /**
