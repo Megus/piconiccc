@@ -66,6 +66,7 @@ function m3d_shaded(objects, eye, dir, up) {
 }
 
 function drawPicoFrame(ctx) {
+ 
   let models_render = [];
   for (let m in models) {
     //if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {

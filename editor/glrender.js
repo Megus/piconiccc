@@ -76,11 +76,11 @@ function initBuffers(gl) {
       glColors.push(color[0], color[1], color[2], color[3]);
       glColors.push(color[0], color[1], color[2], color[3]);
       var pos = models[m].v[ models[m].f[f][1] - 1 ];
-      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(-pos[2]);
+      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
       pos = models[m].v[ models[m].f[f][2] - 1 ];
-      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(-pos[2]);
+      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
       pos = models[m].v[ models[m].f[f][3] - 1 ];
-      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(-pos[2]);
+      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
       glIndices.push(vertexCount++);
       glIndices.push(vertexCount++);
       glIndices.push(vertexCount++);
@@ -156,22 +156,9 @@ function glDrawFrame(gl) {
   mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
   
   // Calculate camera matrix
-
-  var dir = [picoDir[0], picoDir[1], picoDir[2]];
-  var up = [picoUp[0], picoUp[1], picoUp[2]];
-  var eye = [picoEye[0], picoEye[1], -picoEye[2]];
-	const zaxis = normalize(dir);
-	const xaxis = normalize(cross(zaxis, up));
-	const yaxis = normalize(cross(xaxis, zaxis));
-	var modelViewMatrix = [
-    xaxis[0], xaxis[1], xaxis[2], 0,
-    yaxis[0], yaxis[1], yaxis[2], 0,
-    zaxis[0], zaxis[1], zaxis[2], 0,
-    -(xaxis[0]*eye[0] + yaxis[0]*eye[1] + zaxis[0]*eye[2]),
-    -(xaxis[1]*eye[0] + yaxis[1]*eye[1] + zaxis[1]*eye[2]),
-    -(xaxis[2]*eye[0] + yaxis[2]*eye[1] + zaxis[2]*eye[2]),
-    1,
-  ];
+  let modelViewMatrix = mat4.create();
+  let camCenter = [picoEye[0]+picoDir[0], picoEye[1]+picoDir[1], picoEye[2]+picoDir[2]];
+  mat4.lookAt(modelViewMatrix, picoEye, camCenter, picoUp);
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute

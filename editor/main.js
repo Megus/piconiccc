@@ -5,7 +5,7 @@ let frameNumber = 1190;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 1;
+let isHover = 0;
 let isSplineCam = 1;
 
 const canvas = document.getElementById("visuals")
@@ -22,7 +22,7 @@ const canvasgl = document.getElementById("visualsgl")
 const gl = canvasgl.getContext("webgl");
 const widthgl = canvasgl.width;
 const heightgl = canvasgl.width;
-console.log(gl);
+canvasgl.setAttribute('style', 'transform:rotateY(180deg)');
 
 
 let camPathId = 1;
