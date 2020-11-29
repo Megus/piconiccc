@@ -33,7 +33,12 @@ function spline(v0, v1, v2, v3, p) {
 }
 
 function spline_cam() {
-  if (camPathList[camPathId + 1].frame != -1) {
+  if (camPathList[camPathId - 1] != undefined
+    && camPathList[camPathId + 0] != undefined
+    && camPathList[camPathId + 1] != undefined
+    && camPathList[camPathId + 2] != undefined
+    && camPathList[camPathId + 1].frame != -1
+  ) {
     var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame);
     if (frameNumber == camPathList[camPathId + 0].frame) {
       splineTime = 0;

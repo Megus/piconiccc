@@ -1,7 +1,7 @@
 'use strict';
 
-let frameNumberStart = 1190;//1190
-let frameNumber = 1190;
+let frameNumberStart = 173;
+let frameNumber = 173;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
@@ -62,12 +62,11 @@ function drawFrame(time) {
   
   if (isHover == 1) {
     var dest = new Image;
-    dest.src = canvas3d.toDataURL("image/png");
+    dest.src = canvasgl.toDataURL("image/png");
     ctx.globalAlpha = 0.6;
-    ctx.drawImage(dest, 0, 0);
+    mirrorImage(ctx, dest, 0, 0, true);
     ctx.globalAlpha = 1;
   }
-
 
   if (isPlay) {
     if (frameNumber < frames.length - 1) {
@@ -75,16 +74,16 @@ function drawFrame(time) {
       if (nowFrame != prevFrame) {
         prevFrame = nowFrame;
         frameNumber++;
-        
         //check next camPathId
-        if (camPathList[camPathId + 1].frame == frameNumber) {
-            camPathId++;
+        if (camPathList[camPathId + 1] != undefined
+          && camPathList[camPathId + 1].frame == frameNumber
+        ) {
+          camPathId++;
         }
         //spline cam
         if (isSplineCam) {
           spline_cam();
         }
-
       }
     }
     document.getElementById('frame').value = frameNumber;
@@ -187,4 +186,23 @@ function controlMouseWheel (e) {
         let dist = e.deltaY < 0 ? 0.25 : -0.25;
         camMovDir(dist);
     }
+}
+
+
+// arguments
+// ctx : the context on which to draw the mirrored image
+// image : the image to mirror
+// x,y : the top left of the rendered image
+// horizontal : boolean if true mirror along X
+// vertical : boolean if true mirror along y
+function mirrorImage(ctx, image, x = 0, y = 0, horizontal = false, vertical = false){
+    ctx.save();  // save the current canvas state
+    ctx.setTransform(
+        horizontal ? -1 : 1, 0, // set the direction of x axis
+        0, vertical ? -1 : 1,   // set the direction of y axis
+        x + horizontal ? image.width : 0, // set the x origin
+        y + vertical ? image.height : 0   // set the y origin
+    );
+    ctx.drawImage(image,0,0);
+    ctx.restore(); // restore the state as it was when this function was called
 }

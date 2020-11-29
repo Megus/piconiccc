@@ -2,20 +2,11 @@
 
 // based on https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js
 
-var drawType = 0;
 var vertexCount = 0;
-
 var shaderProgram;
 var programInfo;
-
-var cubeRot = 0;
-
 var buffers;
-/* = {
-  position: [],
-  color: [],
-  indices: [],
-};*/
+var glRenderList = {};
 
 // Vertex shader program
 const vsSource = `
@@ -40,6 +31,7 @@ const fsSource = `
 
 // init
 function glInit(gl) {
+  gl.enable(gl.CULL_FACE);
   shaderProgram = initShaderProgram(gl, vsSource, fsSource);
   programInfo = {
     program: shaderProgram,
@@ -56,12 +48,7 @@ function glInit(gl) {
   buffers = initBuffers(gl);
 }
 
-//
 // initBuffers
-//
-// Initialize the buffers we'll need. For this demo, we just
-// have one object -- a simple three-dimensional cube.
-//
 function initBuffers(gl) {
 
   vertexCount = 0;
@@ -70,6 +57,7 @@ function initBuffers(gl) {
   var glColors = [];
 
   for (let m in models) {
+    let vertexCountStart = vertexCount;
     for (let f in models[m].f) {
       var color = getGlColor(models[m].f[f][0]);
       glColors.push(color[0], color[1], color[2], color[3]);
@@ -85,7 +73,9 @@ function initBuffers(gl) {
       glIndices.push(vertexCount++);
       glIndices.push(vertexCount++);
     }
+    glRenderList[m] = {offset: vertexCountStart, count: vertexCount - vertexCountStart};
   }
+  console.log(glRenderList);
 
   // Create a buffer for the cube's vertex positions.
   const positionBuffer = gl.createBuffer();
@@ -105,7 +95,6 @@ function initBuffers(gl) {
 
   // Build the element array buffer; this specifies the indices
   // into the vertex arrays for each face's vertices.
-
   const indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
@@ -114,9 +103,7 @@ function initBuffers(gl) {
   // position.
 
   // Now send the element array to GL
-
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(glIndices), gl.STATIC_DRAW);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(glIndices), gl.STATIC_DRAW);
 
   return {
     position: positionBuffer,
@@ -135,9 +122,8 @@ function glDrawFrame(gl) {
 
   //??? gl.enable(gl.BLEND);
   //??? gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  
-  // Clear the canvas before we start drawing on it.
 
+  // Clear the canvas before we start drawing on it.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Create a perspective matrix, a special matrix that is
@@ -154,7 +140,7 @@ function glDrawFrame(gl) {
   const zFar = 100.0;
   let projectionMatrix = mat4.create();
   mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
-  
+
   // Calculate camera matrix
   let modelViewMatrix = mat4.create();
   let camCenter = [picoEye[0]+picoDir[0], picoEye[1]+picoDir[1], picoEye[2]+picoDir[2]];
@@ -170,14 +156,14 @@ function glDrawFrame(gl) {
     const offset = 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
     gl.vertexAttribPointer(
-        programInfo.attribLocations.vertexPosition,
-        numComponents,
-        type,
-        normalize,
-        stride,
-        offset);
-    gl.enableVertexAttribArray(
-        programInfo.attribLocations.vertexPosition);
+      programInfo.attribLocations.vertexPosition,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
   }
 
   // Tell WebGL how to pull out the colors from the color buffer
@@ -190,14 +176,14 @@ function glDrawFrame(gl) {
     const offset = 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
     gl.vertexAttribPointer(
-        programInfo.attribLocations.vertexColor,
-        numComponents,
-        type,
-        normalize,
-        stride,
-        offset);
-    gl.enableVertexAttribArray(
-        programInfo.attribLocations.vertexColor);
+      programInfo.attribLocations.vertexColor,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
   }
 
   // Tell WebGL which indices to use to index the vertices
@@ -208,22 +194,27 @@ function glDrawFrame(gl) {
 
   // Set the shader uniforms
   gl.uniformMatrix4fv(
-      programInfo.uniformLocations.projectionMatrix,
-      false,
-      projectionMatrix);
+    programInfo.uniformLocations.projectionMatrix,
+    false,
+    projectionMatrix
+  );
   gl.uniformMatrix4fv(
-      programInfo.uniformLocations.modelViewMatrix,
-      false,
-      modelViewMatrix);
+    programInfo.uniformLocations.modelViewMatrix,
+    false,
+    modelViewMatrix
+  );
 
-  {
-    const type = gl.UNSIGNED_SHORT;
-    const offset = 0;
-    //mode, count, type, offset
-    gl.drawElements(drawType == 0 ? gl.TRIANGLES : gl.LINES, vertexCount, type, offset);
+  const type = gl.UNSIGNED_SHORT;
+
+  for (let m in models) {
+    if (models[m].fstart <= frameNumber && models[m].fend >= frameNumber) {
+      let offset = glRenderList[m].offset*2;
+      let count = glRenderList[m].count;
+      if (count > 0) {
+        gl.drawElements(wireframe == 0 ? gl.TRIANGLES : gl.LINES, count, type, offset);
+      }
+    }
   }
-
-  //cubeRot += 1;
 }
 
 //
@@ -235,14 +226,12 @@ function initShaderProgram(gl, vsSource, fsSource) {
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
 
   // Create the shader program
-
   const shaderProgram = gl.createProgram();
   gl.attachShader(shaderProgram, vertexShader);
   gl.attachShader(shaderProgram, fragmentShader);
   gl.linkProgram(shaderProgram);
 
   // If creating the shader program failed, alert
-
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
     alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
     return null;
