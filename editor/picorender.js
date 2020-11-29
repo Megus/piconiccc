@@ -17,12 +17,13 @@ function m3d_shaded(objects, eye, dir, up) {
 	const zaxis = normalize(dir);
 	const xaxis = normalize(cross(zaxis, up));
 	const yaxis = cross(xaxis, zaxis);
-	const m = mmult(projection_matrix, [
+  const camMatrix = [
 		xaxis[0], xaxis[1], xaxis[2], -dot(xaxis, eye),
 		yaxis[0], yaxis[1], yaxis[2], -dot(yaxis, eye),
 		zaxis[0], zaxis[1], zaxis[2], -dot(zaxis, eye),
 		0, 0, 0, 1
-  ]);
+  ];
+	const m = mmult(projection_matrix, camMatrix);
 
   const sorted = [];
 

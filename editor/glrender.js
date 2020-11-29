@@ -2,61 +2,8 @@
 
 // based on https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js
 
-const positions = [
-  // Front face
-  -1.0, -1.0,  1.0,
-   1.0, -1.0,  1.0,
-   1.0,  1.0,  1.0,
-  -1.0,  1.0,  1.0,
-
-  // Back face
-  -1.0, -1.0, -1.0,
-  -1.0,  1.0, -1.0,
-   1.0,  1.0, -1.0,
-   1.0, -1.0, -1.0,
-
-  // Top face
-  -1.0,  1.0, -1.0,
-  -1.0,  1.0,  1.0,
-   1.0,  1.0,  1.0,
-   1.0,  1.0, -1.0,
-
-  // Bottom face
-  -1.0, -1.0, -1.0,
-   1.0, -1.0, -1.0,
-   1.0, -1.0,  1.0,
-  -1.0, -1.0,  1.0,
-
-  // Right face
-   1.0, -1.0, -1.0,
-   1.0,  1.0, -1.0,
-   1.0,  1.0,  1.0,
-   1.0, -1.0,  1.0,
-
-  // Left face
-  -1.0, -1.0, -1.0,
-  -1.0, -1.0,  1.0,
-  -1.0,  1.0,  1.0,
-  -1.0,  1.0, -1.0,
-];
-const indices = [
-  //0,  1,  2,      0,  2,  3,    // front
-  4,  5,  6,      4,  6,  7,    // back
-  8,  9,  10,     8,  10, 11,   // top
-  12, 13, 14,     12, 14, 15,   // bottom
-  16, 17, 18,     16, 18, 19,   // right
-  20, 21, 22,     20, 22, 23,   // left
-];
-const faceColors = [
-  [1.0,  1.0,  1.0,  1.0],  // Front face: white
-  [0.0,  0.0,  1.0,  1.0],  // blue
-  [0.0,  1.0,  0.0,  1.0],  // green
-  [1.0,  1.0,  0.0,  1.0],  // yellow
-  [1.0,  0.0,  1.0,  1.0],  // purple
-  [1.0,  0.0,  0.0,  1.0],  // red
-];
-
 var drawType = 0;
+var vertexCount = 0;
 
 var shaderProgram;
 var programInfo;
@@ -117,33 +64,44 @@ function glInit(gl) {
 //
 function initBuffers(gl) {
 
-  // Create a buffer for the cube's vertex positions.
+  vertexCount = 0;
+  var glPositions = [];
+  var glIndices = [];
+  var glColors = [];
 
+  for (let m in models) {
+    for (let f in models[m].f) {
+      var color = getGlColor(models[m].f[f][0]);
+      glColors.push(color[0], color[1], color[2], color[3]);
+      glColors.push(color[0], color[1], color[2], color[3]);
+      glColors.push(color[0], color[1], color[2], color[3]);
+      var pos = models[m].v[ models[m].f[f][1] - 1 ];
+      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(-pos[2]);
+      pos = models[m].v[ models[m].f[f][2] - 1 ];
+      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(-pos[2]);
+      pos = models[m].v[ models[m].f[f][3] - 1 ];
+      glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(-pos[2]);
+      glIndices.push(vertexCount++);
+      glIndices.push(vertexCount++);
+      glIndices.push(vertexCount++);
+    }
+  }
+
+  // Create a buffer for the cube's vertex positions.
   const positionBuffer = gl.createBuffer();
 
   // Select the positionBuffer as the one to apply buffer
   // operations to from here out.
-
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   // Now pass the list of positions into WebGL to build the
   // shape. We do this by creating a Float32Array from the
   // JavaScript array, then use it to fill the current buffer.
-
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-  // Convert the array of colors into a table for all the vertices.
-  var colors = [];
-
-  for (var j = 0; j < faceColors.length; ++j) {
-    const c = faceColors[j];
-    // Repeat each color four times for the four vertices of the face
-    colors = colors.concat(c, c, c, c);
-  }
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(glPositions), gl.STATIC_DRAW);
 
   const colorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(glColors), gl.STATIC_DRAW);
 
   // Build the element array buffer; this specifies the indices
   // into the vertex arrays for each face's vertices.
@@ -158,7 +116,7 @@ function initBuffers(gl) {
   // Now send the element array to GL
 
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(indices), gl.STATIC_DRAW);
+      new Uint16Array(glIndices), gl.STATIC_DRAW);
 
   return {
     position: positionBuffer,
@@ -195,32 +153,25 @@ function glDrawFrame(gl) {
   const zNear = 0.1;
   const zFar = 100.0;
   let projectionMatrix = mat4.create();
+  mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+  
+  // Calculate camera matrix
 
-  // note: glmatrix.js always has the first argument
-  // as the destination to receive the result.
-  mat4.perspective(projectionMatrix,
-                   fieldOfView,
-                   aspect,
-                   zNear,
-                   zFar);
-  // Set the drawing position to the "identity" point, which is
-  // the center of the scene.
-  const modelViewMatrix = mat4.create();
-
-  // Now move the drawing position a bit to where we want to
-  // start drawing the square.
-
-  mat4.translate(modelViewMatrix,     // destination matrix
-                 modelViewMatrix,     // matrix to translate
-                 [0.0, 0.0, -2.0]);  // amount to translate
-  mat4.rotate(modelViewMatrix,  // destination matrix
-              modelViewMatrix,  // matrix to rotate
-              Math.PI * cubeRot / 180.0,     // amount to rotate in radians
-              [0, 0, 1]);       // axis to rotate around (Z)
-  mat4.rotate(modelViewMatrix,  // destination matrix
-              modelViewMatrix,  // matrix to rotate
-              Math.PI * cubeRot * 0.7 / 180.0,// amount to rotate in radians
-              [0, 1, 0]);       // axis to rotate around (X)
+  var dir = [picoDir[0], picoDir[1], picoDir[2]];
+  var up = [picoUp[0], picoUp[1], picoUp[2]];
+  var eye = [picoEye[0], picoEye[1], -picoEye[2]];
+	const zaxis = normalize(dir);
+	const xaxis = normalize(cross(zaxis, up));
+	const yaxis = normalize(cross(xaxis, zaxis));
+	var modelViewMatrix = [
+    xaxis[0], xaxis[1], xaxis[2], 0,
+    yaxis[0], yaxis[1], yaxis[2], 0,
+    zaxis[0], zaxis[1], zaxis[2], 0,
+    -(xaxis[0]*eye[0] + yaxis[0]*eye[1] + zaxis[0]*eye[2]),
+    -(xaxis[1]*eye[0] + yaxis[1]*eye[1] + zaxis[1]*eye[2]),
+    -(xaxis[2]*eye[0] + yaxis[2]*eye[1] + zaxis[2]*eye[2]),
+    1,
+  ];
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute
@@ -279,7 +230,6 @@ function glDrawFrame(gl) {
       modelViewMatrix);
 
   {
-    const vertexCount = indices.length;
     const type = gl.UNSIGNED_SHORT;
     const offset = 0;
     //mode, count, type, offset
@@ -335,4 +285,11 @@ function loadShader(gl, type, source) {
   }
 
   return shader;
+}
+
+function getGlColor(color) {
+  let r = parseInt(color.substr(1, 2), 16) / 255;
+  let g = parseInt(color.substr(3, 2), 16) / 255;
+  let b = parseInt(color.substr(5, 2), 16) / 255;
+  return [r, g, b, 1.0];
 }

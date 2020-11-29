@@ -4,11 +4,11 @@ const models_oxygen_fstart = 0;
 const models_oxygen_fend = 99999;
 
 function init_models() {
-  init_testcube();
+  //init_testcube();
   
 	//init_tonnel2(); //tonnel-2 + squad
   //init_tonnel3();
-  //init_tonnel5();
+  init_tonnel5();
 }
 
 function vSub(v1,v2) {
