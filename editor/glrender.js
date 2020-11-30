@@ -75,7 +75,6 @@ function initBuffers(gl) {
     }
     glRenderList[m] = {offset: vertexCountStart, count: vertexCount - vertexCountStart};
   }
-  console.log(glRenderList);
 
   // Create a buffer for the cube's vertex positions.
   const positionBuffer = gl.createBuffer();

@@ -29,36 +29,35 @@ function m3d_shaded(objects, eye, dir, up) {
 
   // Tranform all objects
   objects.forEach((obj) => {
+
     const v2d = []
-    if (obj.fstart <= frameNumber && obj.fend >= frameNumber) {
+    obj.v.forEach((v) => {
+      const v1 = v[0];
+      const v2 = v[1];
+      const v3 = v[2];
+      const w = m[12]*v1+m[13]*v2+m[14]*v3+m[15];
+      const x = (m[0]*v1+m[1]*v2+m[2]*v3+m[3]) / w;
+      const y = (m[4]*v1+m[5]*v2+m[6]*v3+m[7]) / w;
+      const z = (m[8]*v1+m[9]*v2+m[10]*v3+m[11]) / w;
+      v2d.push([x, y, z, w, 64 + sc * x, 64 + sc * y]);
+    });
 
-      obj.v.forEach((v) => {
-        const v1 = v[0];
-        const v2 = v[1];
-        const v3 = v[2];
-        const w = m[12]*v1+m[13]*v2+m[14]*v3+m[15];
-        const x = (m[0]*v1+m[1]*v2+m[2]*v3+m[3]) / w;
-        const y = (m[4]*v1+m[5]*v2+m[6]*v3+m[7]) / w;
-        const z = (m[8]*v1+m[9]*v2+m[10]*v3+m[11]) / w;
-        v2d.push([x, y, z, w, 64 + sc * x, 64 + sc * y]);
-      });
+    obj.f.forEach((poly) => {
+      const p1 = v2d[poly[1] - 1];
+      const p2 = v2d[poly[2] - 1];
+      const p3 = v2d[poly[3] - 1];
+      let p4;
+      if (poly.length == 5) {
+        p4 = v2d[poly[4] - 1];
+      }
 
-      obj.f.forEach((poly) => {
-        const p1 = v2d[poly[1] - 1];
-        const p2 = v2d[poly[2] - 1];
-        const p3 = v2d[poly[3] - 1];
-        let p4;
-        if (poly.length == 5) {
-          p4 = v2d[poly[4] - 1];
-        }
-        // (inrange(p1) && inrange(p2) && inrange(p3)) && 
-        if (is_cw(p1, p2, p3)) {
-          //const pv3 = normal(p1, p2, p3)[2]
-          //local light = min(256, flr(1 + 255 * abs(pv3)))
-          sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), poly[0], p1, p2, p3, p4]);
-        }
-      });
-    }
+      // (inrange(p1) && inrange(p2) && inrange(p3)) && 
+      if (is_cw(p1, p2, p3)) {
+        //const pv3 = normal(p1, p2, p3)[2]
+        //local light = min(256, flr(1 + 255 * abs(pv3)))
+        sorted.push([(Math.min(Math.min(p1[2], p2[2]), p3[2])), poly[0], p1, p2, p3, p4]);
+      }
+    });
   });
 
   // Sort faces and draw them
@@ -68,12 +67,12 @@ function m3d_shaded(objects, eye, dir, up) {
 }
 
 function drawPicoFrame(ctx) {
- 
+
   let models_render = [];
   for (let m in models) {
-    //if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
+    if (models[m].fstart <= frameNumber && models[m].fend >= frameNumber) {
       models_render.push(models[m]);
-    //}
+    }
   }
   const polys = m3d_shaded(
     models_render,

@@ -1,12 +1,14 @@
 'use strict';
 
-let frameNumberStart = 173;
-let frameNumber = 173;
+let frameNumberStart = 350; //430
+let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
 let isHover = 0;
 let isSplineCam = 1;
+
+let picoRenderPointList = [];
 
 const canvas = document.getElementById("visuals")
 const ctx = canvas.getContext("2d");
@@ -88,6 +90,16 @@ function drawFrame(time) {
     }
     document.getElementById('frame').value = frameNumber;
   }
+  
+  //animate rotor in
+  if (models['rotorin'] != undefined) {
+    for (v in models['rotorin'].v) {
+      models['rotorin'].v[v] = rotVec(models['rotorin'].v[v], rotorin,  -3);
+    }
+    buffers = initBuffers(gl);
+  }
+  
+  
 
   showCamData();
   window.requestAnimationFrame(drawFrame);
@@ -151,10 +163,10 @@ function controlKey(e, state) {
     }
 }
 
-function controlMouseMove(e) {
+function controlMouseMove(e, mltX) {
     if (window['isKeyY'] == 1) {
         if (e.ctrlKey) {
-            camRotUp((offsetX - e.offsetX) * 0.1);
+            camRotUp(mltX * (offsetX - e.offsetX) * 0.1);
         } else {
             camMovUp((e.offsetY - offsetY) * 0.01);
         }
@@ -170,12 +182,12 @@ function controlMouseMove(e) {
         if (e.ctrlKey) {
             camRotH((e.offsetY - offsetY) * 0.1);
         } else {
-            camMovH((offsetX - e.offsetX) * 0.01);
+            camMovH(mltX * (offsetX - e.offsetX) * 0.01);
         }
     }
     if (window['isKeyM'] == 1) {
         camMovUp((e.offsetY - offsetY) * 0.01);
-        camMovH((offsetX - e.offsetX) * 0.01);
+        camMovH(mltX * (offsetX - e.offsetX) * 0.01);
     }
     offsetX = e.offsetX;
     offsetY = e.offsetY;

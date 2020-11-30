@@ -23,8 +23,8 @@
 <body onload="init();" onkeydown="controlKey(event, 1)" onkeyup="controlKey(event, 0)">
   <div id="canvas-hover" style="white-sapce:nowrap;">
     <canvas id="visuals" width="512" height="512"></canvas>
-    <canvas id="visualsgl" width="512" height="512" onmousemove="controlMouseMove(event)" onwheel="controlMouseWheel(event)"></canvas>
-    <canvas id="visuals3d" width="512" height="512" onmousemove="controlMouseMove(event)" onwheel="controlMouseWheel(event)"></canvas>
+    <canvas id="visualsgl" width="512" height="512" onmousemove="controlMouseMove(event, -1)" onwheel="controlMouseWheel(event)"></canvas>
+    <canvas id="visuals3d" width="512" height="512" onmousemove="controlMouseMove(event, 1)" onwheel="controlMouseWheel(event)"></canvas>
   </div>
   <div id="camdata">camdata</div>
 
