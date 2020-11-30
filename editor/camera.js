@@ -119,10 +119,17 @@ function camMovUp(dist) {
 }
 
 function camMovH(dist) {
-    let v3 = normalize(cross(picoUp, picoDir));
+  let v3 = normalize(cross(picoUp, picoDir));
 	picoEye[0] += v3[0] * dist;
 	picoEye[1] += v3[1] * dist;
 	picoEye[2] += v3[2] * dist;
+}
+
+function camMovVec(vec, dist) {
+  let vecN = normalize(vec);
+	picoEye[0] += vecN[0] * dist;
+	picoEye[1] += vecN[1] * dist;
+	picoEye[2] += vecN[2] * dist;
 }
 
 // cam rotate
@@ -140,6 +147,13 @@ function camRotH(alpha) {
   picoUp = normalize(rotVec(picoUp, picoH, alpha));
 }
 
+function camRotVec(vec, alpha) {
+  let vecN = normalize(vec);
+  picoEye = rotVec(picoEye, vecN, alpha);
+  picoDir = rotVec(picoDir, vecN, alpha);
+  picoUp = rotVec(picoUp, vecN, alpha);
+}
+
 function camSetLookAtDistRot(lookAt, dist, rX, rY, rZ) {
 	picoEye = [0, 0, 0];
 	picoDir = [0, 0, 1];
@@ -155,5 +169,17 @@ function camMov(x, y, z) {
 	picoEye[0] += x;
 	picoEye[1] += y;
 	picoEye[2] += z;
+}
+
+
+/* bad functions */
+function camLookAt(v3) {
+  let dirNew = normalize(vSub(v3, picoEye));
+  let rotDir = normalize(cross(picoDir, dirNew));
+  let rad = vec3.angle(dirNew, picoDir);
+  let deg = rad * 180 / Math.PI
+
+  picoUp = normalize(rotVec(picoUp, rotDir, -deg));
+  picoDir = dirNew;
 }
 

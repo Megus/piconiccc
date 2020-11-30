@@ -1,7 +1,7 @@
 let models = {};
 let rotorin = [0,1,0];
 
-const useFrameLimit = false;
+const useFrameLimit = true;
 
 const models_oxygen_fstart = 0;
 const models_oxygen_fend = 99999;
@@ -12,8 +12,8 @@ const models_tonnel2_fend = 265;
 const models_tonnel3_fstart = 272;
 const models_tonnel3_fend = 345;
 
-const models_rotor_fstart = 320;
-const models_rotor_fend = 596;
+const models_rotor_fstart = 315;
+const models_rotor_fend = 600;
 
 const models_tonnel5_fstart = 1190;
 const models_tonnel5_fend = 1340+10;
@@ -21,9 +21,9 @@ const models_tonnel5_fend = 1340+10;
 function init_models() {
   //init_testcube();
   
-	//init_tonnel2(); //tonnel-2 + squad
-  //init_tonnel3();
-  //init_tonnel5();
+	init_tonnel2(); //tonnel-2 + squad
+  init_tonnel3();
+  init_tonnel5();
   init_rotor();
   
   // close cam path
@@ -32,6 +32,17 @@ function init_models() {
   // set init cam
   resetCam();
   changeCamPath();
+}
+
+function show_models_stat() {
+  total_v = 0;
+  total_f = 0;
+  for (m in models) {
+    console.log(m + ', v:' + models[m].v.length + ' f:' + models[m].f.length);
+    total_v += models[m].v.length;
+    total_f += models[m].f.length;
+  }
+  console.log('total v:' + total_v + ', f:' + total_f);
 }
 
 function vSub(v1,v2) {
@@ -74,7 +85,7 @@ function init_rotor() {
 
   let nqty = 6;
   let sz = 1.15;
-  let r1 = 2.0;
+  let r1 = 2;
   let r2 = r1 - 0.25;
   let rlist = [r1, r2];
 
@@ -204,28 +215,95 @@ function init_rotor() {
   models['rotorin'] = model2;
   
   //rotor cam
-  
-//330
-picoEye = [0.09419284490158786, 2.0074012197175097, -1.8299999999999998];
-picoDir = [0, 0, 1];
-picoUp = [-0.29070219359825267, 0.9568135840576074, 0];
+
+//315
+picoEye = [0.12493943061155013, 2.811982324716844, -3.260394806604835];
+picoDir = [0.48544951487361176, 0.1469226637329067, 0.8618308995334306];
+picoUp = [-0.23769876631118914, 0.9709851993862086, -0.026211430084283553];
 camMovDir(-0.1);
 camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 camMovDir(0.1);
+camPathList.push({"frame":315, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//330
+picoEye = [0.305429895399044, 1.6746254004712695, -2.8266204394537895];
+picoDir = [0.3483413317121603, 0.24865517806046772, 0.9037858811935036];
+picoUp = [-0.2813559973992302, 0.9473379752418875, -0.15293646848311082];
+camPathList.push({"frame":330, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//350
+resetCam();
+camMovVec(rotorin, 2);
+camRotDir(15);
 camPathList.push({"frame":350, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
+//360
+picoEye = [0.18956817506316442, 2.0029054671343456, -1.6754890954477335];
+picoDir = [-0.19684375951084995, -0.07666503985926991, 0.9774328652163335];
+picoUp = [-0.30675713916057445, 0.9515927910151917, 0.019267009678143848];
+camPathList.push({"frame":360, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+
+//380
+picoEye = [0.9562437886072557, 1.8016091873536535, -1.0856061984780663];
+picoDir = [-0.41487688453301025, -0.30959937023477446, 0.8555848295934275];
+picoUp = [-0.5065084571259862, 0.8597620240271271, 0.06525676134034457];
+
+picoEye = [0.9562437886072557, 1.8016091873536535, -1.0856061984780663];
+picoDir = [-0.4348732541541764, -0.274848778144034, 0.8575216626850245];
+picoUp = [-0.48944638047159683, 0.8714869126878078, 0.03086748543574832];
+camPathList.push({"frame":380, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//390
+picoEye = [1.233203970761894, 1.5079468438455277, -0.5209284866351637];
+picoDir = [-0.5002794325986561, -0.42274534879886366, 0.7556499582397221];
+picoUp = [-0.5968280728081955, 0.7986696279818724, 0.07696152835899871];
+camPathList.push({"frame":390, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//410
+picoEye = [1.2065398154189535, 0.679858966946426, 0.21841141189872626];
+picoDir = [-0.6122680634339003, -0.6597292715324093, 0.4357580828650439];
+picoUp = [-0.7370239193412177, 0.6755340801859873, 0.02120020816364129];
+camPathList.push({"frame":410, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//420
+picoEye = [1.0169727510860445, 0.14323966903352575, 0.5490028577338081];
+picoDir = [-0.6805081772887165, -0.7237190724496315, 0.11462689394655122];
+picoUp = [-0.7621660756848956, 0.6442152550203605, -0.06394981058719398];
+camPathList.push({"frame":420, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
 //430
-picoEye = [0.610055407242143, -0.08389801863519843, -0.5921105736055317];
-picoDir = [-0.25983936300473615, -0.8034690423442429, 0.5356500755415968];
-picoUp = [-0.20803503529262155, 0.5882544576753381, 0.7814589670071561];
+//picoEye = [0.6356926642937349, -0.2938980186351984, 0.5644974471545317];
+//picoDir = [-0.6385717972073157, -0.7328896620577133, -0.23473134230509696];
+//picoUp = [-0.7245329342042289, 0.6753637435081563, -0.13760756232147928];
+picoEye = [0.4863491134299662, -0.2938980186351984, 0.6972998430709243];
+picoDir = [-0.5661310640058796, -0.7328896620577123, -0.37731732217922787];
+picoUp = [-0.6723901841021994, 0.6753637435081563, -0.3029443088715483];
 camPathList.push({"frame":430, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
-//530
-picoEye = [-0.049291323415792586, -2.857167700555198, -1.1092722664409733];
-picoDir = [0.555820727227245, 0.11709448753927569, 0.8230140947593129];
-picoUp = [-0.3024424542035406, 0.9506670856779291, 0.06899749346151875];
-camPathList.push({"frame":530, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+//450
+picoEye = [-0.2619685334717981, -0.5899537194456943, 0.7369350299785382];
+picoDir = [0.02200347513450028, -0.6470795739103173, -0.7621048957394564];
+picoUp = [-0.1898350265275319, 0.8407531309567344, -0.5070471728446374];
+camPathList.push({"frame":450, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//470
+picoEye = [-0.8780284817988329, -1.045421494859839, 0.7110086029607725];
+picoDir = [0.1921362545227356, -0.2860336137924592, -0.938758984765952];
+picoUp = [-0.13211822110794902, 0.988894153409815, 0.06806709192522019];
+camPathList.push({"frame":470, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//490
+picoEye = [-0.9689632610029416, -1.660665737918407, -0.07703958139989273];
+picoDir = [0.4258589651331985, -0.0030966168304646796, -0.9047842575884524];
+picoUp = [0.050073305687805374, 0.8640200169113372, 0.5009611506235079];
+camPathList.push({"frame":490, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+//520
+picoEye = [-0.3731060916340098, -2.685050606424624, -1.1774316217475562];
+picoDir = [0.6958355527248758, 0.2233865035364816, 0.6825769946327023];
+picoUp = [-0.19241684110712187, 0.9616206339340687, 0.19560551027666997];
+camPathList.push({"frame":520, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
 //540
 picoEye = [0.16298921581086195, -2.9204977902665203, -1.150442706541002];
@@ -245,10 +323,15 @@ picoDir = [0.5204629687228612, 0.13819060584100684, 0.8426278268876963];
 picoUp = [-0.3094357696643162, 0.9502654762525795, 0.03528496981308845];
 camPathList.push({"frame":575, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
+picoEye = [0.9772453416286452, -2.8548832522156995, 0.7844749098076782];
+picoDir = [0.6268700242271048, 0.1700915520900256, 0.7603307416073054];
+picoUp = [-0.3092874938033647, 0.9500734923322728, 0.04125051932270093];
+camPathList.push({"frame":585, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
 
-
-camMovDir(0.1);
-camPathList.push({"frame":590, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+picoEye = [1.7545641716702525, -2.643969727624065, 1.7272850294007378];
+picoDir = [0.6268700242271049, 0.17009155209002563, 0.7603307416073055];
+picoUp = [-0.3092874938033647, 0.9500734923322728, 0.04125051932270093];
+camPathList.push({"frame":600, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 camMovDir(0.1);
 camPathList.push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 

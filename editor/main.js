@@ -1,6 +1,6 @@
 'use strict';
 
-let frameNumberStart = 350; //430
+let frameNumberStart = 315;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
@@ -38,10 +38,9 @@ function init() {
   resetCam();	
 
 	init_models();
-	
+  show_models_stat();
 
   //plPlay(); //autoplay
-  
   
   glInit(gl);
   
@@ -72,7 +71,7 @@ function drawFrame(time) {
 
   if (isPlay) {
     if (frameNumber < frames.length - 1) {
-      let nowFrame = Math.floor((time / (1000 / 10))) % frames.length;
+      let nowFrame = Math.floor((time / (1000 / 15))) % frames.length;
       if (nowFrame != prevFrame) {
         prevFrame = nowFrame;
         frameNumber++;
@@ -91,15 +90,16 @@ function drawFrame(time) {
     document.getElementById('frame').value = frameNumber;
   }
   
+
+  
+  
   //animate rotor in
   if (models['rotorin'] != undefined) {
     for (v in models['rotorin'].v) {
-      models['rotorin'].v[v] = rotVec(models['rotorin'].v[v], rotorin,  -3);
+      models['rotorin'].v[v] = rotVec(models['rotorin'].v[v], rotorin,  3);
     }
     buffers = initBuffers(gl);
   }
-  
-  
 
   showCamData();
   window.requestAnimationFrame(drawFrame);
@@ -152,9 +152,10 @@ let keyCodeList = {
     67: 'isKeyY', //c
     89: 'isKeyY', //y
     77: 'isKeyM', //m - move
+    86: 'isKeyV', //v - rot rotorin
 }
 function controlKey(e, state) {
-    //console.log(e.keyCode);
+    console.log(e.keyCode);
     for (let keyCode in keyCodeList) {
         if (keyCode == e.keyCode) {
             window[keyCodeList[keyCode]] = state;
@@ -164,6 +165,14 @@ function controlKey(e, state) {
 }
 
 function controlMouseMove(e, mltX) {
+    if (window['isKeyV'] == 1) {
+      if (e.ctrlKey) {
+        camRotVec(rotorin, mltX * (offsetX - e.offsetX) * 0.25);
+      } else {
+        camMovVec(rotorin, mltX * (offsetX - e.offsetX) * 0.01);
+      }
+    }
+
     if (window['isKeyY'] == 1) {
         if (e.ctrlKey) {
             camRotUp(mltX * (offsetX - e.offsetX) * 0.1);
