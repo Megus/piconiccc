@@ -140,11 +140,6 @@ function glDrawFrame(gl) {
   let projectionMatrix = mat4.create();
   mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-  // Calculate camera matrix
-  let modelViewMatrix = mat4.create();
-  let camCenter = [picoEye[0]+picoDir[0], picoEye[1]+picoDir[1], picoEye[2]+picoDir[2]];
-  mat4.lookAt(modelViewMatrix, picoEye, camCenter, picoUp);
-
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute
   {
@@ -197,16 +192,30 @@ function glDrawFrame(gl) {
     false,
     projectionMatrix
   );
-  gl.uniformMatrix4fv(
-    programInfo.uniformLocations.modelViewMatrix,
-    false,
-    modelViewMatrix
-  );
 
   const type = gl.UNSIGNED_SHORT;
-
-  for (let m in models) {
-    if (models[m].fstart <= frameNumber && models[m].fend >= frameNumber) {
+  for (let mrlId in modelRenderList) {
+    let mrl = modelRenderList[mrlId];
+    let m = mrl.model;
+    // render if model is visible
+    if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
+      // clean z-buff
+      gl.clear(gl.DEPTH_BUFFER_BIT);
+      // get & spline cam
+      if (isNeedChangeCam || isPlay) {
+        changeCamPath(mrl.campath);
+        spline_cam(mrl.campath);
+      }
+      // calculate camera matrix
+      let modelViewMatrix = mat4.create();
+      let camCenter = [picoEye[0]+picoDir[0], picoEye[1]+picoDir[1], picoEye[2]+picoDir[2]];
+      mat4.lookAt(modelViewMatrix, picoEye, camCenter, picoUp);
+      gl.uniformMatrix4fv(
+        programInfo.uniformLocations.modelViewMatrix,
+        false,
+        modelViewMatrix
+      );
+      // render
       let offset = glRenderList[m].offset*2;
       let count = glRenderList[m].count;
       if (count > 0) {

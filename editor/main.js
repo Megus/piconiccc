@@ -1,12 +1,14 @@
 'use strict';
 
-let frameNumberStart = 315;
+let frameNumberStart = 150;//315;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 0;
-let isSplineCam = 1;
+let isHover = 1;
+let isNeedChangeCam = true;
+
+let modelRenderList = [];
 
 let picoRenderPointList = [];
 
@@ -57,7 +59,7 @@ function drawFrame(time) {
 
   ctx3d.fillStyle = "#000000";
   ctx3d.fillRect(0, 0, width3d, height3d);
-  drawPicoFrame(ctx3d);
+  //drawPicoFrame(ctx3d);
   
   glDrawFrame(gl);
   
@@ -69,36 +71,31 @@ function drawFrame(time) {
     ctx.globalAlpha = 1;
   }
 
+  // debug cam set
+  if (isNeedChangeCam) {
+    //resetCam();
+  }
+
+  isNeedChangeCam = false;
   if (isPlay) {
     if (frameNumber < frames.length - 1) {
       let nowFrame = Math.floor((time / (1000 / 15))) % frames.length;
       if (nowFrame != prevFrame) {
         prevFrame = nowFrame;
         frameNumber++;
-        //check next camPathId
-        if (camPathList[camPathId + 1] != undefined
-          && camPathList[camPathId + 1].frame == frameNumber
-        ) {
-          camPathId++;
-        }
-        //spline cam
-        if (isSplineCam) {
-          spline_cam();
-        }
+        document.getElementById('frame').value = frameNumber;
+        isNeedChangeCam = true;
       }
     }
-    document.getElementById('frame').value = frameNumber;
   }
-  
 
-  
   
   //animate rotor in
   if (models['rotorin'] != undefined) {
     for (v in models['rotorin'].v) {
       models['rotorin'].v[v] = rotVec(models['rotorin'].v[v], rotorin,  3);
     }
-    buffers = initBuffers(gl);
+    //buffers = initBuffers(gl);
   }
 
   showCamData();
@@ -107,7 +104,6 @@ function drawFrame(time) {
 
 function plPlay() {
   frameNumber = frameNumberStart;
-  changeCamPath();
   isPlay = 1;
 }
 
@@ -117,15 +113,15 @@ function plStop() {
 
 function plChange(num) {
   frameNumber = (frameNumber + num) % frames.length;
-  changeCamPath();
   document.getElementById('frame').value = frameNumber;
+  isNeedChangeCam = true;
 }
 
 function plSet(num) {
   frameNumberStart = parseInt(0 + num) % frames.length;
   frameNumber = frameNumberStart;
   document.getElementById('frame').value = frameNumber;
-  changeCamPath();
+  isNeedChangeCam = true;
 }
 
 function plWireframe() {
@@ -208,7 +204,6 @@ function controlMouseWheel (e) {
         camMovDir(dist);
     }
 }
-
 
 // arguments
 // ctx : the context on which to draw the mirrored image

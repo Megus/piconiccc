@@ -32,37 +32,38 @@ function spline(v0, v1, v2, v3, p) {
     return [x, y, z];
 }
 
-function spline_cam() {
-  if (camPathList[camPathId - 1] != undefined
-    && camPathList[camPathId + 0] != undefined
-    && camPathList[camPathId + 1] != undefined
-    && camPathList[camPathId + 2] != undefined
-    && camPathList[camPathId + 1].frame != -1
+function spline_cam(camId) {
+  if (camPathList[camId] != undefined
+    && camPathList[camId][camPathId - 1] != undefined
+    && camPathList[camId][camPathId + 0] != undefined
+    && camPathList[camId][camPathId + 1] != undefined
+    && camPathList[camId][camPathId + 2] != undefined
+    && camPathList[camId][camPathId + 1].frame != -1
   ) {
-    var splineTime = (frameNumber - camPathList[camPathId + 0].frame) / (camPathList[camPathId + 1].frame - camPathList[camPathId + 0].frame);
-    if (frameNumber == camPathList[camPathId + 0].frame) {
+    var splineTime = (frameNumber - camPathList[camId][camPathId + 0].frame) / (camPathList[camId][camPathId + 1].frame - camPathList[camId][camPathId + 0].frame);
+    if (frameNumber == camPathList[camId][camPathId + 0].frame) {
       splineTime = 0;
     }
     picoEye = spline(
-      camPathList[camPathId - 1].picoEye,
-      camPathList[camPathId + 0].picoEye,
-      camPathList[camPathId + 1].picoEye,
-      camPathList[camPathId + 2].picoEye,
+      camPathList[camId][camPathId - 1].picoEye,
+      camPathList[camId][camPathId + 0].picoEye,
+      camPathList[camId][camPathId + 1].picoEye,
+      camPathList[camId][camPathId + 2].picoEye,
       splineTime
     );
     picoDir = spline(
-      camPathList[camPathId - 1].picoDir,
-      camPathList[camPathId + 0].picoDir,
-      camPathList[camPathId + 1].picoDir,
-      camPathList[camPathId + 2].picoDir,
+      camPathList[camId][camPathId - 1].picoDir,
+      camPathList[camId][camPathId + 0].picoDir,
+      camPathList[camId][camPathId + 1].picoDir,
+      camPathList[camId][camPathId + 2].picoDir,
       splineTime
     );
     picoDir = normalize(picoDir);
     picoUp = spline(
-      camPathList[camPathId - 1].picoUp,
-      camPathList[camPathId + 0].picoUp,
-      camPathList[camPathId + 1].picoUp,
-      camPathList[camPathId + 2].picoUp,
+      camPathList[camId][camPathId - 1].picoUp,
+      camPathList[camId][camPathId + 0].picoUp,
+      camPathList[camId][camPathId + 1].picoUp,
+      camPathList[camId][camPathId + 2].picoUp,
       splineTime
     );
     picoUp = normalize(picoUp);
@@ -71,17 +72,17 @@ function spline_cam() {
 }
 
 // Установка положения камеры по сплайну в зависимости от фрейма
-function changeCamPath() {
-  for (let cp in camPathList) {
-    if (camPathList[cp]['frame'] != -1 &&
-    frameNumber >= camPathList[cp]['frame']) {
+function changeCamPath(camId) {
+  if (camId == undefined) {
+    console.log('bad');
+  }
+  for (let cp in camPathList[camId]) {
+    if (camPathList[camId][cp]['frame'] != -1 &&
+    frameNumber >= camPathList[camId][cp]['frame']) {
       camPathId = parseInt(cp);
     }
   }
-  if (isSplineCam) {
-    spline_cam();
-  }
-  //console.log(camPathId);
+
 }
 
 
@@ -89,9 +90,9 @@ function changeCamPath() {
 
 function showCamData() {
 	let html = 
-		'picoEye = [' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + '];<br>'
-		+ 'picoDir = [' + picoDir[0] + ', ' + picoDir[1] + ', ' + picoDir[2] + '];<br>'
-		+ 'picoUp = [' + picoUp[0] + ', ' + picoUp[1] + ', ' + picoUp[2] + '];'
+		'&nbsp;&nbsp;picoEye = [' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + '];<br>'
+		+ '&nbsp;&nbsp;picoDir = [' + picoDir[0] + ', ' + picoDir[1] + ', ' + picoDir[2] + '];<br>'
+		+ '&nbsp;&nbsp;picoUp = [' + picoUp[0] + ', ' + picoUp[1] + ', ' + picoUp[2] + '];'
 		;
   if (document.getElementById('camdata').innerHTML != html) {
     document.getElementById('camdata').innerHTML = html;
