@@ -202,7 +202,7 @@ function glDrawFrame(gl) {
       // clean z-buff
       gl.clear(gl.DEPTH_BUFFER_BIT);
       // get & spline cam
-      if (isNeedChangeCam || isPlay) {
+      if (isUseCamPath && (isNeedChangeCam || isPlay)) {
         changeCamPath(mrl.campath);
         spline_cam(mrl.campath);
       }
