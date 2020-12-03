@@ -1,5 +1,3 @@
-'use strict';
-
 function normalize(v) {
   const x = v[0];
   const y = v[1];
@@ -87,7 +85,7 @@ function rotVec(v3, vdir, alpha) {
   let x = vdir[0];
   let y = vdir[1];
   let z = vdir[2];
-  
+
   let m = [
     cosL + (1-cosL)*x*x,
     (1-cosL)*x*y - (sinL)*z,
@@ -101,7 +99,7 @@ function rotVec(v3, vdir, alpha) {
     (1-cosL)*z*y + (sinL)*x,
     cosL + (1-cosL)*z*z
   ];
-  
+
   let xx = m[0]*v3[0] + m[1]*v3[1] + m[2]*v3[2];
   let yy = m[3]*v3[0] + m[4]*v3[1] + m[5]*v3[2];
   let zz = m[6]*v3[0] + m[7]*v3[1] + m[8]*v3[2];
