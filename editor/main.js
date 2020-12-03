@@ -31,22 +31,22 @@ canvasgl.setAttribute('style', 'transform:rotateY(180deg)');
 
 
 let camPathId = 1;
-let camPathList = [];
+let camPathList = {};
 
 function init() {
-  
+
   //init_cam_path();
 
   //reset cam
-  resetCam();	
+  resetCam();
 
 	init_models();
   show_models_stat();
 
   //plPlay(); //autoplay
-  
+
   glInit(gl);
-  
+
   showCamData();
   document.getElementById('frame').value = frameNumber;
   window.requestAnimationFrame(drawFrame);
@@ -61,9 +61,9 @@ function drawFrame(time) {
   ctx3d.fillStyle = "#000000";
   ctx3d.fillRect(0, 0, width3d, height3d);
   //drawPicoFrame(ctx3d);
-  
+
   glDrawFrame(gl);
-  
+
   if (isHover == 1) {
     var dest = new Image;
     dest.src = canvasgl.toDataURL("image/png");
@@ -90,7 +90,7 @@ function drawFrame(time) {
     }
   }
 
-  
+
   //animate rotor in
   if (models['rotorin'] != undefined) {
     for (v in models['rotorin'].v) {
