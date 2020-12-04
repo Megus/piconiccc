@@ -5,7 +5,7 @@ let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 1;
+let isHover = 0;
 let isNeedChangeCam = true;
 let isUseCamPath = true;
 
@@ -89,6 +89,16 @@ function drawFrame(time) {
       }
     }
   }
+  
+  //animate debug arch1
+  /*
+  for (let v in models['arch1'].v) {
+    models['arch1'].v[v] = rotY(models['arch1'].v[v], 2);
+  }
+  buffers = initBuffers(gl);
+  */
+  
+  
 
 
   //animate rotor in
