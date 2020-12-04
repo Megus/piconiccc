@@ -119,21 +119,18 @@ function m3d_shaded(objects, eye, dir, angle)
 
 	-- Tranform all objects
 	for obj in all(objects) do
-		for c = 1, #obj.vertices do
-			local v = obj.vertices[c]
+		for c = 1, #obj.v do
+			local v = obj.v[c]
 			local v1, v2, v3 = v[1], v[2], v[3]
 			local w = m[13]*v1+m[14]*v2+m[15]*v3+m[16]
 			local x, y, z = (m[1]*v1+m[2]*v2+m[3]*v3+m[4]) / w, (m[5]*v1+m[6]*v2+m[7]*v3+m[8]) / w, (m[9]*v1+m[10]*v2+m[11]*v3+m[12]) / w
 			v2d[c] = {x, y, z, w, 64 + sc * x, 64 + sc * y}
 		end
 
-		for tri in all(obj.faces) do
-			local p1, p2, p3 = v2d[tri[1]], v2d[tri[2]], v2d[tri[3]]
+		for tri in all(obj.f) do
+			local p1, p2, p3 = v2d[tri[2]], v2d[tri[3]], v2d[tri[4]]
 			if (inrange(p1) and inrange(p2) and inrange(p3)) and is_cw(p1, p2, p3) then
-				local pv3 = normal(p1, p2, p3)[3]
-				local light = min(256, flr(1 + 255 * abs(pv3)))
-				add(sorted, {(min(min(p1[3], p2[3]), p3[3])), p1, p2, p3, tri[4] + lighting[light]})
-				--updlimits(sorted[#sorted][1])
+				add(sorted, {(min(min(p1[3], p2[3]), p3[3])), p1, p2, p3, tri[1] + 0x1000.a5a5})
 			end
 		end
 	end
@@ -144,6 +141,4 @@ function m3d_shaded(objects, eye, dir, angle)
 		local p1, p2, p3 = tri[2], tri[3], tri[4]
 		triangle(p1[5], p1[6], p2[5], p2[6], p3[5], p3[6], tri[5])
 	end
-
-	--oprint(minv .. " - " .. maxv, 0, 16, 7)
 end

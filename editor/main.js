@@ -9,8 +9,6 @@ let isHover = 0;
 let isNeedChangeCam = true;
 let isUseCamPath = true;
 
-let modelRenderList = [];
-
 let picoRenderPointList = [];
 
 const canvas = document.getElementById("visuals")
@@ -31,7 +29,10 @@ canvasgl.setAttribute('style', 'transform:rotateY(180deg)');
 
 
 let camPathId = 1;
+
 let camPathList = {};
+let modelRenderList = [];
+let models = {};
 
 function init() {
 

@@ -7,7 +7,6 @@ function _init()
   eye = {4, -13, -14}
   dir = {0, 0.8, 0.7}
   angle = 0
-  model = objects["0_Plane"]
   speed = 0.1
 end
 
@@ -34,13 +33,7 @@ end
 function _draw()
   cls()
   m3d_shaded({
-    objects["O"],
-    objects["X"],
-    objects["Y"],
-    objects["G"],
-    objects["E"],
-    objects["N"],
-    objects["E1"]
+    objects["rotor"],
   }, eye, dir, angle)
 
   oprint(stat(1), 0, 0, 7)
