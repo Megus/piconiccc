@@ -25,6 +25,8 @@ module.exports.compressModels = function (models) {
       fpn: model.fp.length,
       vn: model.v.length,
       fn: model.f.length,
+      fstart: model.fstart,
+      fend: model.fend,
     };
 
     totalFps += model.fp.length;

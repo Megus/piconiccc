@@ -2,7 +2,7 @@ function json2lua(json) {
   if (typeof json === "number") {
     return `${json}`;
   } else if (typeof json === "string") {
-    return `"${string}"`; // TODO: Escape characters
+    return `"${json}"`; // TODO: Escape characters
   } else if (typeof json === "boolean") {
     return json ? "true" : "false";
   } else if (Array.isArray(json)) {

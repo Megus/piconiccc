@@ -6,12 +6,15 @@ const picoPalette = [
 ];
 
 module.exports.convertModels = function (models) {
+  // TODO: Idea with global list of face patterns (Dec 5: 21 patterns repeat across models, 117 vs 138)
   const usedColors = {};
 
   const converted = {};
   for (const name in models) {
     const model = models[name];
     const cmodel = {};
+    cmodel.fstart = model.fstart;
+    cmodel.fend = model.fend;
 
     // Scale vertices
     const mins = [1e6, 1e6, 1e6];
@@ -48,7 +51,8 @@ module.exports.convertModels = function (models) {
       const hexColor = f[0].toUpperCase();
       usedColors[hexColor] = true;
       const cf = [hexColor, f[1]];
-      const fp = [f[2] - f[1], f[3] - f[2]];
+      const fp = [f[2] - f[1], f[3] - f[1]];
+
       let fpIdx = -1;
       for (let d = 0; d < cmodel.fp.length; d++) {
         if (cmodel.fp[d][0] == fp[0] && cmodel.fp[d][1] == fp[1]) {
@@ -68,6 +72,7 @@ module.exports.convertModels = function (models) {
 
     converted[name] = cmodel;
   }
+
 
   // Assign best matching colors
   // TODO: Build 16 color palette from all 32 colors

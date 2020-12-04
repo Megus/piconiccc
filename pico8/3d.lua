@@ -1,37 +1,15 @@
-dither = {0x1000.0000,0x1000.8000,0x1000.8020,0x1000.a020,0x1000.a0a0,0x1000.a4a0,0x1000.a4a1,0x1000.a5a1,0x1000.a5a5,0x1000.e5a5,0x1000.e5b5,0x1000.f5b5,0x1000.f5f5,0x1000.fdf5,0x1000.fdf7,0x1000.fff7,0x1000.ffff,0x1000.ffff}
-v2d, lighting = {}, {}
+v2d = {}
 
 -- Projection matrix
 pnear, pfar = 1, 200
 rangeInv = 1 / (pnear - pfar)
 sc = 100
 projection_matrix = {
-	6, 0, 0, 0,
-	0, 6, 0, 0,
+	1, 0, 0, 0,
+	0, 1, 0, 0,
 	0, 0, (pnear+pfar)*rangeInv, -1,
 	0, 0, pnear*pfar*rangeInv*2, 0
 }
-
-function create_lighting()
-	for c = 12, 1, -1 do
-		for d = 1, 14 do
-			add(lighting, 0x10 + dither[c])
-		end
-	end
-	for d = 1, 32 do
-		add(lighting, dither[1])
-	end
-	for c = 1, 4 do
-		for d = 1, 16 do
-			add(lighting, 0x70 + dither[c])
-		end
-	end
-end
-
-function updlimits(v)
-	if (v < minv) minv = v
-	if (v > maxv) maxv = v
-end
 
 function normalize(v)
 	local x,y,z = v[1],v[2],v[3]
@@ -99,13 +77,9 @@ function radix_sort(arr, mask, idx1, idx2)
 	end
 end
 
-function m3d_shaded(objects, eye, dir, angle)
-	minv = 32767
-	maxv = -32767
-
+function m3d_shaded(objects, eye, zaxis, up)
 	-- Calculate camera matrix
-	local up = {sin(angle), cos(angle), 0}
-	local zaxis = normalize(dir)
+	--local zaxis = normalize(dir)
 	local xaxis = normalize(cross(zaxis, up))
 	local yaxis = cross(xaxis, zaxis)
 	local m = mmult(projection_matrix, {
@@ -129,7 +103,7 @@ function m3d_shaded(objects, eye, dir, angle)
 
 		for tri in all(obj.f) do
 			local p1, p2, p3 = v2d[tri[2]], v2d[tri[3]], v2d[tri[4]]
-			if (inrange(p1) and inrange(p2) and inrange(p3)) and is_cw(p1, p2, p3) then
+			if (inrange(p1) or inrange(p2) or inrange(p3)) and is_cw(p1, p2, p3) then
 				add(sorted, {(min(min(p1[3], p2[3]), p3[3])), p1, p2, p3, tri[1] + 0x1000.a5a5})
 			end
 		end
