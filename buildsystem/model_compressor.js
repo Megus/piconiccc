@@ -14,6 +14,8 @@ module.exports.compressModels = function (models) {
   compressed.binary = [];
   compressed.models = {};
 
+  let totalFps = 0;
+
   for (const name in models) {
     const model = models[name];
     compressed.models[name] = {
@@ -25,6 +27,8 @@ module.exports.compressModels = function (models) {
       fn: model.f.length,
     };
 
+    totalFps += model.fp.length;
+
     // Write vertices
     writeFlattenedArrays(model.v, compressed.binary);
 
@@ -35,6 +39,7 @@ module.exports.compressModels = function (models) {
     writeFlattenedArrays(model.f, compressed.binary);
   }
 
+  console.log(`Face patterns: ${totalFps}`);
   console.log(`Compressed length: ${compressed.binary.length}`);
 
   return compressed;
