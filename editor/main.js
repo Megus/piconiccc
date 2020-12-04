@@ -1,12 +1,13 @@
 'use strict';
-
-let frameNumberStart = 150;//315;
+// 957 997 1035 1075 1135 1187
+let frameNumberStart = 150;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
 let isHover = 1;
 let isNeedChangeCam = true;
+let isUseCamPath = true;
 
 let picoRenderPointList = [];
 
