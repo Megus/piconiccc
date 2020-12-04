@@ -1,4 +1,3 @@
-let models = {};
 let rotorin = [0,1,0];
 
 const useFrameLimit = true;

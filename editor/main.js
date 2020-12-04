@@ -8,8 +8,6 @@ let wireframe = 0;
 let isHover = 1;
 let isNeedChangeCam = true;
 
-let modelRenderList = [];
-
 let picoRenderPointList = [];
 
 const canvas = document.getElementById("visuals")
@@ -30,7 +28,10 @@ canvasgl.setAttribute('style', 'transform:rotateY(180deg)');
 
 
 let camPathId = 1;
+
 let camPathList = {};
+let modelRenderList = [];
+let models = {};
 
 function init() {
 
