@@ -2,6 +2,7 @@ const fs = require("fs");
 const converter = require("./model_converter");
 const compressor = require("./model_compressor");
 const camera = require("./camera_converter");
+const palette = require("./palette_builder");
 const renderList = require("./renderlist_converter");
 const writer = require("./p8writer");
 const luaTools = require("./lua_tools");
@@ -21,11 +22,16 @@ init_models();
 //console.log(camPathList);
 //console.log(modelRenderList);
 
-// Process models
-
+// Convert models
 const convertedModels = converter.convertModels(models);
-const compressedData = compressor.compressModels(convertedModels);
 
+// Build palette
+const picoPalette = palette.buildPalette(convertedModels);
+const paletteLua = luaTools.json2lua(picoPalette);
+fs.writeFileSync("../pico8/colors.lua", `colors = ${paletteLua}`);
+
+// Compress models
+const compressedData = compressor.compressModels(convertedModels);
 const objectsLua = luaTools.json2lua(compressedData.models);
 fs.writeFileSync("../pico8/objects.lua", `objects = ${objectsLua}`);
 
@@ -43,6 +49,7 @@ fs.writeFileSync("../pico8/renderlist.lua", `renderlist = ${renderListLua}`);
 const luaCode = "\
 #include main.lua\n\
 #include decompressor.lua\n\
+#include colors.lua\n\
 #include eg_triangle.lua\n\
 #include camera.lua\n\
 #include 3d.lua\n\

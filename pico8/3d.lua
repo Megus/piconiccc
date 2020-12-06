@@ -1,7 +1,7 @@
 v2d = {}
 
 -- Projection matrix
-znear, zfar = 0.1, 10
+znear, zfar = 0.1, 15
 sc = 64
 --sc = 10
 
@@ -119,6 +119,14 @@ function m3d(obj, eye, dir, up, angle)
 					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1] + 0x1000.a5a5})
 				end
 			elseif p1z > znear or p2z > znear or p3z > znear then
+
+				-- Attempt at back culling...
+				--[[local dz = min(p1z, min(p2z, p3z)) - 2
+				local s1x,s1y = p1x / (p1z - dz), p1y / (p1z - dz)
+				local s2x,s2y = p2x / (p2z - dz), p2y / (p2z - dz)
+				local s3x,s3y = p3x / (p3z - dz), p3y / (p3z - dz)
+				if (s2x-s1x)*(s3y-s1y)-(s2y-s1y)*(s3x-s1x) > 0 then]]
+
 				-- Clipping
 				if (p1z<p2z) p1z,p2z = p2z,p1z p1x,p2x = p2x,p1x p1y,p2y = p2y,p1y
 				if (p1z<p3z) p1z,p3z = p3z,p1z p1x,p3x = p3x,p1x p1y,p3y = p3y,p1y
@@ -146,6 +154,7 @@ function m3d(obj, eye, dir, up, angle)
 					local s3x,s3y = n2x / n2z, n2y / n2z
 
 					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1] + 0x1000.a5a5})
+				--end
 				end
 			end
 		end
@@ -157,4 +166,6 @@ function m3d(obj, eye, dir, up, angle)
 		local x1, y1, x2, y2, x3, y3 = tri[2], tri[3], tri[4], tri[5], tri[6], tri[7]
 		triangle(64 - sc * x1, 64 - sc * y1, 64 - sc * x2, 64 - sc * y2, 64 - sc * x3, 64 - sc * y3, tri[8])
 	end
+
+	total_tris += #sorted
 end
