@@ -1,7 +1,7 @@
 v2d = {}
 
 -- Projection matrix
-znear, zfar = 0.5, 20
+znear, zfar = 0.1, 10
 sc = 64
 --sc = 10
 
@@ -9,6 +9,15 @@ function normalize(v)
 	local x,y,z = v[1],v[2],v[3]
 	local len = sqrt(x*x+y*y+z*z)
 	return {x/len,y/len,z/len}
+end
+
+function roty_matrix(angle)
+	return {
+		cos(angle), 0, sin(angle), 0,
+		0, 1, 0, 0,
+		-sin(angle), 0, cos(angle), 0,
+		0, 0, 0, 1
+	}
 end
 
 function cross(v1, v2)
@@ -64,7 +73,7 @@ function lerp(a,b,alpha)
 end
 
 
-function m3d(obj, eye, dir, up)
+function m3d(obj, eye, dir, up, angle)
 	-- Camera matrix
 	local xaxis = normalize(cross(dir, up))
 	local yaxis = cross(xaxis, dir)
@@ -74,6 +83,9 @@ function m3d(obj, eye, dir, up)
 		dir[1], dir[2], dir[3], -dot(dir, eye),
 		0, 0, 0, 1
 	}
+	if angle ~= nil then
+		m = mmult(m, roty_matrix(angle))
+	end
 
 	local sorted = {}
 
@@ -82,7 +94,7 @@ function m3d(obj, eye, dir, up)
 		local v = obj.v[c]
 		local v1, v2, v3 = v[1], v[2], v[3]
 		local x, y, z = m[1]*v1+m[2]*v2+m[3]*v3+m[4], m[5]*v1+m[6]*v2+m[7]*v3+m[8], m[9]*v1+m[10]*v2+m[11]*v3+m[12]
-		v2d[c] = {x, y, z, 64 - sc * x / z, 64 - sc * y /z }
+		v2d[c] = {x, y, z, x / z, y / z }
 	end
 
 	for tri in all(obj.f) do
@@ -117,10 +129,10 @@ function m3d(obj, eye, dir, up)
 					local n2x,n2y,n2z = z_clip_line(p2x,p2y,p2z,p3x,p3y,p3z,znear)
 					local n3x,n3y,n3z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
 
-					local s1x,s1y = 64 - sc * p1x / p1z, 64 - sc * p1y / p1z
-					local s2x,s2y = 64 - sc * p2x / p2z, 64 - sc * p2y / p2z
-					local s3x,s3y = 64 - sc * n2x / n2z, 64 - sc * n2y / n2z
-					local s4x,s4y = 64 - sc * n3x / n3z, 64 - sc * n3y / n3z
+					local s1x,s1y = p1x / p1z, p1y / p1z
+					local s2x,s2y = p2x / p2z, p2y / p2z
+					local s3x,s3y = n2x / n2z, n2y / n2z
+					local s4x,s4y = n3x / n3z, n3y / n3z
 
 					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s4x, s4y, tri[1] + 0x1000.a5a5})
 					add(sorted, {z_paint, s2x, s2y, s4x, s4y, s3x, s3y, tri[1] + 0x1000.a5a5})
@@ -129,9 +141,9 @@ function m3d(obj, eye, dir, up)
 					local n1x,n1y,n1z = z_clip_line(p1x,p1y,p1z,p2x,p2y,p2z,znear)
 					local n2x,n2y,n2z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
 
-					local s1x,s1y = 64 - sc * p1x / p1z, 64 - sc * p1y / p1z
-					local s2x,s2y = 64 - sc * n1x / n1z, 64 - sc * n1y / n1z
-					local s3x,s3y = 64 - sc * n2x / n2z, 64 - sc * n2y / n2z
+					local s1x,s1y = p1x / p1z, p1y / p1z
+					local s2x,s2y = n1x / n1z, n1y / n1z
+					local s3x,s3y = n2x / n2z, n2y / n2z
 
 					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1] + 0x1000.a5a5})
 				end
@@ -142,6 +154,7 @@ function m3d(obj, eye, dir, up)
 	-- Sort faces and draw them
 	radix_sort(sorted, 8, 1, #sorted)
 	for tri in all(sorted) do
-		triangle(tri[2], tri[3], tri[4], tri[5], tri[6], tri[7], tri[8])
+		local x1, y1, x2, y2, x3, y3 = tri[2], tri[3], tri[4], tri[5], tri[6], tri[7]
+		triangle(64 - sc * x1, 64 - sc * y1, 64 - sc * x2, 64 - sc * y2, 64 - sc * x3, 64 - sc * y3, tri[8])
 	end
 end

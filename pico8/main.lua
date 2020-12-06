@@ -7,11 +7,11 @@ end
 
 function _update60()
   frame += 0.2
-  --[[if btn(1) then
-    frame += 0.1
+  if btn(1) then
+    frame += 0.2
   elseif btn(0) then
-    frame -= 0.1
-  end]]
+    frame -= 0.2
+  end
 end
 
 function _draw()
@@ -26,7 +26,11 @@ function _draw()
       cameras = cameras .. renderlist[c + 1] .. " "
       set_cam_idx()
       spline_cam()
-      m3d(model, eye, dir, up)
+      if renderlist[c] == "rotorin" then
+        m3d(model, eye, dir, up, -frame / 30)
+      else
+        m3d(model, eye, dir, up)
+      end
     end
   end
 
