@@ -16,6 +16,7 @@ function spline(i, p)
 end
 
 function spline_cam()
+  if (camera[cam_idx - 1] == nil or camera[cam_idx] == nil or camera[cam_idx + 1] == nil or camera[cam_idx + 2] == nil or camera[cam_idx + 1][1] == -1) return
   local time = (frame - camera[cam_idx][1]) / (camera[cam_idx + 1][1] - camera[cam_idx][1])
   if frame == camera[cam_idx][1] then
     time = 0

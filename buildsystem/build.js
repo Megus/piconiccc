@@ -43,7 +43,7 @@ fs.writeFileSync("../pico8/renderlist.lua", `renderlist = ${renderListLua}`);
 const luaCode = "\
 #include main.lua\n\
 #include decompressor.lua\n\
-#include triangle.lua\n\
+#include eg_triangle.lua\n\
 #include camera.lua\n\
 #include 3d.lua\n\
 #include misc.lua\n\

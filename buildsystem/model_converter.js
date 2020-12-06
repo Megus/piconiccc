@@ -81,7 +81,7 @@ module.exports.convertModels = function (models) {
     const r = (rgb & 0xff0000) / 0x10000;
     const g = (rgb & 0xff00) / 0x100;
     const b = rgb & 0xff;
-    let minDiff = 1000;
+    let minDiff = 100000;
     let pico1 = 0;
     let pico2 = 0;
     for (let c = 0; c < 16; c++) {
@@ -89,9 +89,14 @@ module.exports.convertModels = function (models) {
         let avgR = (picoPalette[c][0] + picoPalette[d][0]) / 2;
         let avgG = (picoPalette[c][1] + picoPalette[d][1]) / 2;
         let avgB = (picoPalette[c][2] + picoPalette[d][2]) / 2;
+        const diffAvg = Math.abs(picoPalette[c][0] - picoPalette[d][0]) + Math.abs(picoPalette[c][1] - picoPalette[d][1]) + Math.abs(picoPalette[c][2] - picoPalette[d][2]);
+
         const diff = Math.abs(avgR - r) + Math.abs(avgG - g) + Math.abs(avgB - b);
-        if (diff < minDiff) {
-          minDiff = diff;
+
+        //const wdiff = 10 * diff + diffAvg;
+        const wdiff = diff;
+        if (wdiff < minDiff) {
+          minDiff = wdiff;
           pico1 = c;
           pico2 = d;
         }

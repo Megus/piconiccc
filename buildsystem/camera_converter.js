@@ -1,6 +1,5 @@
 module.exports.convertCamera = function(camPathList) {
   const converted = {};
-  console.log(camPathList);
 
   for (let name in camPathList) {
     const camera = camPathList[name];

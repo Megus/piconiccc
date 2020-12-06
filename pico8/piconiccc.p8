@@ -4,7 +4,7 @@ __lua__
 
 #include main.lua
 #include decompressor.lua
-#include triangle.lua
+#include eg_triangle.lua
 #include camera.lua
 #include 3d.lua
 #include misc.lua
