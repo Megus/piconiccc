@@ -1,23 +1,14 @@
 v2d = {}
 
--- Projection matrix
 znear, zfar = 0.1, 15
 sc = 64
---sc = 10
+tminx = -64/sc
+tmaxx = 64/sc
 
 function normalize(v)
 	local x,y,z = v[1],v[2],v[3]
 	local len = sqrt(x*x+y*y+z*z)
 	return {x/len,y/len,z/len}
-end
-
-function roty_matrix(angle)
-	return {
-		cos(angle), 0, sin(angle), 0,
-		0, 1, 0, 0,
-		-sin(angle), 0, cos(angle), 0,
-		0, 0, 0, 1
-	}
 end
 
 function cross(v1, v2)
@@ -46,16 +37,16 @@ end
 function radix_sort(arr, mask, idx1, idx2)
 	local c, rb = idx1, idx2 + 1
 	while c < rb do
-		if band(arr[c][1], mask) ~= 0 then
+		if arr[c][1] & mask ~= 0 then
 			repeat
 				rb -= 1
 				if (rb == c) break
-			until band(arr[rb][1], mask) == 0
+			until arr[rb][1] & mask == 0
 			arr[c], arr[rb] = arr[rb], arr[c]
 		end
 		c += 1
 	end
-	if mask >= 0x0.08 then
+	if mask >= 0x0.1 then
 		mask /= 2
 		if (rb - 1 > idx1) radix_sort(arr, mask, idx1, rb - 1)
 		if (rb < idx2) radix_sort(arr, mask, rb, idx2)
@@ -69,7 +60,6 @@ end
 
 function lerp(a,b,alpha)
 	return a + (b - a) * alpha
-	--return a*(1.0-alpha)+b*alpha
 end
 
 
@@ -84,7 +74,12 @@ function m3d(obj, eye, dir, up, angle)
 		0, 0, 0, 1
 	}
 	if angle ~= nil then
-		m = mmult(m, roty_matrix(angle))
+		m = mmult(m, {
+			cos(angle), 0, sin(angle), 0,
+			0, 1, 0, 0,
+			-sin(angle), 0, cos(angle), 0,
+			0, 0, 0, 1
+		})
 	end
 
 	local sorted = {}
@@ -97,74 +92,67 @@ function m3d(obj, eye, dir, up, angle)
 		v2d[c] = {x, y, z, x / z, y / z }
 	end
 
-	for tri in all(obj.f) do
+	for c = 1, #obj.f do
+		local tri = obj.f[c]
 		local p1, p2, p3 = v2d[tri[2]], v2d[tri[3]], v2d[tri[4]]
-		local p1x,p1y,p1z=p1[1],p1[2],p1[3]
-		local p2x,p2y,p2z=p2[1],p2[2],p2[3]
-		local p3x,p3y,p3z=p3[1],p3[2],p3[3]
-
-		local cx = .1*(p1x+p2x+p3x)/3
-		local cy = .1*(p1y+p2y+p3y)/3
-		local cz = .1*(p1z+p2z+p3z)/3
-		local z_paint = -cx*cx-cy*cy-cz*cz
+		local p1z,p2z,p3z = p1[3],p2[3],p3[3]
+		local z_paint = -0.1 * max(p1z, max(p2z, p3z))
 
 		if p1z < zfar or p2z < zfar or p3z < zfar then
 			if p1z > znear and p2z > znear and p3z > znear then
-				-- Back-culling only
-				local s1x,s1y = p1[4],p1[5]
-				local s2x,s2y = p2[4],p2[5]
-				local s3x,s3y = p3[4],p3[5]
+				-- Back-culling
+				local s1x,s1y,s2x,s2y,s3x,s3y = p1[4],p1[5],p2[4],p2[5],p3[4],p3[5]
 
-				if (s2x-s1x)*(s3y-s1y)-(s2y-s1y)*(s3x-s1x) > 0 then
-					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1] + 0x1000.a5a5})
+				if min(s1x, min(s2x, s3x)) < tmaxx and
+					max(s1x, max(s2x, s3x)) >= tminx and
+					(s2x-s1x)*(s3y-s1y)-(s2y-s1y)*(s3x-s1x) > 0 then
+					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1]})
 				end
 			elseif p1z > znear or p2z > znear or p3z > znear then
-
-				-- Attempt at back culling...
-				--[[local dz = min(p1z, min(p2z, p3z)) - 2
-				local s1x,s1y = p1x / (p1z - dz), p1y / (p1z - dz)
-				local s2x,s2y = p2x / (p2z - dz), p2y / (p2z - dz)
-				local s3x,s3y = p3x / (p3z - dz), p3y / (p3z - dz)
-				if (s2x-s1x)*(s3y-s1y)-(s2y-s1y)*(s3x-s1x) > 0 then]]
-
-				-- Clipping
-				if (p1z<p2z) p1z,p2z = p2z,p1z p1x,p2x = p2x,p1x p1y,p2y = p2y,p1y
-				if (p1z<p3z) p1z,p3z = p3z,p1z p1x,p3x = p3x,p1x p1y,p3y = p3y,p1y
-				if (p2z<p3z) p2z,p3z = p3z,p2z p2x,p3x = p3x,p2x p2y,p3y = p3y,p2y
+				-- Z-clipping
+				local p1x,p2x,p3x,p1y,p2y,p3y = p1[1],p2[1],p3[1],p1[2],p2[2],p3[2]
+				if (p1z<p2z) p1z,p2z,p1x,p2x,p1y,p2y = p2z,p1z,p2x,p1x,p2y,p1y
+				if (p1z<p3z) p1z,p3z,p1x,p3x,p1y,p3y = p3z,p1z,p3x,p1x,p3y,p1y
+				if (p2z<p3z) p2z,p3z,p2x,p3x,p2y,p3y = p3z,p2z,p3x,p2x,p3y,p2y
 
 				if p1z > znear and p2z > znear then
 					-- 4 points
 					local n2x,n2y,n2z = z_clip_line(p2x,p2y,p2z,p3x,p3y,p3z,znear)
 					local n3x,n3y,n3z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
 
-					local s1x,s1y = p1x / p1z, p1y / p1z
-					local s2x,s2y = p2x / p2z, p2y / p2z
-					local s3x,s3y = n2x / n2z, n2y / n2z
-					local s4x,s4y = n3x / n3z, n3y / n3z
+					local s1x,s2x,s3x,s4x,s2y,s4y = p1x/p1z, p2x/p2z, n2x/n2z, n3x/n3z, p2y/p2z, n3y/n3z
 
-					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s4x, s4y, tri[1] + 0x1000.a5a5})
-					add(sorted, {z_paint, s2x, s2y, s4x, s4y, s3x, s3y, tri[1] + 0x1000.a5a5})
+					if min(s1x, min(s2x, s4x)) < tmaxx and max(s1x, max(s2x, s4x)) >= tminx then
+						add(sorted, {z_paint, s1x, p1y/p1z, s2x, s2y, s4x, s4y, tri[1]})
+					end
+					if min(s4x, min(s2x, s3x)) < tmaxx and max(s4x, max(s2x, s3x)) >= tminx then
+						add(sorted, {z_paint, s2x, s2y, s4x, s4y, s3x, n2y/n2z, tri[1]})
+					end
 				else
 					-- 3 points
 					local n1x,n1y,n1z = z_clip_line(p1x,p1y,p1z,p2x,p2y,p2z,znear)
 					local n2x,n2y,n2z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
 
-					local s1x,s1y = p1x / p1z, p1y / p1z
-					local s2x,s2y = n1x / n1z, n1y / n1z
-					local s3x,s3y = n2x / n2z, n2y / n2z
+					local s1x,s2x,s3x = p1x/p1z, n1x/n1z, n2x/n2z
 
-					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1] + 0x1000.a5a5})
-				--end
+					if min(s1x, min(s2x, s3x)) < tmaxx and max(s1x, max(s2x, s3x)) >= tminx then
+						add(sorted, {z_paint, s1x, p1y/p1z, s2x, n1y/n1z, s3x, n2y/n2z, tri[1]})
+					end
 				end
 			end
 		end
 	end
 
 	-- Sort faces and draw them
-	radix_sort(sorted, 8, 1, #sorted)
-	for tri in all(sorted) do
-		local x1, y1, x2, y2, x3, y3 = tri[2], tri[3], tri[4], tri[5], tri[6], tri[7]
-		triangle(64 - sc * x1, 64 - sc * y1, 64 - sc * x2, 64 - sc * y2, 64 - sc * x3, 64 - sc * y3, tri[8])
+	radix_sort(sorted, 4, 1, #sorted)
+	for c = 1, #sorted do
+		local tri = sorted[c]
+		triangle(
+			64 - sc * tri[2], 64 - sc * tri[3],
+			64 - sc * tri[4], 64 - sc * tri[5],
+			64 - sc * tri[6], 64 - sc * tri[7],
+			tri[8]
+		)
 	end
 
 	total_tris += #sorted

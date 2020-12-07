@@ -1,5 +1,5 @@
 function spline_coord_katmulrom(v0, v1, v2, v3, p)
-  local t2 = p * p
+  local t2, t3 = p * p
   local t3 = t2 * p
   return (t3 * (-1 * v0 + 3 * v1 - 3 * v2 + v3) +
     t2 * (2 * v0 - 5 * v1 + 4 * v2 - v3) +
@@ -17,13 +17,9 @@ end
 
 function spline_cam()
   if (camera[cam_idx - 1] == nil or camera[cam_idx] == nil or camera[cam_idx + 1] == nil or camera[cam_idx + 2] == nil or camera[cam_idx + 1][1] == -1) return
-  local time = (frame - camera[cam_idx][1]) / (camera[cam_idx + 1][1] - camera[cam_idx][1])
-  if frame == camera[cam_idx][1] then
-    time = 0
-  end
-  eye = spline(2, time)
-  dir = normalize(spline(5, time))
-  up = normalize(spline(8, time))
+  local cframe = camera[cam_idx][1]
+  local time = (frame - cframe) / (camera[cam_idx + 1][1] - cframe)
+  eye, dir, up = spline(2, time), normalize(spline(5, time)), normalize(spline(8, time))
 end
 
 function set_cam_idx()
