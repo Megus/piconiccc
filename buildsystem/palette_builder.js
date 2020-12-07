@@ -97,19 +97,27 @@ module.exports.buildPalette = function(models) {
   console.log(`Unique PICO-8 colors: ${paletteLength}`);
 
   // Truncate palette if needed, removing the least used colors
-  if (paletteLength > 15) { // 15, not 16, because we always need the black color
+  if (paletteLength > 16) {
 
   }
 
   // Add black color to palette
-  palette.push(picoPalette[0]);
-
   for (const colIdx in picoPaletteCounts) {
-    if (colIdx == 0) continue;
-    palette.push(picoPalette[colIdx]);
     let picoColor = parseInt(colIdx);
     if (picoColor >= 16) picoColor += (128 - 16); // Change for undocumented palette
-    res.palette.push(picoColor);
+    const col = [picoPalette[colIdx][0], picoPalette[colIdx][1], picoPalette[colIdx][2], picoColor];
+    palette.push(col);
+  }
+
+  // Sort colors by their brightness
+  palette.sort((a, b) => {
+    const ag = a[0] * 0.2989 + a[1] * 0.5870 + a[2] * 0.1140;
+    const bg = b[0] * 0.2989 + b[1] * 0.5870 + b[2] * 0.1140;
+    return ag - bg;
+  });
+
+  for (let c = 1; c < palette.length; c++) {
+    res.palette.push(palette[c][3]);
   }
 
   console.log(palette);

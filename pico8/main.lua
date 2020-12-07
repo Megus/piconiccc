@@ -44,7 +44,7 @@ function _draw()
     end
   end
 
-  local pcol = 11
+  local pcol = 15
   oprint("cpu: " .. stat(1), 0, 0, pcol)
   oprint("f: " .. frame, 52, 0, pcol)
   oprint(models, 0, 8, pcol)
