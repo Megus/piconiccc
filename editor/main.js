@@ -1,11 +1,11 @@
 'use strict';
 // 957 997 1035 1075 1135 1187
-let frameNumberStart = 150;
+let frameNumberStart = 1538;//150;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 0;
+let isHover = 1;
 let isNeedChangeCam = true;
 let isUseCamPath = true;
 
@@ -67,10 +67,12 @@ function drawFrame(time) {
 
   if (isHover == 1) {
     var dest = new Image;
+    ctx.globalAlpha = 0.5;
+    canvasgl.globalAlpha = 0.5;
     dest.src = canvasgl.toDataURL("image/png");
-    ctx.globalAlpha = 0.6;
     mirrorImage(ctx, dest, 0, 0, true);
     ctx.globalAlpha = 1;
+    canvasgl.globalAlpha = 1;
   }
 
   // debug cam set

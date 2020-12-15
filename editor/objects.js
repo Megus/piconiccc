@@ -28,16 +28,22 @@ const models_arch2_fend = 1193;
 const models_arch1_fstart = 723;//925;
 const models_arch1_fend = 941;//941;
 
+const models_cubes_fstart = 0;
+const models_cubes_fend = 9999;
+
 function init_models() {
   //init_testcube();
   
-  init_tonnel5();
-  init_arch2();
-  init_arch1();
-  init_tonnel4();
-  init_rotor();
-  init_tonnel3();
-  init_tonnel2(); //tonnel-2 + squad
+  //init_cubes();
+  init_room();
+  
+  //init_tonnel5();
+  //init_arch2();
+  //init_arch1();
+  //init_tonnel4();
+  //init_rotor();
+  //init_tonnel3();
+  //init_tonnel2(); //tonnel-2 + squad
 
   //console.log(models);
   //console.log(camPathList);
@@ -1952,6 +1958,194 @@ function init_arch2() {
   picoDir = camPathList['arch2'][showCP].picoDir;
   picoUp = camPathList['arch2'][showCP].picoUp;
   */
+  
+}
+
+function init_cubes() {
+  modelRenderList.push({
+    model: 'cubes',
+    campath: 'cubes',
+  });
+  let model = {
+		fstart: useFrameLimit ? models_cubes_fstart : 0,
+		fend: useFrameLimit ? models_cubes_fend : 9999,
+    v: [],
+    f: [],
+  }
+  camPathList['cubes'] = [];
+  let colors = [
+    '#6F3F3F', //front
+    '#3F0F3F', //top
+    '#4F1F3F', // back
+    '#5F2F3F', // bott
+    '#7F4F3F', // right
+    '#7F5F3F', // left
+  ];
+
+  var sz = 1;
+  var dsz = 1;
+  var mlt = 1;
+  var xqty = 5;
+  var yqty = 4;
+  var zqty = 3;
+
+  $n = 0;
+  for (var z = 0; z < zqty; z++) {
+    for (var y = 0; y < yqty; y++) {
+      for (var x = 0; x < xqty; x++) {
+        var points = [
+          [-sz, -sz, -sz],
+          [-sz, sz, -sz],
+          [sz, sz, -sz],
+          [sz, -sz, -sz],
+
+          [-sz, -sz, sz],
+          [-sz, sz, sz],
+          [sz, sz, sz],
+          [sz, -sz, sz],
+        ];
+        for (p in points) {
+          points[p][0] = mlt * ( points[p][0] + (2 *sz + dsz)*x + sz - ((xqty * 2 * sz + (xqty-1)*dsz)/2) );
+          points[p][1] = mlt * ( points[p][1] + (2 *sz + dsz)*y + sz - ((yqty * 2 *sz + (yqty-1)*dsz)/2) );
+          points[p][2] = mlt * ( points[p][2] + (2 *sz + dsz)*z + sz); // - ((zqty * 2 *sz + (zqty-1)*dsz)/2) );
+          model.v.push(points[p]);
+        }
+        let nn = $n * 8;
+        //front
+        model.f.push([colors[0], nn+1, nn+2, nn+3]);
+        model.f.push([colors[0], nn+3, nn+4, nn+1]);
+        //top
+        model.f.push([colors[1], nn+2, nn+6, nn+7]);
+        model.f.push([colors[1], nn+7, nn+3, nn+2]);
+        //back
+        model.f.push([colors[2], nn+6, nn+5, nn+8]);
+        model.f.push([colors[2], nn+8, nn+7, nn+6]);
+        //bottom
+        model.f.push([colors[3], nn+5, nn+1, nn+4]);
+        model.f.push([colors[3], nn+4, nn+8, nn+5]);
+        //right
+        model.f.push([colors[4], nn+4, nn+3, nn+7]);
+        model.f.push([colors[4], nn+7, nn+8, nn+4]);
+        //left
+        model.f.push([colors[5], nn+5, nn+6, nn+2]);
+        model.f.push([colors[5], nn+2, nn+1, nn+5]);
+
+        $n++;
+      }
+    }
+  }
+  models['cubes'] = model;
+  
+}
+
+function init_room() {
+  modelRenderList.push({
+    model: 'room',
+    campath: 'room',
+  });
+  let model = {
+		fstart: useFrameLimit ? models_cubes_fstart : 0,
+		fend: useFrameLimit ? models_cubes_fend : 9999,
+    v: [],
+    f: [],
+  }
+  camPathList['room'] = [];
+  var colors = [
+    [
+      '#7F7F0F', '#7F4F0F', '#7F3F0F', '#6F2F0F', '#5F1F0F', '#4F0F0F', '#3F0F0F', '#7F4F0F',
+      '#5F1F0F', '#4F0F0F', '#5F1F0F', '#FFFFFF'
+    ],[
+      '#7F4F0F', '#7F3F0F', '#6F2F0F', '#5F1F0F', '#4F0F0F', '#3F0F0F', '#2F0F0F', '#7F3F0F',
+      '#4F0F0F', '#3F0F0F', '#2F0F0F', '#FFFFFF'
+    ],[
+      '#7F3F0F'
+    ], [
+      '#ffffff'
+    ]
+  ];
+  
+  colors[0] = changeColors(colors[0]);
+  colors[1] = changeColors(colors[1]);
+  colors[2] = changeColors(colors[2]);
+  
+  var alpha = 13.47751218593;
+  var alphaList = [+alpha, -alpha];
+  var r0 = 0.05;
+  var drr = 1.05;
+  var drr2 = 1;
+  
+  var radList = [
+    0.95,  1.15,  2.15,  2.575,  3,
+    4, 5,
+    5,
+    5, 4,
+    3,  2.575
+  ];
+  var lenList = [
+    0.75, 0.75+0.2,  3.15,  1.825,  0.5,
+    -0.5,  -1.5,
+    -2.125,
+    -2.75, -3.75,
+    -4.75, 
+    -7
+  ];
+  
+  var nmax = radList.length;
+  for (var n = 0; n < nmax; n++) {
+  //for (var n in radList) {
+    var m = 0;
+    for (var a = 360-45; a > 0; a -= 90) {
+      for (var al in alphaList) {
+        var r = radList[n] - r0;
+        var L = (a + alphaList[al])*Math.PI/180;
+        var x = r * Math.cos(L);
+        var y = r * Math.sin(L);
+        var z = lenList[n];
+        var point = [x, y, z];
+        point = rotZ(point,-90);
+        point[1] *= drr;
+        point[0] *= drr2;
+        
+        point = rotX(point,2.75);
+        
+        //подгонка под кадр (потом убрать)
+
+
+        
+        //point = rotX(point,-45);
+        //point = rotZ(point,-5);
+
+        
+        model.v.push(point);
+        m++;
+      }
+    }
+    if (n < nmax - 1) {
+      for (var i = 0; i < 8; i++) {
+        var nn = n*8 + i;
+        var n2 = nn+2 - (i+2 > 8 ? 8 : 0);
+        var n10 = nn+10 - (i+10 > 16 ? 8 : 0);
+        if ( n == 5 && i == 3) {
+          model.f.push([colors[3][0], nn+1, nn+9, n10]);
+          model.f.push([colors[3][0], n10, n2, nn+1]);          
+        } else {
+        
+          model.f.push([colors[i&1][n], nn+1, nn+9, n10]);
+          model.f.push([colors[i&1][n], n10, n2, nn+1]);
+        }
+      }
+    }
+  }
+  for (var i = 0; i < 6; i++) {
+    model.f.push([colors[2][0], 1, i+2, i+3]);
+  }
+  models['room'] = model;
+ 
+  resetCam();
+  
+  picoEye = [-0.08617177850283218, -2.915735228747263, -2.5154866908391];
+  picoDir = [0.10071350320492653, 0.8711591245831845, 0.4805606828774604];
+  picoUp = [-0.2863519934995061, 0.4879594381549821, -0.8245593505226492];
   
 }
 

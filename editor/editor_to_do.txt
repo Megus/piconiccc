@@ -4,3 +4,10 @@ todo list
 tonnel-5
 	- продлить поворот на 2 сегмента
 	- увеличить скорость их прохождения(1250 - остаются 4 желтых = 50% фигуры)
+
+
+
+по поводу сплайнов почитать
+https://www.gamedev.ru/code/tip/catmull_rom
+https://habr.com/ru/post/282441/
+https://scask.ru/g_book_cpsp.php?id=60
