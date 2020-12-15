@@ -1,6 +1,9 @@
 const fs = require("fs");
 const converter = require("./model_converter");
 const compressor = require("./model_compressor");
+const camera = require("./camera_converter");
+const palette = require("./palette_builder");
+const renderList = require("./renderlist_converter");
 const writer = require("./p8writer");
 const luaTools = require("./lua_tools");
 
@@ -15,26 +18,44 @@ eval(fs.readFileSync("../editor/objects.js").toString());
 
 init_models();
 
-console.log(models.rotorin);
+//console.log(models.rotorin);
 //console.log(camPathList);
 //console.log(modelRenderList);
 
-// Process models
-
+// Convert models
 const convertedModels = converter.convertModels(models);
-//console.log(convertedModels.rotorin);
-const compressedData = compressor.compressModels(convertedModels);
 
-const modelInfo = luaTools.json2lua(compressedData.models);
-fs.writeFileSync("../pico8/objects.lua", `objects = ${modelInfo}`);
+// Build palette
+const picoPalette = palette.buildPalette(convertedModels);
+const paletteLua = luaTools.json2lua(picoPalette);
+fs.writeFileSync("../pico8/colors.lua", `colors = ${paletteLua}`);
+
+// Compress models
+const compressedData = compressor.compressModels(convertedModels);
+const objectsLua = luaTools.json2lua(compressedData.models);
+fs.writeFileSync("../pico8/objects.lua", `objects = ${objectsLua}`);
+
+// Process camera
+const convertedCamera = camera.convertCamera(camPathList);
+const camPathLua = luaTools.json2lua(convertedCamera);
+fs.writeFileSync("../pico8/campath.lua", `campath = ${camPathLua}`);
+
+// Process renderlist
+const convertedRenderList = renderList.convertRenderList(modelRenderList);
+const renderListLua = luaTools.json2lua(convertedRenderList);
+fs.writeFileSync("../pico8/renderlist.lua", `renderlist = ${renderListLua}`);
 
 // Write P8
 const luaCode = "\
 #include main.lua\n\
 #include decompressor.lua\n\
-#include triangle.lua\n\
+#include colors.lua\n\
+#include eg_triangle.lua\n\
+#include camera.lua\n\
 #include 3d.lua\n\
 #include misc.lua\n\
+#include campath.lua\n\
+#include renderlist.lua\n\
 #include objects.lua\n";
 
 writer.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);

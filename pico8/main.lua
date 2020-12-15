@@ -1,42 +1,54 @@
 function _init()
   decompress()
-  create_lighting()
   poke(0x5f34, 1)
   poke(0x5f2d, 1)
+  frame = 173
+  dframe = 0
 
-  eye = {4, -13, -14}
-  dir = {0, 0.8, 0.7}
-  angle = 0
-  speed = 0.1
+  for i = 1, #colors.palette do
+    pal(i, colors.palette[i], 1)
+  end
 end
 
-function _update()
-  if btn(0) then
-    eye[1] -= speed
-  elseif btn(1) then
-    eye[1] += speed
-  elseif btn(2) then
-    eye[2] += speed
-  elseif btn(3) then
-    eye[2] -= speed
-  elseif btn(4) then
-    eye[3] -= speed
-  elseif btn(5) then
-    eye[3] += speed
+function _update60()
+  dframe += 1
+  if btn(1) then
+    frame += 1
+  elseif btn(0) then
+    frame -= 1
+  else
+    frame += 0.2
   end
-
-  --dir[1] = (stat(32) - 64) / 256
-  --dir[2] = (64 - stat(33)) / 128
-
 end
 
 function _draw()
   cls()
-  m3d_shaded({
-    objects["rotor"],
-  }, eye, dir, angle)
 
-  oprint(stat(1), 0, 0, 7)
-  oprint(eye[1]..","..eye[2]..","..eye[3], 0, 8, 7)
+  total_tris = 0
+
+  local models = "m: "
+  local cameras = "c: "
+  for c = 1, #renderlist, 2 do
+    local model = objects[renderlist[c]]
+    if model.fstart <= frame and model.fend > frame then
+      models = models .. renderlist[c] .. " "
+      camera = campath[renderlist[c + 1]]
+      cameras = cameras .. renderlist[c + 1] .. " "
+      set_cam_idx()
+      spline_cam()
+      if renderlist[c] == "rotorin" then
+        m3d(model, eye, dir, up, -dframe / 150)
+      else
+        m3d(model, eye, dir, up)
+      end
+    end
+  end
+
+  local pcol = 15
+  oprint("cpu: " .. stat(1), 0, 0, pcol)
+  oprint("f: " .. frame, 52, 0, pcol)
+  oprint(models, 0, 8, pcol)
+  oprint(cameras, 0, 16, pcol)
+  oprint("t: " .. total_tris, 104, 0, pcol)
 end
 

@@ -27,7 +27,7 @@ function decompress()
     -- Read faces
     for c = 1, obj.fn do
       local v, fp = peek(addr + 1), obj.fp[peek(addr + 2)]
-      add(obj.f, {peek(addr), v, v + fp[1], v + fp[2]})
+      add(obj.f, {peek(addr) + 0x1000.5a5a, v, v + fp[1], v + fp[2]})
       addr += 3
     end
   end

@@ -1,37 +1,9 @@
-dither = {0x1000.0000,0x1000.8000,0x1000.8020,0x1000.a020,0x1000.a0a0,0x1000.a4a0,0x1000.a4a1,0x1000.a5a1,0x1000.a5a5,0x1000.e5a5,0x1000.e5b5,0x1000.f5b5,0x1000.f5f5,0x1000.fdf5,0x1000.fdf7,0x1000.fff7,0x1000.ffff,0x1000.ffff}
-v2d, lighting = {}, {}
+v2d = {}
 
--- Projection matrix
-pnear, pfar = 1, 200
-rangeInv = 1 / (pnear - pfar)
-sc = 100
-projection_matrix = {
-	6, 0, 0, 0,
-	0, 6, 0, 0,
-	0, 0, (pnear+pfar)*rangeInv, -1,
-	0, 0, pnear*pfar*rangeInv*2, 0
-}
-
-function create_lighting()
-	for c = 12, 1, -1 do
-		for d = 1, 14 do
-			add(lighting, 0x10 + dither[c])
-		end
-	end
-	for d = 1, 32 do
-		add(lighting, dither[1])
-	end
-	for c = 1, 4 do
-		for d = 1, 16 do
-			add(lighting, 0x70 + dither[c])
-		end
-	end
-end
-
-function updlimits(v)
-	if (v < minv) minv = v
-	if (v > maxv) maxv = v
-end
+znear, zfar = 0.1, 15
+sc = 64
+tminx = -64/sc
+tmaxx = 64/sc
 
 function normalize(v)
 	local x,y,z = v[1],v[2],v[3]
@@ -46,24 +18,6 @@ end
 
 function dot(v1, v2)
 	return v1[1]*v2[1] + v1[2]*v2[2] + v1[3]*v2[3]
-end
-
-function is_cw(p1, p2, p3)
-	return (p2[1]-p1[1])*(p3[2]-p1[2])-(p2[2]-p1[2])*(p3[1]-p1[1])>0
-end
-
-function normal(p1, p2, p3)
-	local w1,w2,w3 = p1[4],p2[4],p3[4]
-	local x1,y1,z1,x2,y2,z2,x3,y3,z3 = p1[1]*w1,p1[2]*w1,p1[3]*w1,p2[1]*w2,p2[2]*w2,p2[3]*w2,p3[1]*w3,p3[2]*w3,p3[3]*w3
-	local ux, uy, uz, vx, vy, vz = x2-x1,y2-y1,z2-z1,x3-x1,y3-y1,z3-z1
-	local x, y, z = uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx
-	local len = sqrt(x*x+y*y+z*z)
-	return (len < 0.001) and {0, 0, 0} or {x/len,y/len,z/len}
-end
-
-function inrange(p)
-	local x,y,z,w = p[1], p[2], p[3], p[4]
-	return w < 0 and x > -1 and x < 1 and y > -1 and y < 1 and z > -1 and z < 1
 end
 
 function mmult(m1, m2)
@@ -83,62 +37,123 @@ end
 function radix_sort(arr, mask, idx1, idx2)
 	local c, rb = idx1, idx2 + 1
 	while c < rb do
-		if band(arr[c][1], mask) ~= 0 then
+		if arr[c][1] & mask ~= 0 then
 			repeat
 				rb -= 1
 				if (rb == c) break
-			until band(arr[rb][1], mask) == 0
+			until arr[rb][1] & mask == 0
 			arr[c], arr[rb] = arr[rb], arr[c]
 		end
 		c += 1
 	end
-	if mask >= 0x0.08 then
+	if mask >= 0x0.1 then
 		mask /= 2
 		if (rb - 1 > idx1) radix_sort(arr, mask, idx1, rb - 1)
 		if (rb < idx2) radix_sort(arr, mask, rb, idx2)
 	end
 end
 
-function m3d_shaded(objects, eye, dir, angle)
-	minv = 32767
-	maxv = -32767
+function z_clip_line(p1x,p1y,p1z,p2x,p2y,p2z,clip)
+	local alpha = (p1z-clip)/(p1z-p2z)
+	return lerp(p1x,p2x,alpha),lerp(p1y,p2y,alpha),lerp(p1z,p2z,alpha)
+end
 
-	-- Calculate camera matrix
-	local up = {sin(angle), cos(angle), 0}
-	local zaxis = normalize(dir)
-	local xaxis = normalize(cross(zaxis, up))
-	local yaxis = cross(xaxis, zaxis)
-	local m = mmult(projection_matrix, {
+function lerp(a,b,alpha)
+	return a + (b - a) * alpha
+end
+
+
+function m3d(obj, eye, dir, up, angle)
+	-- Camera matrix
+	local xaxis = normalize(cross(dir, up))
+	local yaxis = cross(xaxis, dir)
+	local m = {
 		xaxis[1], xaxis[2], xaxis[3], -dot(xaxis, eye),
 		yaxis[1], yaxis[2], yaxis[3], -dot(yaxis, eye),
-		zaxis[1], zaxis[2], zaxis[3], -dot(zaxis, eye),
+		dir[1], dir[2], dir[3], -dot(dir, eye),
 		0, 0, 0, 1
-	})
+	}
+	if angle ~= nil then
+		m = mmult(m, {
+			cos(angle), 0, sin(angle), 0,
+			0, 1, 0, 0,
+			-sin(angle), 0, cos(angle), 0,
+			0, 0, 0, 1
+		})
+	end
 
 	local sorted = {}
 
 	-- Tranform all objects
-	for obj in all(objects) do
-		for c = 1, #obj.v do
-			local v = obj.v[c]
-			local v1, v2, v3 = v[1], v[2], v[3]
-			local w = m[13]*v1+m[14]*v2+m[15]*v3+m[16]
-			local x, y, z = (m[1]*v1+m[2]*v2+m[3]*v3+m[4]) / w, (m[5]*v1+m[6]*v2+m[7]*v3+m[8]) / w, (m[9]*v1+m[10]*v2+m[11]*v3+m[12]) / w
-			v2d[c] = {x, y, z, w, 64 + sc * x, 64 + sc * y}
-		end
+	for c = 1, #obj.v do
+		local v = obj.v[c]
+		local v1, v2, v3 = v[1], v[2], v[3]
+		local x, y, z = m[1]*v1+m[2]*v2+m[3]*v3+m[4], m[5]*v1+m[6]*v2+m[7]*v3+m[8], m[9]*v1+m[10]*v2+m[11]*v3+m[12]
+		v2d[c] = {x, y, z, x / z, y / z }
+	end
 
-		for tri in all(obj.f) do
-			local p1, p2, p3 = v2d[tri[2]], v2d[tri[3]], v2d[tri[4]]
-			if (inrange(p1) and inrange(p2) and inrange(p3)) and is_cw(p1, p2, p3) then
-				add(sorted, {(min(min(p1[3], p2[3]), p3[3])), p1, p2, p3, tri[1] + 0x1000.a5a5})
+	for c = 1, #obj.f do
+		local tri = obj.f[c]
+		local p1, p2, p3 = v2d[tri[2]], v2d[tri[3]], v2d[tri[4]]
+		local p1z,p2z,p3z = p1[3],p2[3],p3[3]
+		local z_paint = -0.1 * max(p1z, max(p2z, p3z))
+
+		if p1z < zfar or p2z < zfar or p3z < zfar then
+			if p1z > znear and p2z > znear and p3z > znear then
+				-- Back-culling
+				local s1x,s1y,s2x,s2y,s3x,s3y = p1[4],p1[5],p2[4],p2[5],p3[4],p3[5]
+
+				if min(s1x, min(s2x, s3x)) < tmaxx and
+					max(s1x, max(s2x, s3x)) >= tminx and
+					(s2x-s1x)*(s3y-s1y)-(s2y-s1y)*(s3x-s1x) > 0 then
+					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1]})
+				end
+			elseif p1z > znear or p2z > znear or p3z > znear then
+				-- Z-clipping
+				local p1x,p2x,p3x,p1y,p2y,p3y = p1[1],p2[1],p3[1],p1[2],p2[2],p3[2]
+				if (p1z<p2z) p1z,p2z,p1x,p2x,p1y,p2y = p2z,p1z,p2x,p1x,p2y,p1y
+				if (p1z<p3z) p1z,p3z,p1x,p3x,p1y,p3y = p3z,p1z,p3x,p1x,p3y,p1y
+				if (p2z<p3z) p2z,p3z,p2x,p3x,p2y,p3y = p3z,p2z,p3x,p2x,p3y,p2y
+
+				if p1z > znear and p2z > znear then
+					-- 4 points
+					local n2x,n2y,n2z = z_clip_line(p2x,p2y,p2z,p3x,p3y,p3z,znear)
+					local n3x,n3y,n3z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
+
+					local s1x,s2x,s3x,s4x,s2y,s4y = p1x/p1z, p2x/p2z, n2x/n2z, n3x/n3z, p2y/p2z, n3y/n3z
+
+					if min(s1x, min(s2x, s4x)) < tmaxx and max(s1x, max(s2x, s4x)) >= tminx then
+						add(sorted, {z_paint, s1x, p1y/p1z, s2x, s2y, s4x, s4y, tri[1]})
+					end
+					if min(s4x, min(s2x, s3x)) < tmaxx and max(s4x, max(s2x, s3x)) >= tminx then
+						add(sorted, {z_paint, s2x, s2y, s4x, s4y, s3x, n2y/n2z, tri[1]})
+					end
+				else
+					-- 3 points
+					local n1x,n1y,n1z = z_clip_line(p1x,p1y,p1z,p2x,p2y,p2z,znear)
+					local n2x,n2y,n2z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
+
+					local s1x,s2x,s3x = p1x/p1z, n1x/n1z, n2x/n2z
+
+					if min(s1x, min(s2x, s3x)) < tmaxx and max(s1x, max(s2x, s3x)) >= tminx then
+						add(sorted, {z_paint, s1x, p1y/p1z, s2x, n1y/n1z, s3x, n2y/n2z, tri[1]})
+					end
+				end
 			end
 		end
 	end
 
 	-- Sort faces and draw them
-	radix_sort(sorted, 2, 1, #sorted)
-	for tri in all(sorted) do
-		local p1, p2, p3 = tri[2], tri[3], tri[4]
-		triangle(p1[5], p1[6], p2[5], p2[6], p3[5], p3[6], tri[5])
+	radix_sort(sorted, 4, 1, #sorted)
+	for c = 1, #sorted do
+		local tri = sorted[c]
+		triangle(
+			64 - sc * tri[2], 64 - sc * tri[3],
+			64 - sc * tri[4], 64 - sc * tri[5],
+			64 - sc * tri[6], 64 - sc * tri[7],
+			tri[8]
+		)
 	end
+
+	total_tris += #sorted
 end
