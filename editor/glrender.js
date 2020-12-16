@@ -31,7 +31,7 @@ const fsSource = `
 
 // init
 function glInit(gl) {
-  gl.enable(gl.CULL_FACE);
+  //gl.enable(gl.CULL_FACE);
   shaderProgram = initShaderProgram(gl, vsSource, fsSource);
   programInfo = {
     program: shaderProgram,

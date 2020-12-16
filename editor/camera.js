@@ -153,6 +153,26 @@ function camRotVec(vec, alpha) {
   picoUp = rotVec(picoUp, vecN, alpha);
 }
 
+function camRotX(alpha) {
+  picoEye = rotX(picoEye, alpha);
+  picoUp = normalize(rotX(picoUp, alpha));
+  picoDir = normalize(rotX(picoDir, alpha));
+}
+
+function camRotY(alpha) {
+  picoEye = rotY(picoEye, alpha);
+  picoUp = normalize(rotY(picoUp, alpha));
+  picoDir = normalize(rotY(picoDir, alpha));
+}
+
+function camRotZ(alpha) {
+  picoEye = rotZ(picoEye, alpha);
+  picoUp = normalize(rotZ(picoUp, alpha));
+  picoDir = normalize(rotZ(picoDir, alpha));
+}
+
+
+
 function camSetLookAtDistRot(lookAt, dist, rX, rY, rZ) {
 	picoEye = [0, 0, 0];
 	picoDir = [0, 0, 1];

@@ -34,8 +34,9 @@ const models_cubes_fend = 9999;
 function init_models() {
   //init_testcube();
   
-  //init_cubes();
+  init_cubes();
   init_room();
+ 
   
   //init_tonnel5();
   //init_arch2();
@@ -1964,7 +1965,7 @@ function init_arch2() {
 function init_cubes() {
   modelRenderList.push({
     model: 'cubes',
-    campath: 'cubes',
+    campath: 'room',
   });
   let model = {
 		fstart: useFrameLimit ? models_cubes_fstart : 0,
@@ -1974,20 +1975,21 @@ function init_cubes() {
   }
   camPathList['cubes'] = [];
   let colors = [
-    '#6F3F3F', //front
+    
     '#3F0F3F', //top
     '#4F1F3F', // back
     '#5F2F3F', // bott
+    '#6F3F3F', //front
     '#7F4F3F', // right
     '#7F5F3F', // left
   ];
 
   var sz = 1;
   var dsz = 1;
-  var mlt = 1;
+  var mlt = 0.985;
   var xqty = 5;
-  var yqty = 4;
-  var zqty = 3;
+  var yqty = 3;
+  var zqty = 4;
 
   $n = 0;
   for (var z = 0; z < zqty; z++) {
@@ -2010,30 +2012,42 @@ function init_cubes() {
           points[p][2] = mlt * ( points[p][2] + (2 *sz + dsz)*z + sz); // - ((zqty * 2 *sz + (zqty-1)*dsz)/2) );
           model.v.push(points[p]);
         }
+        
+        if (true) { //y == 0 for modelling
         let nn = $n * 8;
-        //front
-        model.f.push([colors[0], nn+1, nn+2, nn+3]);
-        model.f.push([colors[0], nn+3, nn+4, nn+1]);
-        //top
-        model.f.push([colors[1], nn+2, nn+6, nn+7]);
-        model.f.push([colors[1], nn+7, nn+3, nn+2]);
-        //back
-        model.f.push([colors[2], nn+6, nn+5, nn+8]);
-        model.f.push([colors[2], nn+8, nn+7, nn+6]);
-        //bottom
-        model.f.push([colors[3], nn+5, nn+1, nn+4]);
-        model.f.push([colors[3], nn+4, nn+8, nn+5]);
-        //right
-        model.f.push([colors[4], nn+4, nn+3, nn+7]);
-        model.f.push([colors[4], nn+7, nn+8, nn+4]);
-        //left
-        model.f.push([colors[5], nn+5, nn+6, nn+2]);
-        model.f.push([colors[5], nn+2, nn+1, nn+5]);
-
+          //front
+          model.f.push([colors[0], nn+1, nn+2, nn+3]);
+          model.f.push([colors[0], nn+3, nn+4, nn+1]);
+          //top
+          model.f.push([colors[1], nn+2, nn+6, nn+7]);
+          model.f.push([colors[1], nn+7, nn+3, nn+2]);
+          //back
+          model.f.push([colors[2], nn+6, nn+5, nn+8]);
+          model.f.push([colors[2], nn+8, nn+7, nn+6]);
+          //bottom
+          model.f.push([colors[3], nn+5, nn+1, nn+4]);
+          model.f.push([colors[3], nn+4, nn+8, nn+5]);
+          //right
+          model.f.push([colors[4], nn+4, nn+3, nn+7]);
+          model.f.push([colors[4], nn+7, nn+8, nn+4]);
+          //left
+          model.f.push([colors[5], nn+5, nn+6, nn+2]);
+          model.f.push([colors[5], nn+2, nn+1, nn+5]);
+        }
         $n++;
       }
     }
   }
+  
+  // model to model
+  for (v in model.v) {
+    model.v[v][1] += 14.3;
+    model.v[v][2] -= 7.5+3;
+    model.v[v][0] -= 4;
+    
+  }
+  
+  
   models['cubes'] = model;
   
 }
@@ -2060,7 +2074,7 @@ function init_room() {
     ],[
       '#7F3F0F'
     ], [
-      '#ffffff'
+      '#ffffff','#808080'
     ]
   ];
   
@@ -2105,17 +2119,9 @@ function init_room() {
         point = rotZ(point,-90);
         point[1] *= drr;
         point[0] *= drr2;
-        
-        point = rotX(point,2.75);
-        
         //подгонка под кадр (потом убрать)
+        point = rotX(point,2.75);
 
-
-        
-        //point = rotX(point,-45);
-        //point = rotZ(point,-5);
-
-        
         model.v.push(point);
         m++;
       }
@@ -2125,20 +2131,69 @@ function init_room() {
         var nn = n*8 + i;
         var n2 = nn+2 - (i+2 > 8 ? 8 : 0);
         var n10 = nn+10 - (i+10 > 16 ? 8 : 0);
-        if ( n == 5 && i == 3) {
-          model.f.push([colors[3][0], nn+1, nn+9, n10]);
-          model.f.push([colors[3][0], n10, n2, nn+1]);          
+        if ( n == 6 && i == 3) {
+          var p1 = nn+1;
+          var p2 = nn+9;
+          var p3 = n10;
+          var p4 = n2;
+          var clr = colors[i&1][n];
         } else {
-        
           model.f.push([colors[i&1][n], nn+1, nn+9, n10]);
           model.f.push([colors[i&1][n], n10, n2, nn+1]);
         }
       }
     }
   }
+
+  //hole
+  //console.log(p1,p2,p3,p4);
+  //model.f.push([colors[3][0], p1, p2, p3]);
+  
+  var holeDx = 0.4;
+  var holeDy = 0.25;
+  var vv = model.v.length;
+  var dirH = normalize(vSub(model.v[p3-1], model.v[p2-1]));
+  var dirV = normalize(vSub(model.v[p2-1], model.v[p1-1]));
+  
+  
+  var point = model.v[p1-1];
+  point = vMov(point, dirH ,holeDx);
+  point = vMov(point, dirV ,holeDy);
+  model.v.push(point);
+  
+  point = model.v[p2-1];
+  point = vMov(point, dirH ,holeDx);
+  point = vMov(point, dirV ,-holeDy);
+  model.v.push(point);
+  
+  point = model.v[p3-1];
+  point = vMov(point, dirH ,-holeDx);
+  point = vMov(point, dirV ,-holeDy);
+  model.v.push(point);
+
+  point = model.v[p4-1];
+  point = vMov(point, dirH ,-holeDx);
+  point = vMov(point, dirV ,holeDy);
+  model.v.push(point);
+  
+  model.f.push([clr, p1, p2, vv+2]);
+  model.f.push([clr, vv+2, vv+1, p1]);
+  
+  model.f.push([clr, p2, p3, vv+3]);
+  model.f.push([clr, vv+3, vv+2, p2]);
+
+  model.f.push([clr, p3, p4, vv+4]);
+  model.f.push([clr, vv+4, vv+3, p3]);
+
+  model.f.push([clr, p4, p1, vv+1]);
+  model.f.push([clr, vv+1, vv+4, p4]);
+  
+  
+  // center poligons
   for (var i = 0; i < 6; i++) {
     model.f.push([colors[2][0], 1, i+2, i+3]);
   }
+
   models['room'] = model;
  
   resetCam();
@@ -2146,7 +2201,70 @@ function init_room() {
   picoEye = [-0.08617177850283218, -2.915735228747263, -2.5154866908391];
   picoDir = [0.10071350320492653, 0.8711591245831845, 0.4805606828774604];
   picoUp = [-0.2863519934995061, 0.4879594381549821, -0.8245593505226492];
+  camPathList['room'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['room'].push({"frame":1538, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
+  picoEye = [2.03785758495921, -1.904919193018332, -2.4573104775540973];
+  picoDir = [-0.5713398446386186, 0.6169325314840413, 0.5412624442218502];
+  picoUp = [-0.5673796863997169, 0.17961088018623866, -0.8036294066170574];
+  camPathList['room'].push({"frame":1565, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [1.856841733944268, -0.21380351831538608, -2.4892915991391935];
+  picoDir = [-0.5403871341587289, 0.6726828965498378, 0.5054497659758448];
+  picoUp = [-0.5390019599590818, 0.18453043873604735, -0.8218426883170223];
+  camPathList['room'].push({"frame":1585, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.2734179136910122, 3.6974848014553365, -2.069942665974733];
+  picoDir = [-0.18685457775855932, 0.9490221547746975, 0.2538549123366744];
+  picoUp = [-0.2650333377250863, 0.20012610898764824, -0.9432427420318507];
+  camPathList['room'].push({"frame":1615, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.16095173105482394, 9.97346422533326, -1.8219755085608407];
+  picoDir = [-0.575192526120812, 0.8022380888822742, 0.1598987387107089];
+  picoUp = [-0.18058219472143383, 0.06612086599477994, -0.9813348572376763];
+  camPathList['room'].push({"frame":1640, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.6666571024287922, 16.79025418470249, -2.0245419295351135];
+  picoDir = [-0.963285857021486, 0.2576792060321931, 0.07537761233284093];
+  picoUp = [-0.105085270632809, -0.1035167322963368, -0.989060853552863];
+ 
+  picoEye = [0.690126230394534, 16.789241269873692, -1.9864870476396574];
+  picoDir = [-0.964987155638782, 0.25096624336891604, 0.0762609607955943];
+  picoUp = [-0.105085270632809, -0.1035167322963368, -0.989060853552863];
+  picoEye = [0.786624945958412, 16.764144645536792, -1.9941131437192168];
+  picoDir = [-0.964987155638782, 0.25096624336891604, 0.0762609607955943];
+  picoUp = [-0.105085270632809, -0.1035167322963368, -0.989060853552863];
+  camPathList['room'].push({"frame":1679, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.2747315946707258, 18.68829350542814, -2.2631200335677395];
+  picoDir = [-0.9973460570088052, 0.05318073908411532, 0.04972576353819412];
+  picoUp = [-0.05459475245937595, -0.11184958405307076, -0.9922243111066442];
+  picoEye = [0.008238630618206086, 18.555232454013844, -2.4751356619350555];
+  picoDir = [-0.9977981110777385, -0.030039451495781157, 0.05913172484825467];
+  picoUp = [-0.05459475245937595, -0.11184958405307076, -0.9922243111066442];
+  camPathList['room'].push({"frame":1706, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [-3.9916675061894242, 18.551947407296435, -3.8615485581601456];
+  picoDir = [-0.8568021127075283, -0.5135466321659026, 0.04647575982138701];
+  picoUp = [-0.014849350570148974, -0.06389915620588695, -0.9978458771893686];
+  camPathList['room'].push({"frame":1742, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [-7.301925824553604, 18.803862576558185, -4.648973050092361];
+  picoDir = [-0.7624621250116146, -0.6373806300449806, -0.11134379356855378];
+  picoUp = [0.17120984908152848, -0.03193306467959137, -0.9847169476340141];
+  camPathList['room'].push({"frame":1768, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [-8.735118477603116, 16.66024958956873, -6.10827658149331];
+  picoDir = [-0.7926546810170815, -0.6062315195679682, -0.06466762206870541];
+  picoUp = [0.16221612401142482, -0.1065566729110716, -0.9809850175047696];
+  camPathList['room'].push({"frame":1790, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [-8.464187647803858, 14.943807057080956, -6.261179098817448];
+  picoDir = [-0.9252704574216493, -0.3597602367080351, -0.12019630903863274];
+  picoUp = [0.16774528275929823, -0.10232140981767666, -0.9805059149260275];
+  camPathList['room'].push({"frame":1799, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  camPathList['room'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 }
 
 

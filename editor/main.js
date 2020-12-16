@@ -1,6 +1,6 @@
 'use strict';
 // 957 997 1035 1075 1135 1187
-let frameNumberStart = 1538;//150;
+let frameNumberStart = 1538;//1538;//150;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
@@ -164,8 +164,9 @@ let keyCodeList = {
     77: 'isKeyM', //m - move
     86: 'isKeyV', //v - rot rotorin
 }
+
 function controlKey(e, state) {
-    console.log(e.keyCode);
+    //console.log(e.keyCode);
     for (let keyCode in keyCodeList) {
         if (keyCode == e.keyCode) {
             window[keyCodeList[keyCode]] = state;
@@ -175,41 +176,52 @@ function controlKey(e, state) {
 }
 
 function controlMouseMove(e, mltX) {
-    if (window['isKeyV'] == 1) {
-      if (e.ctrlKey) {
-        camRotVec(rotorin, mltX * (offsetX - e.offsetX) * 0.25);
-      } else {
-        camMovVec(rotorin, mltX * (offsetX - e.offsetX) * 0.01);
-      }
+  if (window['isKeyV'] == 1) {
+    if (e.ctrlKey) {
+      camRotVec(rotorin, mltX * (offsetX - e.offsetX) * 0.25);
+    } else {
+      camMovVec(rotorin, mltX * (offsetX - e.offsetX) * 0.01);
     }
-
-    if (window['isKeyY'] == 1) {
-        if (e.ctrlKey) {
-            camRotUp(mltX * (offsetX - e.offsetX) * 0.1);
-        } else {
-            camMovUp((e.offsetY - offsetY) * 0.01);
-        }
+  }
+  if (window['isKeyY'] == 1) {
+    if (e.ctrlKey) {
+      camRotUp(mltX * (offsetX - e.offsetX) * 0.1);
     }
-    if (window['isKeyZ'] == 1) {
-        if (e.ctrlKey) {
-            camRotDir((e.offsetY - offsetY) * 0.1);
-        } else {
-            camMovDir((e.offsetY - offsetY) * 0.01);
-        }
+    if (e.shiftKey) {
+      camRotY(mltX * (offsetX - e.offsetX) * 0.1);
     }
-    if (window['isKeyX'] == 1) {
-        if (e.ctrlKey) {
-            camRotH((e.offsetY - offsetY) * 0.1);
-        } else {
-            camMovH(mltX * (offsetX - e.offsetX) * 0.01);
-        }
+    if (!e.ctrlKey && !e.shiftKey) {
+      camMovUp((e.offsetY - offsetY) * 0.01);
     }
-    if (window['isKeyM'] == 1) {
-        camMovUp((e.offsetY - offsetY) * 0.01);
-        camMovH(mltX * (offsetX - e.offsetX) * 0.01);
+  }
+  if (window['isKeyZ'] == 1) {
+    if (e.ctrlKey) {
+      camRotDir((e.offsetY - offsetY) * 0.1);
     }
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
+    if (e.shiftKey) {
+      camRotZ((offsetY - e.offsetY) * 0.1);
+    }
+    if (!e.ctrlKey && !e.shiftKey) {
+      camMovDir((e.offsetY - offsetY) * 0.01);
+    }
+  }
+  if (window['isKeyX'] == 1) {
+    if (e.ctrlKey) {
+      camRotH((e.offsetY - offsetY) * 0.1);
+    }
+    if (e.shiftKey) {
+      camRotX(mltX * (offsetX - e.offsetX) * 0.1);
+    }
+    if (!e.ctrlKey && !e.shiftKey) {
+      camMovH(mltX * (offsetX - e.offsetX) * 0.01);
+    }
+  }
+  if (window['isKeyM'] == 1) {
+    camMovUp((e.offsetY - offsetY) * 0.01);
+    camMovH(mltX * (offsetX - e.offsetX) * 0.01);
+  }
+  offsetX = e.offsetX;
+  offsetY = e.offsetY;
 }
 function controlMouseWheel (e) {
     if (window['isKeyM'] == 1) {
