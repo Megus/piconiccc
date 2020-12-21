@@ -10,6 +10,26 @@ const picoPalette = [
   [0x06, 0x5a, 0xb5], [0x75, 0x46, 0x65], [0xff, 0x6e, 0x59], [0xff, 0x9d, 0x81]
 ];
 
+const modelPalettes = [
+  ["tonnel2"],
+  ["tonnel3"],
+  ["rotor", "rotorin"],
+  ["tonnel4"],
+  ["arch1"],
+  ["arch2"],
+  ["tonnel5"],
+];
+
+const adjustments = [
+  1.3,
+  1.3,
+  1.3,
+  1.3,
+  1.3,
+  1.3,
+  1.3,
+];
+
 function decodeHex(hexColor) {
   const rgb = parseInt(hexColor.substring(1), 16);
   const r = (rgb & 0xff0000) / 0x10000;
@@ -39,6 +59,10 @@ function modifyColor(col) {
   return res;
 }
 
+function toGrayscale(col) {
+  return col[0] * 0.2989 + col[1] * 0.5870 + col[2] * 0.1140;
+}
+
 function mixColors(col1, col2) {
   return [
     Math.sqrt(col1[0] * col1[0] * 0.5 + col2[0] * col2[0] * 0.5),
@@ -51,8 +75,142 @@ function notBlack(col) {
   return col[0] > 0 && col[1] > 0 && col[2] > 0;
 }
 
+function findClosestPair(color, palette) {
+  let minDiff = 1000;
+  let pico1 = 0;
+  let pico2 = 0;
+  for (let c = 0; c < palette.length; c++) {
+    for (let d = 0; d < palette.length; d++) {
+      const mixedColor = mixColors(palette[c], palette[d]);
+      const mixedDiff = colorDistance(palette[c], palette[d]);
+      const diff = colorDistance(color, mixedColor);
+      const wdiff = diff + 0.05 * mixedDiff;
 
-module.exports.buildPalette = function(models) {
+      if (wdiff < minDiff/* && !(notBlack(color) && c == 0 && d == 0)*/) {
+        minDiff = wdiff;
+        pico1 = c;
+        pico2 = d;
+      }
+    }
+  }
+  return [pico1, pico2];
+}
+
+function buildModelPalette(models, palIdx) {
+  const usedColors = {};
+  const picoPaletteCounts = {};
+  const palette = [];
+  const res = [];
+
+  let originalColorsCount = 0;
+
+  // Find all colors used in models
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    for (let c = 0; c < model.f.length; c++) {
+      if (usedColors[model.f[c][0]] === undefined) originalColorsCount++;
+      usedColors[model.f[c][0]] = true;
+    }
+  }
+
+  //console.log(`Total colors: ${originalColorsCount}`);
+
+  // Pick the closest colors from the overall PICO-8 palette
+  let paletteLength = 0;
+  for (const hexColor in usedColors) {
+    const color = modifyColor(decodeHex(hexColor));
+    let minDiff = 1000;
+    const picoColors = findClosestPair(color, picoPalette);
+    picoColors.forEach((picoColor) => {
+      if (picoPaletteCounts[picoColor] === undefined) {
+        picoPaletteCounts[picoColor] = 0;
+        paletteLength++;
+      }
+      picoPaletteCounts[picoColor]++;
+    });
+  }
+  // We'll always have black color in the palette for the background
+  if (picoPaletteCounts[0] != null) {
+    delete picoPaletteCounts[0];
+    paletteLength--;
+  }
+
+  console.log(`Unique PICO-8 colors: ${paletteLength}`);
+  console.log(picoPaletteCounts);
+
+  // Add black color to the palette
+  palette.push([0, 0, 0, 0]);
+
+  // If the palette is too bit (more than 7 colors), remove some colors
+  if (paletteLength > 7) {
+    const weighedColors = [];
+    for (const picoColor in picoPaletteCounts) {
+      const count = picoPaletteCounts[picoColor];
+      const wcol = [parseInt(picoColor), count, 0, 0];
+      // Find the minimal distance to other colors in the palette
+      let minDiff = 1000;
+      for (const color2 in picoPaletteCounts) {
+        if (color2 != picoColor) {
+          const diff = colorDistance(picoPalette[picoColor], picoPalette[color2])
+          if (diff < minDiff) minDiff = diff;
+        }
+      }
+      wcol[2] = minDiff;
+      wcol[3] = minDiff + count * 100;
+
+      weighedColors.push(wcol);
+    }
+    weighedColors.sort((a, b) => b[3] - a[3]);
+    //console.log(weighedColors);
+
+    for (let c = 0; c < 7; c++) {
+      const idx = weighedColors[c][0];
+      let picoColor = idx;
+      if (picoColor >= 16) picoColor += (128 - 16); // Change for undocumented palette
+      const col = [picoPalette[idx][0], picoPalette[idx][1], picoPalette[idx][2], picoColor];
+      palette.push(col);
+    }
+  } else {
+    for (const colIdx in picoPaletteCounts) {
+      let picoColor = parseInt(colIdx);
+      if (picoColor >= 16) picoColor += (128 - 16); // Change for undocumented palette
+      const col = [picoPalette[colIdx][0], picoPalette[colIdx][1], picoPalette[colIdx][2], picoColor];
+      palette.push(col);
+    }
+  }
+
+  // Sort colors by their brightness
+  palette.sort((a, b) => toGrayscale(a) - toGrayscale(b));
+  console.log(palette);
+
+
+  for (let c = 1; c < palette.length; c++) {
+    res.push(palette[c][3]);
+  }
+
+  // Assign best matching colors
+  for (const hexColor in usedColors) {
+    const color = modifyColor(decodeHex(hexColor));
+    const pico = findClosestPair(color, palette);
+    if (palIdx % 2 == 1) {
+      pico[0] += 8;
+      pico[1] += 8;
+    }
+    usedColors[hexColor] = pico[0] * 16 + pico[1];
+  }
+
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    model.pal = palIdx + 1;
+    for (let c = 0; c < model.f.length; c++) {
+      model.f[c][0] = usedColors[model.f[c][0]];
+    }
+  }
+
+  return res;
+}
+
+/*function buildModelPalette(models, palIdx) {
   const usedColors = {};
   const picoPaletteCounts = {};
   const palette = [];
@@ -63,9 +221,9 @@ module.exports.buildPalette = function(models) {
 
   let originalColorsCount = 0;
 
-  // Find all colors used in all models
-  for (const name in models) {
-    const model = models[name];
+  // Find all colors used in models
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
     for (let c = 0; c < model.f.length; c++) {
       if (usedColors[model.f[c][0]] === undefined) originalColorsCount++;
       usedColors[model.f[c][0]] = true;
@@ -110,11 +268,7 @@ module.exports.buildPalette = function(models) {
   }
 
   // Sort colors by their brightness
-  palette.sort((a, b) => {
-    const ag = a[0] * 0.2989 + a[1] * 0.5870 + a[2] * 0.1140;
-    const bg = b[0] * 0.2989 + b[1] * 0.5870 + b[2] * 0.1140;
-    return ag - bg;
-  });
+  palette.sort((a, b) => toGrayscale(a) - toGrayscale(b));
 
   for (let c = 1; c < palette.length; c++) {
     res.palette.push(palette[c][3]);
@@ -147,12 +301,23 @@ module.exports.buildPalette = function(models) {
     usedColors[hexColor] = pico1 * 16 + pico2;
   }
 
-  for (const name in models) {
-    const model = models[name];
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
     for (let c = 0; c < model.f.length; c++) {
       model.f[c][0] = usedColors[model.f[c][0]];
     }
   }
 
   return res;
+}
+*/
+
+module.exports.buildPalette = function(models) {
+  const palettes = [];
+  for (let c = 0; c < modelPalettes.length; c++) {
+    const pm = modelPalettes[c].map((name) => models[name]);
+    const palette = buildModelPalette(pm, c);
+    palettes.push(palette);
+  }
+  return palettes;
 }

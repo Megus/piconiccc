@@ -5,9 +5,9 @@ function _init()
   frame = 173
   dframe = 0
 
-  for i = 1, #colors.palette do
-    pal(i, colors.palette[i], 1)
-  end
+  pal(0, 0, 1)
+  pal(8, 0, 1)
+
 end
 
 function _update60()
@@ -18,6 +18,18 @@ function _update60()
     frame -= 1
   else
     frame += 0.2
+  end
+end
+
+function set_palette(pn)
+  if pn & 1 == 1 then
+    for i = 1, #colors[pn] do
+      pal(i, colors[pn][i], 1)
+    end
+  else
+    for i = 1, #colors[pn] do
+      pal(i + 8, colors[pn][i], 1)
+    end
   end
 end
 
@@ -34,6 +46,7 @@ function _draw()
       models = models .. renderlist[c] .. " "
       camera = campath[renderlist[c + 1]]
       cameras = cameras .. renderlist[c + 1] .. " "
+      set_palette(model.pal)
       set_cam_idx()
       spline_cam()
       if renderlist[c] == "rotorin" then
