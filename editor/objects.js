@@ -28,8 +28,19 @@ const models_arch2_fend = 1193;
 const models_arch1_fstart = 723;//925;
 const models_arch1_fend = 941;//941;
 
-const models_cubes_fstart = 0;
+
+const models_room_fstart = 1538;
+const models_room_fend = 9999;
+
+const models_cubes_fstart = 1538;
 const models_cubes_fend = 9999;
+
+const models_cubes2_fstart = 1538;
+const models_cubes2_fend = 9999;
+
+//1784 must invert
+
+
 
 function init_models() {
   //init_testcube();
@@ -38,13 +49,13 @@ function init_models() {
   init_room();
  
   
-  //init_tonnel5();
-  //init_arch2();
-  //init_arch1();
-  //init_tonnel4();
-  //init_rotor();
-  //init_tonnel3();
-  //init_tonnel2(); //tonnel-2 + squad
+  init_tonnel5();
+  init_arch2();
+  init_arch1();
+  init_tonnel4();
+  init_rotor();
+  init_tonnel3();
+  init_tonnel2(); //tonnel-2 + squad
 
   //console.log(models);
   //console.log(camPathList);
@@ -149,8 +160,8 @@ function init_rotor() {
         let v1 = 2+i <= 16 ? 2+i : 1;
         let v2 = 18+i <= 32 ? 18+i : 17;
         if (!(i==3 && n ==0)) {
-          model.f.push([colors[ci][clr1], nn+1+i, nn+17+i, nn+v2]);
-          model.f.push([colors[ci][clr1], nn+v2, nn+v1, nn+1+i]);
+          model.f.push([colors[ci][clr1], nn+1+i, nn+17+i, nn+v2, nn+v1]);
+          //model.f.push([colors[ci][clr1], nn+v2, nn+v1, nn+1+i]);
         }
       }
     }
@@ -175,25 +186,23 @@ function init_rotor() {
     model.v.push(point2);
   }
 
-  model.f.push([colors3[0], 4, 20, nn+2]);
-  model.f.push([colors3[0], nn+2, nn+1, 4]);
-  model.f.push([colors3[1], 20, 21, nn+3]);
-  model.f.push([colors3[1], nn+3, nn+2, 20]);
-  model.f.push([colors3[2], 21, 5, nn+4]);
-  model.f.push([colors3[2], nn+4, nn+3, 21]);
-  model.f.push([colors3[3], 5, 4, nn+1]);
-  model.f.push([colors3[3], nn+1, nn+4, 5]);
+  model.f.push([colors3[0], 4, 20, nn+2, nn+1]);
+  //model.f.push([colors3[0], nn+2, nn+1, 4]);
+  model.f.push([colors3[1], 20, 21, nn+3, nn+2]);
+  //model.f.push([colors3[1], nn+3, nn+2, 20]);
+  model.f.push([colors3[2], 21, 5, nn+4, nn+3]);
+  //model.f.push([colors3[2], nn+4, nn+3, 21]);
+  model.f.push([colors3[3], 5, 4, nn+1, nn+4]);
+  //model.f.push([colors3[3], nn+1, nn+4, 5]);
 
-
-
-  model.f.push([colors[3][1], 3, 4, 5]);
-  model.f.push([colors[3][1], 5, 6, 3]);
-  model.f.push([colors[3][1], 7, 8, 9]);
-  model.f.push([colors[3][1], 9, 10, 7]);
-  model.f.push([colors[3][1], 11, 12, 13]);
-  model.f.push([colors[3][1], 13, 14, 11]);
-  model.f.push([colors[3][1], 15, 16, 1]);
-  model.f.push([colors[3][1], 1, 2, 15]);
+  model.f.push([colors[3][1], 3, 4, 5, 6]);
+  //model.f.push([colors[3][1], 5, 6, 3]);
+  model.f.push([colors[3][1], 7, 8, 9, 10]);
+  //model.f.push([colors[3][1], 9, 10, 7]);
+  model.f.push([colors[3][1], 11, 12, 13, 14]);
+  //model.f.push([colors[3][1], 13, 14, 11]);
+  model.f.push([colors[3][1], 15, 16, 1, 2]);
+  //model.f.push([colors[3][1], 1, 2, 15]);
 
   //inner
   let colors2 = [
@@ -227,8 +236,8 @@ function init_rotor() {
       for (let i = 0; i < 8; i++) {
         let v1 = 2+i <= 8 ? 2+i : 1;
         let v2 = 10+i <= 16 ? 10+i : 9;
-        model2.f.push([colors2[i%2][n%4], nn+1+i, nn+v1, nn+v2]);
-        model2.f.push([colors2[i%2][n%4], nn+v2, nn+9+i, nn+1+i]);
+        model2.f.push([colors2[i%2][n%4], nn+1+i, nn+v1, nn+v2, nn+9+i]);
+        //model2.f.push([colors2[i%2][n%4], nn+v2, nn+9+i, nn+1+i]);
       }
     }
   }
@@ -447,11 +456,11 @@ function init_tonnel5() {
     if (n < nqty - 1) {
       let nn = n*10;
       clr = n%2 == 0 ? 0 : 1;
-      model.f.push([colors[clr][0], nn+1, nn+10, nn+20]);
-      model.f.push([colors[clr][0], nn+20, nn+11, nn+1]);
+      model.f.push([colors[clr][0], nn+1, nn+10, nn+20, nn+11]);
+      //model.f.push([colors[clr][0], nn+20, nn+11, nn+1]);
       for (let i = 0; i < 9; i++) {
-        model.f.push([colors[clr][1+i], nn+2+i, nn+1+i, nn+11+i]);
-        model.f.push([colors[clr][1+i], nn+11+i, nn+12+i, nn+2+i]);
+        model.f.push([colors[clr][1+i], nn+2+i, nn+1+i, nn+11+i, nn+12+i]);
+        //model.f.push([colors[clr][1+i], nn+11+i, nn+12+i, nn+2+i]);
       }
     }
   }
@@ -771,67 +780,67 @@ function init_tonnel3() {
     let nn = n*36;
     clr = n%2 == 0 ? 0 : 1;
 
-    model.f.push([colors[clr][0], nn+2, nn+3, nn+11]);
-    model.f.push([colors[clr][0], nn+11, nn+10, nn+2]);
-    model.f.push([colors[clr][1], nn+3, nn+4, nn+12]);
-    model.f.push([colors[clr][1], nn+12, nn+11, nn+3]);
-    model.f.push([colors[clr][2], nn+4, nn+5, nn+13]);
-    model.f.push([colors[clr][2], nn+13, nn+12, nn+4]);
-    model.f.push([colors[clr][1], nn+5, nn+6, nn+14]);
-    model.f.push([colors[clr][1], nn+14, nn+13, nn+5]);
-    model.f.push([colors[clr][0], nn+6, nn+7, nn+15]);
-    model.f.push([colors[clr][0], nn+15, nn+14, nn+6]);
+    model.f.push([colors[clr][0], nn+2, nn+3, nn+11, nn+10]);
+    //model.f.push([colors[clr][0], nn+11, nn+10, nn+2]);
+    model.f.push([colors[clr][1], nn+3, nn+4, nn+12, nn+11]);
+    //model.f.push([colors[clr][1], nn+12, nn+11, nn+3]);
+    model.f.push([colors[clr][2], nn+4, nn+5, nn+13, nn+12]);
+    //model.f.push([colors[clr][2], nn+13, nn+12, nn+4]);
+    model.f.push([colors[clr][1], nn+5, nn+6, nn+14, nn+13]);
+    //model.f.push([colors[clr][1], nn+14, nn+13, nn+5]);
+    model.f.push([colors[clr][0], nn+6, nn+7, nn+15, nn+14]);
+    //model.f.push([colors[clr][0], nn+15, nn+14, nn+6]);
 
-    model.f.push([colors[clr][3], nn+18, nn+1, nn+2]);
-    model.f.push([colors[clr][4], nn+2, nn+17, nn+18]);
-    model.f.push([colors[clr][4], nn+9, nn+18, nn+17]);
-    model.f.push([colors[clr][3], nn+17, nn+10, nn+9]);
+    model.f.push([colors[clr][3], nn+18, nn+1, nn+2, nn+17]);
+    //model.f.push([colors[clr][4], nn+2, nn+17, nn+18]);
+    model.f.push([colors[clr][4], nn+9, nn+18, nn+17, nn+10]);
+    //model.f.push([colors[clr][3], nn+17, nn+10, nn+9]);
 
-    model.f.push([colors[clr][3], nn+20, nn+7, nn+8]);
-    model.f.push([colors[clr][4], nn+8, nn+19, nn+20]);
-    model.f.push([colors[clr][4], nn+15, nn+20, nn+19]);
-    model.f.push([colors[clr][3], nn+19, nn+16, nn+15]);
+    model.f.push([colors[clr][3], nn+20, nn+7, nn+8, nn+19]);
+    //model.f.push([colors[clr][4], nn+8, nn+19, nn+20]);
+    model.f.push([colors[clr][4], nn+15, nn+20, nn+19, nn+16]);
+    //model.f.push([colors[clr][3], nn+19, nn+16, nn+15]);
 
-    model.f.push([colors[clr][5], nn+1, nn+18, nn+19]);
-    model.f.push([colors[clr][5], nn+19, nn+8, nn+1]);
-    model.f.push([colors[clr][6], nn+18, nn+9, nn+16]);
-    model.f.push([colors[clr][6], nn+16, nn+19, nn+18]);
+    model.f.push([colors[clr][5], nn+1, nn+18, nn+19, nn+8]);
+    //model.f.push([colors[clr][5], nn+19, nn+8, nn+1]);
+    model.f.push([colors[clr][6], nn+18, nn+9, nn+16, nn+19]);
+    //model.f.push([colors[clr][6], nn+16, nn+19, nn+18]);
 
-    model.f.push([colors[clr][10], nn+10, nn+22, nn+21]);
-    model.f.push([colors[clr][10], nn+21, nn+9, nn+10]);
+    model.f.push([colors[clr][10], nn+10, nn+22, nn+21, nn+9]);
+    //model.f.push([colors[clr][10], nn+21, nn+9, nn+10]);
 
-    model.f.push([colors[clr][9], nn+11, nn+23, nn+22]);
-    model.f.push([colors[clr][9], nn+22, nn+10, nn+11]);
+    model.f.push([colors[clr][9], nn+11, nn+23, nn+22, nn+10]);
+    //model.f.push([colors[clr][9], nn+22, nn+10, nn+11]);
 
-    model.f.push([colors[clr][8], nn+12, nn+24, nn+23]);
-    model.f.push([colors[clr][8], nn+23, nn+11, nn+12]);
+    model.f.push([colors[clr][8], nn+12, nn+24, nn+23, nn+11]);
+    //model.f.push([colors[clr][8], nn+23, nn+11, nn+12]);
 
-    model.f.push([colors[clr][7], nn+13, nn+25, nn+24]);
-    model.f.push([colors[clr][7], nn+24, nn+12, nn+13]);
+    model.f.push([colors[clr][7], nn+13, nn+25, nn+24, nn+12]);
+    //model.f.push([colors[clr][7], nn+24, nn+12, nn+13]);
 
-    model.f.push([colors[clr][8], nn+14, nn+26, nn+25]);
-    model.f.push([colors[clr][8], nn+25, nn+13, nn+14]);
+    model.f.push([colors[clr][8], nn+14, nn+26, nn+25, nn+13]);
+    //model.f.push([colors[clr][8], nn+25, nn+13, nn+14]);
 
-    model.f.push([colors[clr][9], nn+15, nn+27, nn+26]);
-    model.f.push([colors[clr][9], nn+26, nn+14, nn+15]);
+    model.f.push([colors[clr][9], nn+15, nn+27, nn+26, nn+14]);
+    //model.f.push([colors[clr][9], nn+26, nn+14, nn+15]);
 
-    model.f.push([colors[clr][10], nn+16, nn+28, nn+27]);
-    model.f.push([colors[clr][10], nn+27, nn+15, nn+16]);
+    model.f.push([colors[clr][10], nn+16, nn+28, nn+27, nn+15]);
+    //model.f.push([colors[clr][10], nn+27, nn+15, nn+16]);
 
-    model.f.push([colors[clr][11], nn+9, nn+21, nn+28]);
-    model.f.push([colors[clr][11], nn+28, nn+16, nn+9]);
+    model.f.push([colors[clr][11], nn+9, nn+21, nn+28, nn+16]);
+    //model.f.push([colors[clr][11], nn+28, nn+16, nn+9]);
 
     // border-h
-    model.f.push([colors[clr][12], nn+24, nn+25, nn+33]);
-    model.f.push([colors[clr][12], nn+33, nn+32, nn+24]);
+    model.f.push([colors[clr][12], nn+24, nn+25, nn+33, nn+32]);
+    //model.f.push([colors[clr][12], nn+33, nn+32, nn+24]);
     for (let i = 1; i < 4; i++) {
-      model.f.push([colors[clr][12+i], nn+24+i, nn+25+i, nn+33+i]);
-      model.f.push([colors[clr][12+i], nn+33+i, nn+32+i, nn+24+i]);
-      model.f.push([colors[clr][12+i], nn+24-i, nn+25-i, nn+33-i]);
-      model.f.push([colors[clr][12+i], nn+33-i, nn+32-i, nn+24-i]);
+      model.f.push([colors[clr][12+i], nn+24+i, nn+25+i, nn+33+i, nn+32+i]);
+      //model.f.push([colors[clr][12+i], nn+33+i, nn+32+i, nn+24+i]);
+      model.f.push([colors[clr][12+i], nn+24-i, nn+25-i, nn+33-i, nn+32-i]);
+      //model.f.push([colors[clr][12+i], nn+33-i, nn+32-i, nn+24-i]);
     }
-    model.f.push([colors[clr][16], nn+21, nn+29, nn+36]);
-    model.f.push([colors[clr][16], nn+36, nn+28, nn+21]);
+    model.f.push([colors[clr][16], nn+21, nn+29, nn+36, nn+28]);
+    //model.f.push([colors[clr][16], nn+36, nn+28, nn+21]);
 
   }
 
@@ -1096,32 +1105,32 @@ function init_tonnel2() {
       let nn = n*pqty;
       let n1 = 4;
       let n2 = 8;
-      model.f.push([colors[n%2][0], nn+1, nn+2, nn+6]);
-      model.f.push([colors[n%2][0], nn+6, nn+5, nn+1]);
-      model.f.push([colors[n%2][1], nn+2, nn+3, nn+7]);
-      model.f.push([colors[n%2][1], nn+7, nn+6, nn+2]);
-      model.f.push([colors[n%2][2], nn+3, nn+4, nn+8]);
-      model.f.push([colors[n%2][2], nn+8, nn+7, nn+3]);
-      model.f.push([colors[n%2][3], nn+4, nn+1, nn+5]);
-      model.f.push([colors[n%2][3], nn+5, nn+8, nn+4]);
+      model.f.push([colors[n%2][0], nn+1, nn+2, nn+6, nn+5]);
+      //model.f.push([colors[n%2][0], nn+6, nn+5, nn+1]);
+      model.f.push([colors[n%2][1], nn+2, nn+3, nn+7, nn+6]);
+      //model.f.push([colors[n%2][1], nn+7, nn+6, nn+2]);
+      model.f.push([colors[n%2][2], nn+3, nn+4, nn+8, nn+7]);
+      //model.f.push([colors[n%2][2], nn+8, nn+7, nn+3]);
+      model.f.push([colors[n%2][3], nn+4, nn+1, nn+5, nn+8]);
+      //model.f.push([colors[n%2][3], nn+5, nn+8, nn+4]);
       //---
-      model.f.push([colors[n%2][4], nn+n1+1, nn+n1+2, nn+n1+6]);
-      model.f.push([colors[n%2][4], nn+n1+6, nn+n1+5, nn+n1+1]);
-      model.f.push([colors[n%2][5], nn+n1+2, nn+n1+3, nn+n1+7]);
-      model.f.push([colors[n%2][5], nn+n1+7, nn+n1+6, nn+n1+2]);
-      model.f.push([colors[n%2][6], nn+n1+3, nn+n1+4, nn+n1+8]);
-      model.f.push([colors[n%2][6], nn+n1+8, nn+n1+7, nn+n1+3]);
-      model.f.push([colors[n%2][7], nn+n1+4, nn+n1+1, nn+n1+5]);
-      model.f.push([colors[n%2][7], nn+n1+5, nn+n1+8, nn+n1+4]);
+      model.f.push([colors[n%2][4], nn+n1+1, nn+n1+2, nn+n1+6, nn+n1+5]);
+      //model.f.push([colors[n%2][4], nn+n1+6, nn+n1+5, nn+n1+1]);
+      model.f.push([colors[n%2][5], nn+n1+2, nn+n1+3, nn+n1+7, nn+n1+6]);
+      //model.f.push([colors[n%2][5], nn+n1+7, nn+n1+6, nn+n1+2]);
+      model.f.push([colors[n%2][6], nn+n1+3, nn+n1+4, nn+n1+8, nn+n1+7]);
+      //model.f.push([colors[n%2][6], nn+n1+8, nn+n1+7, nn+n1+3]);
+      model.f.push([colors[n%2][7], nn+n1+4, nn+n1+1, nn+n1+5, nn+n1+8]);
+      //model.f.push([colors[n%2][7], nn+n1+5, nn+n1+8, nn+n1+4]);
       //---
-      model.f.push([colors[n%2][8], nn+n2+1, nn+n2+2, nn+n2+6]);
-      model.f.push([colors[n%2][8], nn+n2+6, nn+n2+5, nn+n2+1]);
-      model.f.push([colors[n%2][9], nn+n2+2, nn+n2+3, nn+n2+7]);
-      model.f.push([colors[n%2][9], nn+n2+7, nn+n2+6, nn+n2+2]);
-      model.f.push([colors[n%2][10], nn+n2+3, nn+n2+4, nn+n2+8]);
-      model.f.push([colors[n%2][10], nn+n2+8, nn+n2+7, nn+n2+3]);
-      model.f.push([colors[n%2][11], nn+n2+4, nn+n2+1, nn+n2+5]);
-      model.f.push([colors[n%2][11], nn+n2+5, nn+n2+8, nn+n2+4]);
+      model.f.push([colors[n%2][8], nn+n2+1, nn+n2+2, nn+n2+6, nn+n2+5]);
+      //model.f.push([colors[n%2][8], nn+n2+6, nn+n2+5, nn+n2+1]);
+      model.f.push([colors[n%2][9], nn+n2+2, nn+n2+3, nn+n2+7, nn+n2+6]);
+      //model.f.push([colors[n%2][9], nn+n2+7, nn+n2+6, nn+n2+2]);
+      model.f.push([colors[n%2][10], nn+n2+3, nn+n2+4, nn+n2+8, nn+n2+7]);
+      //model.f.push([colors[n%2][10], nn+n2+8, nn+n2+7, nn+n2+3]);
+      model.f.push([colors[n%2][11], nn+n2+4, nn+n2+1, nn+n2+5, nn+n2+8]);
+      //model.f.push([colors[n%2][11], nn+n2+5, nn+n2+8, nn+n2+4]);
     }
   }
 
@@ -1192,31 +1201,30 @@ function init_tonnel2() {
   // push polygons
   for (let k = 0; k < 2; k++) {
     let nn = nqty*pqty + 17*k;
-    model.f.push([colors2[0], nn+2, nn+3, nn+6]);
-    model.f.push([colors2[0], nn+6, nn+5, nn+2]);
-    model.f.push([colors2[0], nn+4, nn+5, nn+8]);
-    model.f.push([colors2[0], nn+8, nn+7, nn+4]);
+    model.f.push([colors2[0], nn+2, nn+3, nn+6, nn+5]);
+    //model.f.push([colors2[0], nn+6, nn+5, nn+2]);
+    model.f.push([colors2[0], nn+4, nn+5, nn+8, nn+7]);
+    //model.f.push([colors2[0], nn+8, nn+7, nn+4]);
     for (let m = 0; m < 2; m++) {
       nn += m*4;
-      model.f.push([colors2[0], nn+10, nn+11, nn+12]);
-      model.f.push([colors2[0], nn+12, nn+13, nn+10]);
-
-      model.f.push([colors2[1], nn+1, nn+2, nn+11]);
-      model.f.push([colors2[1], nn+11, nn+10, nn+1]);
-      model.f.push([colors2[2], nn+2, nn+5, nn+12]);
-      model.f.push([colors2[2], nn+12, nn+11, nn+2]);
-      model.f.push([colors2[3], nn+5, nn+4, nn+13]);
-      model.f.push([colors2[3], nn+13, nn+12, nn+5]);
-      model.f.push([colors2[4], nn+4, nn+1, nn+10]);
-      model.f.push([colors2[4], nn+10, nn+13, nn+4]);
+      model.f.push([colors2[0], nn+10, nn+11, nn+12, nn+13]);
+      //model.f.push([colors2[0], nn+12, nn+13, nn+10]);
+      model.f.push([colors2[1], nn+1, nn+2, nn+11, nn+10]);
+      //model.f.push([colors2[1], nn+11, nn+10, nn+1]);
+      model.f.push([colors2[2], nn+2, nn+5, nn+12, nn+11]);
+      //model.f.push([colors2[2], nn+12, nn+11, nn+2]);
+      model.f.push([colors2[3], nn+5, nn+4, nn+13, nn+12]);
+      //model.f.push([colors2[3], nn+13, nn+12, nn+5]);
+      model.f.push([colors2[4], nn+4, nn+1, nn+10, nn+13]);
+      //model.f.push([colors2[4], nn+10, nn+13, nn+4]);
     }
   }
   let nn = nqty*pqty;
-  model.f.push([colors2[1], nn+3+17, nn+9, nn+3]);
-  model.f.push([colors2[1], nn+3, nn+9+17, nn+3+17]);
+  model.f.push([colors2[1], nn+3+17, nn+9, nn+3, nn+9+17]);
+  //model.f.push([colors2[1], nn+3, nn+9+17, nn+3+17]);
 
-  model.f.push([colors2[3], nn+1, nn+7, nn+1+17]);
-  model.f.push([colors2[3], nn+1+17, nn+7+17, nn+1]);
+  model.f.push([colors2[3], nn+1, nn+7, nn+1+17, nn+7+17]);
+  //model.f.push([colors2[3], nn+1+17, nn+7+17, nn+1]);
 
   // tonnel3 portal
   sx = 2;
@@ -1266,22 +1274,17 @@ function init_tonnel2() {
     if (n < nnqty-1) {
 
 
-      model.f.push([colors3[n][0], nn+1, nn+2, nn+6]);
-      model.f.push([colors3[n][0], nn+6, nn+5, nn+1]);
-      model.f.push([colors3[n][1], nn+2, nn+3, nn+7]);
-      model.f.push([colors3[n][1], nn+7, nn+6, nn+2]);
-      model.f.push([colors3[n][2], nn+3, nn+4, nn+8]);
-      model.f.push([colors3[n][2], nn+8, nn+7, nn+3]);
-      model.f.push([colors3[n][3], nn+4, nn+1, nn+5]);
-      model.f.push([colors3[n][3], nn+5, nn+8, nn+4]);
+      model.f.push([colors3[n][0], nn+1, nn+2, nn+6, nn+5]);
+      //model.f.push([colors3[n][0], nn+6, nn+5, nn+1]);
+      model.f.push([colors3[n][1], nn+2, nn+3, nn+7, nn+6]);
+      //model.f.push([colors3[n][1], nn+7, nn+6, nn+2]);
+      model.f.push([colors3[n][2], nn+3, nn+4, nn+8, nn+7]);
+      //model.f.push([colors3[n][2], nn+8, nn+7, nn+3]);
+      model.f.push([colors3[n][3], nn+4, nn+1, nn+5, nn+8]);
+      //model.f.push([colors3[n][3], nn+5, nn+8, nn+4]);
 
     }
   }
-
-
-
-
-
 
   models['tonnel2'] = model;
 }
@@ -1339,14 +1342,14 @@ function init_tonnel4_NEW() {
     // push polygons
     if (n < nqty) {
       let nn = n*4;
-      model.f.push([colors[n%2][0], nn+1, nn+5, nn+6]);
-      model.f.push([colors[n%2][0], nn+6, nn+2, nn+1]);
-      model.f.push([colors[n%2][1], nn+2, nn+6, nn+7]);
-      model.f.push([colors[n%2][1], nn+7, nn+3, nn+2]);
-      model.f.push([colors[n%2][0], nn+3, nn+7, nn+8]);
-      model.f.push([colors[n%2][0], nn+8, nn+4, nn+3]);
-      model.f.push([colors[n%2][2], nn+4, nn+8, nn+5]);
-      model.f.push([colors[n%2][2], nn+5, nn+1, nn+4]);
+      model.f.push([colors[n%2][0], nn+1, nn+5, nn+6, nn+2]);
+      //model.f.push([colors[n%2][0], nn+6, nn+2, nn+1]);
+      model.f.push([colors[n%2][1], nn+2, nn+6, nn+7, nn+3]);
+      //model.f.push([colors[n%2][1], nn+7, nn+3, nn+2]);
+      model.f.push([colors[n%2][0], nn+3, nn+7, nn+8, nn+4]);
+      //model.f.push([colors[n%2][0], nn+8, nn+4, nn+3]);
+      model.f.push([colors[n%2][2], nn+4, nn+8, nn+5, nn+1]);
+      //model.f.push([colors[n%2][2], nn+5, nn+1, nn+4]);
     }
   }
     for (let v in model.v) {
@@ -1448,14 +1451,14 @@ function init_tonnel4() {
     // push polygons
     if (n < nqty) {
       let nn = n*4;
-      model.f.push([colors[n%2][0], nn+1, nn+2, nn+6]);
-      model.f.push([colors[n%2][0], nn+6, nn+5, nn+1]);
-      model.f.push([colors[n%2][1], nn+2, nn+3, nn+7]);
-      model.f.push([colors[n%2][1], nn+7, nn+6, nn+2]);
-      model.f.push([colors[n%2][0], nn+3, nn+4, nn+8]);
-      model.f.push([colors[n%2][0], nn+8, nn+7, nn+3]);
-      model.f.push([colors[n%2][2], nn+4, nn+1, nn+5]);
-      model.f.push([colors[n%2][2], nn+5, nn+8, nn+4]);
+      model.f.push([colors[n%2][0], nn+1, nn+2, nn+6, nn+5]);
+      //model.f.push([colors[n%2][0], nn+6, nn+5, nn+1]);
+      model.f.push([colors[n%2][1], nn+2, nn+3, nn+7, nn+6]);
+      //model.f.push([colors[n%2][1], nn+7, nn+6, nn+2]);
+      model.f.push([colors[n%2][0], nn+3, nn+4, nn+8, nn+7]);
+      //model.f.push([colors[n%2][0], nn+8, nn+7, nn+3]);
+      model.f.push([colors[n%2][2], nn+4, nn+1, nn+5, nn+8]);
+      //model.f.push([colors[n%2][2], nn+5, nn+8, nn+4]);
     }
   }
   models['tonnel4'] = model;
@@ -1515,8 +1518,8 @@ function init_arch1() {
       points[p][2] += zmv;
       model.v.push(points[p]);
     }  
-    model.f.push([colors[j][0], jj+2, jj+3, jj+4]);
-    model.f.push([colors[j][0], jj+4, jj+5, jj+2]);
+    model.f.push([colors[j][0], jj+2, jj+3, jj+4, jj+5]);
+    //model.f.push([colors[j][0], jj+4, jj+5, jj+2]);
 
     let rotList = [0,90,2*90,3*90];
     
@@ -1554,27 +1557,35 @@ function init_arch1() {
       let p3 = jj + (n+3 <= 5 ? n+3 : 2);
       let p7 = jj + (n+7 <= 9 ? n+7 : 6);
 
-      model.f.push([colors[j][cList[n][1]], p2, p6, ni+11]);
-      model.f.push([colors[j][cList[n][1]], ni+11, ni+10, p2]);
-      model.f.push([colors[j][cList[n][2]], p6, p1, ni+12]);
-      model.f.push([colors[j][cList[n][2]], ni+12, ni+11, p6]);
-      model.f.push([colors[j][cList[n][3]], p1, p7, ni+13]);
-      model.f.push([colors[j][cList[n][3]], ni+13, ni+12, p1]);
-      model.f.push([colors[j][cList[n][4]], p7, p3, ni+14]);
-      model.f.push([colors[j][cList[n][4]], ni+14, ni+13, p7]);
-      model.f.push([colors[j][cList[n][5]], p3, p2, ni+10]);
-      model.f.push([colors[j][cList[n][5]], ni+10, ni+14, p3]);
+      model.f.push([colors[j][cList[n][1]], p2, p6, ni+11, ni+10]);
+      //model.f.push([colors[j][cList[n][1]], ni+11, ni+10, p2]);
+
+      model.f.push([colors[j][cList[n][2]], p6, p1, ni+12, ni+11]);
+      //model.f.push([colors[j][cList[n][2]], ni+12, ni+11, p6]);
+
+      model.f.push([colors[j][cList[n][3]], p1, p7, ni+13, ni+12]);
+      //model.f.push([colors[j][cList[n][3]], ni+13, ni+12, p1]);
       
-      model.f.push([colors[j][cList[n][6]], ni+10, ni+11, ni+16]);
-      model.f.push([colors[j][cList[n][6]], ni+16, ni+15, ni+10]);
-      model.f.push([colors[j][cList[n][7]], ni+11, ni+12, ni+17]);
-      model.f.push([colors[j][cList[n][7]], ni+17, ni+16, ni+11]);
-      model.f.push([colors[j][cList[n][8]], ni+12, ni+13, ni+18]);
-      model.f.push([colors[j][cList[n][8]], ni+18, ni+17, ni+12]); 
-      model.f.push([colors[j][cList[n][9]], ni+13, ni+14, ni+19]);
-      model.f.push([colors[j][cList[n][9]], ni+19, ni+18, ni+13]);
-      model.f.push([colors[j][cList[n][10]], ni+14, ni+10, ni+15]);
-      model.f.push([colors[j][cList[n][10]], ni+15, ni+19, ni+14]);
+      model.f.push([colors[j][cList[n][4]], p7, p3, ni+14, ni+13]);
+      //model.f.push([colors[j][cList[n][4]], ni+14, ni+13, p7]);
+
+      model.f.push([colors[j][cList[n][5]], p3, p2, ni+10, ni+14]);
+      //model.f.push([colors[j][cList[n][5]], ni+10, ni+14, p3]);
+      
+      model.f.push([colors[j][cList[n][6]], ni+10, ni+11, ni+16, ni+15]);
+      //model.f.push([colors[j][cList[n][6]], ni+16, ni+15, ni+10]);
+      
+      model.f.push([colors[j][cList[n][7]], ni+11, ni+12, ni+17, ni+16]);
+      //model.f.push([colors[j][cList[n][7]], ni+17, ni+16, ni+11]);
+
+      model.f.push([colors[j][cList[n][8]], ni+12, ni+13, ni+18, ni+17]);
+      //model.f.push([colors[j][cList[n][8]], ni+18, ni+17, ni+12]);
+
+      model.f.push([colors[j][cList[n][9]], ni+13, ni+14, ni+19, ni+18]);
+      //model.f.push([colors[j][cList[n][9]], ni+19, ni+18, ni+13]);
+
+      model.f.push([colors[j][cList[n][10]], ni+14, ni+10, ni+15, ni+19]);
+      //model.f.push([colors[j][cList[n][10]], ni+15, ni+19, ni+14]);
     }
   }
 
@@ -1625,47 +1636,48 @@ function init_arch1() {
     points3[p][2] += zmv2;
     model.v.push(points3[p]);
   }
-  model.f.push([colors3[0], nn+5, nn+2, nn+6]);
-  model.f.push([colors3[0], nn+6, nn+9, nn+5]);
-  model.f.push([colors3[1], nn+2, nn+3, nn+7]);
-  model.f.push([colors3[1], nn+7, nn+6, nn+2]);
-  model.f.push([colors3[2], nn+3, nn+1, nn+7]);
-  model.f.push([colors3[3], nn+8, nn+1, nn+4]);
-  
-  model.f.push([colors3[4], nn+9, nn+8, nn+4]);
-  model.f.push([colors3[4], nn+4, nn+5, nn+9]);
-  
-  
-  model.f.push([colors3[2], nn+6, nn+7, nn+11]);
-  model.f.push([colors3[2], nn+11, nn+10, nn+6]);
-  model.f.push([colors3[4], nn+7, nn+1, nn+11]);
+  model.f.push([colors3[0], nn+5, nn+2, nn+6, nn+9]);
+  //model.f.push([colors3[0], nn+6, nn+9, nn+5]);
+  model.f.push([colors3[1], nn+2, nn+3, nn+7, nn+6]);
+  //model.f.push([colors3[1], nn+7, nn+6, nn+2]);
 
-  model.f.push([colors3[5], nn+9, nn+6, nn+10]);
-  model.f.push([colors3[4], nn+11, nn+1, nn+8]);
+  model.f.push([colors3[2], nn+3, nn+1, nn+7    , nn+1]); //triangle
+  model.f.push([colors3[3], nn+8, nn+1, nn+4    , nn+1]); //triangle
   
-  model.f.push([colors3[6], nn+10, nn+11, nn+12]);
-  model.f.push([colors3[6], nn+12, nn+13, nn+10]);
+  model.f.push([colors3[4], nn+9, nn+8, nn+4, nn+5]);
+  //model.f.push([colors3[4], nn+4, nn+5, nn+9]);
+  
+  model.f.push([colors3[2], nn+6, nn+7, nn+11, nn+10]);
+  //model.f.push([colors3[2], nn+11, nn+10, nn+6]);
 
+  model.f.push([colors3[4], nn+7, nn+1, nn+11   , nn+1]); //triangle
+  model.f.push([colors3[5], nn+9, nn+6, nn+10   , nn+6]); //triangle
+  model.f.push([colors3[4], nn+11, nn+1, nn+8   , nn+1]); //triangle
+  
+  model.f.push([colors3[6], nn+10, nn+11, nn+12, nn+13]);
+  //model.f.push([colors3[6], nn+12, nn+13, nn+10]);
 
-  model.f.push([colors3[7], nn+8, nn+11, nn+12]);
-  model.f.push([colors3[7], nn+12, nn+14, nn+8]);
+  model.f.push([colors3[7], nn+8, nn+11, nn+12, nn+14]);
+  //model.f.push([colors3[7], nn+12, nn+14, nn+8]);
   
-  model.f.push([colors3[0], nn+9, nn+10, nn+13]);
-  model.f.push([colors3[0], nn+13, nn+15, nn+9]);
+  model.f.push([colors3[0], nn+9, nn+10, nn+13, nn+15]);
+  //model.f.push([colors3[0], nn+13, nn+15, nn+9]);
   
-  model.f.push([colors3[6], nn+14, nn+8, nn+9]);
-  model.f.push([colors3[6], nn+9, nn+15, nn+14]);
+  model.f.push([colors3[6], nn+14, nn+8, nn+9, nn+15]);
+  //model.f.push([colors3[6], nn+9, nn+15, nn+14]);
   
   //9
-  model.f.push([colors3[10], nn+13, nn+12, nn+16]);
-  model.f.push([colors3[10], nn+16, nn+17, nn+13]);
-  model.f.push([colors3[11], nn+12, nn+14, nn+18]);
-  model.f.push([colors3[11], nn+18, nn+16, nn+12]);
-  model.f.push([colors3[12], nn+14, nn+15, nn+19]);
-  model.f.push([colors3[12], nn+19, nn+18, nn+14]);
+  model.f.push([colors3[10], nn+13, nn+12, nn+16, nn+17]);
+  //model.f.push([colors3[10], nn+16, nn+17, nn+13]);
 
-  model.f.push([colors3[9], nn+15, nn+13, nn+17]);
-  model.f.push([colors3[9], nn+17, nn+19, nn+15]);
+  model.f.push([colors3[11], nn+12, nn+14, nn+18, nn+16]);
+  //model.f.push([colors3[11], nn+18, nn+16, nn+12]);
+
+  model.f.push([colors3[12], nn+14, nn+15, nn+19, nn+18]);
+  //model.f.push([colors3[12], nn+19, nn+18, nn+14]);
+
+  model.f.push([colors3[9], nn+15, nn+13, nn+17, nn+19]);
+  //model.f.push([colors3[9], nn+17, nn+19, nn+15]);
 
 
   //move model up
@@ -1838,14 +1850,14 @@ function init_arch2() {
         model.v.push(points2[p]);
       }
       let nn = 0;
-      model.f.push([colors[2][1], nn+1, nn+2, nn+6]);
-      model.f.push([colors[2][1], nn+6, nn+5, nn+1]);
-      model.f.push([colors[2][2], nn+2, nn+3, nn+7]);
-      model.f.push([colors[2][2], nn+7, nn+6, nn+2]);
-      model.f.push([colors[2][3], nn+3, nn+4, nn+8]);
-      model.f.push([colors[2][3], nn+8, nn+7, nn+3]);
-      model.f.push([colors[2][0], nn+4, nn+1, nn+5]);
-      model.f.push([colors[2][0], nn+5, nn+8, nn+4]);
+      model.f.push([colors[2][1], nn+1, nn+2, nn+6, nn+5]);
+      //model.f.push([colors[2][1], nn+6, nn+5, nn+1]);
+      model.f.push([colors[2][2], nn+2, nn+3, nn+7, nn+6]);
+      //model.f.push([colors[2][2], nn+7, nn+6, nn+2]);
+      model.f.push([colors[2][3], nn+3, nn+4, nn+8, nn+7]);
+      //model.f.push([colors[2][3], nn+8, nn+7, nn+3]);
+      model.f.push([colors[2][0], nn+4, nn+1, nn+5, nn+8]);
+      //model.f.push([colors[2][0], nn+5, nn+8, nn+4]);
     }
 
     // push points
@@ -1866,11 +1878,11 @@ function init_arch2() {
     for (var j = 0; j < 3; j++) {
       let nn = n*24 + j*6 + 8;
       for (var i = 0; i < 5; i++) {
-        model.f.push([colors[n%2][j*4+colorList[i]], nn+1+i, nn+2+i, nn+8+i]);
-        model.f.push([colors[n%2][j*4+colorList[i]], nn+8+i, nn+7+i, nn+1+i]);
+        model.f.push([colors[n%2][j*4+colorList[i]], nn+1+i, nn+2+i, nn+8+i, nn+7+i]);
+       //model.f.push([colors[n%2][j*4+colorList[i]], nn+8+i, nn+7+i, nn+1+i]);
       }
-      model.f.push([colors[n%2][j*4+0], nn+12, nn+6, nn+1]);
-      model.f.push([colors[n%2][j*4+0], nn+1, nn+7, nn+12]);
+      model.f.push([colors[n%2][j*4+0], nn+12, nn+6, nn+1, nn+7]);
+      //model.f.push([colors[n%2][j*4+0], nn+1, nn+7, nn+12]);
     }
   }
   models['arch2'] = model;
@@ -1967,9 +1979,19 @@ function init_cubes() {
     model: 'cubes',
     campath: 'room',
   });
+  modelRenderList.push({
+    model: 'cubes2',
+    campath: 'room',
+  });
   let model = {
 		fstart: useFrameLimit ? models_cubes_fstart : 0,
 		fend: useFrameLimit ? models_cubes_fend : 9999,
+    v: [],
+    f: [],
+  }
+  let model2 = {
+		fstart: useFrameLimit ? models_cubes2_fstart : 0,
+		fend: useFrameLimit ? models_cubes2_fend : 9999,
     v: [],
     f: [],
   }
@@ -1991,10 +2013,13 @@ function init_cubes() {
   var yqty = 3;
   var zqty = 4;
 
-  $n = 0;
+  var n1 = 0;
+  var n2 = 0;
   for (var z = 0; z < zqty; z++) {
     for (var y = 0; y < yqty; y++) {
       for (var x = 0; x < xqty; x++) {
+        var tgtModel = z < 2 ? model : model2;
+
         var points = [
           [-sz, -sz, -sz],
           [-sz, sz, -sz],
@@ -2010,31 +2035,31 @@ function init_cubes() {
           points[p][0] = mlt * ( points[p][0] + (2 *sz + dsz)*x + sz - ((xqty * 2 * sz + (xqty-1)*dsz)/2) );
           points[p][1] = mlt * ( points[p][1] + (2 *sz + dsz)*y + sz - ((yqty * 2 *sz + (yqty-1)*dsz)/2) );
           points[p][2] = mlt * ( points[p][2] + (2 *sz + dsz)*z + sz); // - ((zqty * 2 *sz + (zqty-1)*dsz)/2) );
-          model.v.push(points[p]);
+          tgtModel.v.push(points[p]);
         }
         
         if (true) { //y == 0 for modelling
-        let nn = $n * 8;
+        let nn = (z < 2 ? n1 : n2)  * 8;
           //front
-          model.f.push([colors[0], nn+1, nn+2, nn+3]);
-          model.f.push([colors[0], nn+3, nn+4, nn+1]);
+          tgtModel.f.push([colors[0], nn+1, nn+2, nn+3, nn+4]);
+          //model.f.push([colors[0], nn+3, nn+4, nn+1]);
           //top
-          model.f.push([colors[1], nn+2, nn+6, nn+7]);
-          model.f.push([colors[1], nn+7, nn+3, nn+2]);
+          tgtModel.f.push([colors[1], nn+2, nn+6, nn+7, nn+3]);
+          //model.f.push([colors[1], nn+7, nn+3, nn+2]);
           //back
-          model.f.push([colors[2], nn+6, nn+5, nn+8]);
-          model.f.push([colors[2], nn+8, nn+7, nn+6]);
+          tgtModel.f.push([colors[2], nn+6, nn+5, nn+8, nn+7]);
+          //model.f.push([colors[2], nn+8, nn+7, nn+6]);
           //bottom
-          model.f.push([colors[3], nn+5, nn+1, nn+4]);
-          model.f.push([colors[3], nn+4, nn+8, nn+5]);
+          tgtModel.f.push([colors[3], nn+5, nn+1, nn+4, nn+8]);
+          //model.f.push([colors[3], nn+4, nn+8, nn+5]);
           //right
-          model.f.push([colors[4], nn+4, nn+3, nn+7]);
-          model.f.push([colors[4], nn+7, nn+8, nn+4]);
+          tgtModel.f.push([colors[4], nn+4, nn+3, nn+7, nn+8]);
+          //model.f.push([colors[4], nn+7, nn+8, nn+4]);
           //left
-          model.f.push([colors[5], nn+5, nn+6, nn+2]);
-          model.f.push([colors[5], nn+2, nn+1, nn+5]);
+          tgtModel.f.push([colors[5], nn+5, nn+6, nn+2, nn+1]);
+          //model.f.push([colors[5], nn+2, nn+1, nn+5]);
         }
-        $n++;
+        if (z < 2) {n1++;} else {n2++;}
       }
     }
   }
@@ -2044,11 +2069,16 @@ function init_cubes() {
     model.v[v][1] += 14.3;
     model.v[v][2] -= 7.5+3;
     model.v[v][0] -= 4;
-    
   }
-  
+  for (v in model2.v) {
+    model2.v[v][1] += 14.3;
+    model2.v[v][2] -= 7.5+3;
+    model2.v[v][0] -= 4;
+  }
+
   
   models['cubes'] = model;
+  models['cubes2'] = model2;
   
 }
 
@@ -2058,8 +2088,8 @@ function init_room() {
     campath: 'room',
   });
   let model = {
-		fstart: useFrameLimit ? models_cubes_fstart : 0,
-		fend: useFrameLimit ? models_cubes_fend : 9999,
+		fstart: useFrameLimit ? models_room_fstart : 0,
+		fend: useFrameLimit ? models_room_fend : 9999,
     v: [],
     f: [],
   }
@@ -2138,24 +2168,20 @@ function init_room() {
           var p4 = n2;
           var clr = colors[i&1][n];
         } else {
-          model.f.push([colors[i&1][n], nn+1, nn+9, n10]);
-          model.f.push([colors[i&1][n], n10, n2, nn+1]);
+          model.f.push([colors[i&1][n], nn+1, nn+9, n10, n2]);
+          //model.f.push([colors[i&1][n], n10, n2, nn+1]);
         }
       }
     }
   }
 
   //hole
-  //console.log(p1,p2,p3,p4);
-  //model.f.push([colors[3][0], p1, p2, p3]);
-  
   var holeDx = 0.4;
   var holeDy = 0.25;
   var vv = model.v.length;
   var dirH = normalize(vSub(model.v[p3-1], model.v[p2-1]));
   var dirV = normalize(vSub(model.v[p2-1], model.v[p1-1]));
-  
-  
+
   var point = model.v[p1-1];
   point = vMov(point, dirH ,holeDx);
   point = vMov(point, dirV ,holeDy);
@@ -2176,28 +2202,31 @@ function init_room() {
   point = vMov(point, dirV ,holeDy);
   model.v.push(point);
   
-  model.f.push([clr, p1, p2, vv+2]);
-  model.f.push([clr, vv+2, vv+1, p1]);
+  model.f.push([clr, p1, p2, vv+2, vv+1]);
+  //model.f.push([clr, vv+2, vv+1, p1]);
   
-  model.f.push([clr, p2, p3, vv+3]);
-  model.f.push([clr, vv+3, vv+2, p2]);
+  model.f.push([clr, p2, p3, vv+3, vv+2]);
+  //model.f.push([clr, vv+3, vv+2, p2]);
 
-  model.f.push([clr, p3, p4, vv+4]);
-  model.f.push([clr, vv+4, vv+3, p3]);
+  model.f.push([clr, p3, p4, vv+4, vv+3]);
+  //model.f.push([clr, vv+4, vv+3, p3]);
 
-  model.f.push([clr, p4, p1, vv+1]);
-  model.f.push([clr, vv+1, vv+4, p4]);
-  
-  
+  model.f.push([clr, p4, p1, vv+1, vv+4]);
+  //model.f.push([clr, vv+1, vv+4, p4]);
+
   // center poligons
-  for (var i = 0; i < 6; i++) {
-    model.f.push([colors[2][0], 1, i+2, i+3]);
-  }
+  /*for (var i = 0; i < 6; i++) {
+    model.f.push([colors[2][0], 1, i+2, i+3, i+2]);
+  }*/
+  // new center poligons
+  model.f.push([colors[2][0], 1, 2, 3, 4]);
+  model.f.push([colors[2][0], 1, 4, 5, 8]);
+  model.f.push([colors[2][0], 5, 6, 7, 8]);
 
   models['room'] = model;
- 
+
   resetCam();
-  
+
   picoEye = [-0.08617177850283218, -2.915735228747263, -2.5154866908391];
   picoDir = [0.10071350320492653, 0.8711591245831845, 0.4805606828774604];
   picoUp = [-0.2863519934995061, 0.4879594381549821, -0.8245593505226492];

@@ -31,7 +31,7 @@ const fsSource = `
 
 // init
 function glInit(gl) {
-  //gl.enable(gl.CULL_FACE);
+  gl.enable(gl.CULL_FACE);
   shaderProgram = initShaderProgram(gl, vsSource, fsSource);
   programInfo = {
     program: shaderProgram,
@@ -55,15 +55,16 @@ function initBuffers(gl) {
   var glPositions = [];
   var glIndices = [];
   var glColors = [];
+  var pos = 0;
 
   for (let m in models) {
     let vertexCountStart = vertexCount;
     for (let f in models[m].f) {
       var color = getGlColor(models[m].f[f][0]);
-      glColors.push(color[0], color[1], color[2], color[3]);
-      glColors.push(color[0], color[1], color[2], color[3]);
-      glColors.push(color[0], color[1], color[2], color[3]);
-      var pos = models[m].v[ models[m].f[f][1] - 1 ];
+      for (var c = 0; c < 3; c++) {
+        glColors.push(color[0], color[1], color[2], color[3]);
+      }
+      pos = models[m].v[ models[m].f[f][1] - 1 ];
       glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
       pos = models[m].v[ models[m].f[f][2] - 1 ];
       glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
@@ -72,6 +73,25 @@ function initBuffers(gl) {
       glIndices.push(vertexCount++);
       glIndices.push(vertexCount++);
       glIndices.push(vertexCount++);
+      //quad
+      if (models[m].f[f].length == 5) {
+        if (models[m].f[f][4] != models[m].f[f][2]) {
+          for (var c = 0; c < 3; c++) {
+            glColors.push(color[0], color[1], color[2], color[3]);
+          }
+          pos = models[m].v[ models[m].f[f][3] - 1 ];
+          glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
+          pos = models[m].v[ models[m].f[f][4] - 1 ];
+          glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
+          pos = models[m].v[ models[m].f[f][1] - 1 ];
+          glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
+          glIndices.push(vertexCount++);
+          glIndices.push(vertexCount++);
+          glIndices.push(vertexCount++);
+        }
+      } else {
+        console.log('error', m, models[m].f[f]);
+      }
     }
     glRenderList[m] = {offset: vertexCountStart, count: vertexCount - vertexCountStart};
   }

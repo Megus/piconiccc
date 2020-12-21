@@ -1,6 +1,6 @@
 'use strict';
 // 957 997 1035 1075 1135 1187
-let frameNumberStart = 1538;//1538;//150;
+let frameNumberStart = 723;//1538;//150;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
