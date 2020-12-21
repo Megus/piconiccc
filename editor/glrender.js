@@ -90,7 +90,9 @@ function initBuffers(gl) {
           glIndices.push(vertexCount++);
         }
       } else {
-        console.log('error', m, models[m].f[f]);
+        if (m.length > 2) {
+          console.log('error', m, models[m].f[f]);
+        }
       }
     }
     glRenderList[m] = {offset: vertexCountStart, count: vertexCount - vertexCountStart};
@@ -155,7 +157,7 @@ function glDrawFrame(gl) {
   const fovAngle = 90;
   const fieldOfView = fovAngle * Math.PI / 180; // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  const zNear = 0.1;
+  const zNear = 0.001;
   const zFar = 100.0;
   let projectionMatrix = mat4.create();
   mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
