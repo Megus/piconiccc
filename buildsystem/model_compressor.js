@@ -40,6 +40,8 @@ module.exports.compressModels = function (convertedData) {
       pal: model.pal,
     });
 
+    if (name == "E1") continue;
+
     // Write vertices
     writeFlattenedArrays(model.v, bVertices);
 
