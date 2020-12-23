@@ -2,7 +2,6 @@ module.exports.convertModels = function (models) {
   // TODO: Idea with global list of face patterns (Dec 5: 21 patterns repeat across models, 117 vs 138)
 
   const converted = {};
-  const facePatterns3 = [];
   const facePatterns4 = [];
 
   for (const name in models) {
@@ -47,18 +46,25 @@ module.exports.convertModels = function (models) {
       const cf = [hexColor, f[1]];
       const isQuad = (f.length == 5);
 
+      if (!isQuad) {
+        // Don't apply face patterns to tris
+        cf.push(f[2], f[3]);
+        cmodel.f3.push(cf);
+        continue;
+      }
+
+      // Apply face pattern compression
       const fp = [];
       for (let d = 2; d < f.length; d++) {
         fp.push(f[d] - f[1]);
       }
 
       let fpIdx = -1;
-      const facePatterns = isQuad ? facePatterns4 : facePatterns3;
 
-      for (let d = 0; d < facePatterns.length; d++) {
+      for (let d = 0; d < facePatterns4.length; d++) {
         let equal = true;
         for (let i = 0; i < fp.length; i++) {
-          if (facePatterns[d][i] != fp[i]) {
+          if (facePatterns4[d][i] != fp[i]) {
             equal = false;
             break;
           }
@@ -69,28 +75,19 @@ module.exports.convertModels = function (models) {
         }
       }
       if (fpIdx == -1) {
-        facePatterns.push(fp);
-        cf.push(facePatterns.length);
+        facePatterns4.push(fp);
+        cf.push(facePatterns4.length);
       } else {
         cf.push(fpIdx + 1);
       }
 
-      if (isQuad) {
-        cmodel.f4.push(cf);
-      } else {
-        cmodel.f3.push(cf);
-      }
+      cmodel.f4.push(cf);
     }
 
     converted[name] = cmodel;
   }
 
-  //console.log(facePatterns3);
-  //console.log(facePatterns4);
-  console.log(`Tri patterns: ${facePatterns3.length}, Quad patterns: ${facePatterns4.length}`);
-
   return {
-    fp3: facePatterns3,
     fp4: facePatterns4,
     models: converted,
   };

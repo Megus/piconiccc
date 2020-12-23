@@ -36,9 +36,8 @@ const compressedData = compressor.compressModels(convertedData);
 const objectsLua = luaTools.json2lua(compressedData.models);
 fs.writeFileSync("../pico8/objects.lua", `objects = ${objectsLua}`);
 
-const fp3lua = luaTools.json2lua(convertedData.fp3);
 const fp4lua = luaTools.json2lua(convertedData.fp4);
-fs.writeFileSync("../pico8/fp.lua", `fp3 = ${fp3lua}\n\nfp4 = ${fp4lua}`);
+fs.writeFileSync("../pico8/fp.lua", `fp4 = ${fp4lua}`);
 
 // Process camera
 const convertedCamera = camera.convertCamera(camPathList);
