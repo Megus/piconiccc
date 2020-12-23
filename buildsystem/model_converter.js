@@ -1,8 +1,10 @@
-
 module.exports.convertModels = function (models) {
   // TODO: Idea with global list of face patterns (Dec 5: 21 patterns repeat across models, 117 vs 138)
 
   const converted = {};
+  const facePatterns3 = [];
+  const facePatterns4 = [];
+
   for (const name in models) {
     const model = models[name];
     const cmodel = {};
@@ -37,33 +39,59 @@ module.exports.convertModels = function (models) {
     }
 
     // Find face patterns and convert faces
-    cmodel.fp = [];
-    cmodel.f = [];
+    cmodel.f3 = [];
+    cmodel.f4 = [];
     for (let c = 0; c < model.f.length; c++) {
       const f = model.f[c];
       const hexColor = f[0].toUpperCase();
       const cf = [hexColor, f[1]];
-      const fp = [f[2] - f[1], f[3] - f[1]];
+      const isQuad = (f.length == 5);
+
+      const fp = [];
+      for (let d = 2; d < f.length; d++) {
+        fp.push(f[d] - f[1]);
+      }
 
       let fpIdx = -1;
-      for (let d = 0; d < cmodel.fp.length; d++) {
-        if (cmodel.fp[d][0] == fp[0] && cmodel.fp[d][1] == fp[1]) {
+      const facePatterns = isQuad ? facePatterns4 : facePatterns3;
+
+      for (let d = 0; d < facePatterns.length; d++) {
+        let equal = true;
+        for (let i = 0; i < fp.length; i++) {
+          if (facePatterns[d][i] != fp[i]) {
+            equal = false;
+            break;
+          }
+        }
+        if (equal) {
           fpIdx = d;
           break;
         }
       }
       if (fpIdx == -1) {
-        cmodel.fp.push(fp);
-        cf.push(cmodel.fp.length);
+        facePatterns.push(fp);
+        cf.push(facePatterns.length);
       } else {
         cf.push(fpIdx + 1);
       }
 
-      cmodel.f.push(cf);
+      if (isQuad) {
+        cmodel.f4.push(cf);
+      } else {
+        cmodel.f3.push(cf);
+      }
     }
 
     converted[name] = cmodel;
   }
 
- return converted;
+  //console.log(facePatterns3);
+  //console.log(facePatterns4);
+  console.log(`Tri patterns: ${facePatterns3.length}, Quad patterns: ${facePatterns4.length}`);
+
+  return {
+    fp3: facePatterns3,
+    fp4: facePatterns4,
+    models: converted,
+  };
 }

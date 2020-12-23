@@ -2,7 +2,7 @@ function _init()
   decompress()
   poke(0x5f34, 1)
   poke(0x5f2d, 1)
-  frame = 173
+  frame = 1500
   dframe = 0
 
   pal(0, 0, 1)

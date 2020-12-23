@@ -23,7 +23,8 @@ init_models();
 //console.log(modelRenderList);
 
 // Convert models
-const convertedModels = converter.convertModels(models);
+const convertedData = converter.convertModels(models);
+const convertedModels = convertedData.models;
 
 // Build palette
 const picoPalette = palette.buildPalette(convertedModels);
@@ -31,9 +32,13 @@ const paletteLua = luaTools.json2lua(picoPalette);
 fs.writeFileSync("../pico8/colors.lua", `colors = ${paletteLua}`);
 
 // Compress models
-const compressedData = compressor.compressModels(convertedModels);
+const compressedData = compressor.compressModels(convertedData);
 const objectsLua = luaTools.json2lua(compressedData.models);
 fs.writeFileSync("../pico8/objects.lua", `objects = ${objectsLua}`);
+
+const fp3lua = luaTools.json2lua(convertedData.fp3);
+const fp4lua = luaTools.json2lua(convertedData.fp4);
+fs.writeFileSync("../pico8/fp.lua", `fp3 = ${fp3lua}\n\nfp4 = ${fp4lua}`);
 
 // Process camera
 const convertedCamera = camera.convertCamera(camPathList);
@@ -56,6 +61,7 @@ const luaCode = "\
 #include misc.lua\n\
 #include campath.lua\n\
 #include renderlist.lua\n\
+#include fp.lua\n\
 #include objects.lua\n";
 
 writer.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);

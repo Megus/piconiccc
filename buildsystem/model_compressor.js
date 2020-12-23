@@ -9,12 +9,11 @@ function writeFlattenedArrays(src, dst) {
 
 }
 
-module.exports.compressModels = function (models) {
+module.exports.compressModels = function (convertedData) {
+  const models = convertedData.models;
   const compressed = {};
   compressed.binary = [];
   compressed.models = {};
-
-  let totalFps = 0;
 
   for (const name in models) {
     const model = models[name];
@@ -22,27 +21,26 @@ module.exports.compressModels = function (models) {
       o: model.o,
       s: model.s,
       addr: compressed.binary.length,
-      fpn: model.fp.length,
       vn: model.v.length,
-      fn: model.f.length,
+      f3n: model.f3.length,
+      f4n: model.f4.length,
       fstart: model.fstart,
       fend: model.fend,
       pal: model.pal,
     };
 
-    totalFps += model.fp.length;
-
     // Write vertices
     writeFlattenedArrays(model.v, compressed.binary);
 
-    // Write face patterns
-    writeFlattenedArrays(model.fp, compressed.binary);
-
     // Write faces
-    writeFlattenedArrays(model.f, compressed.binary);
+    //writeFlattenedArrays(model.f3, compressed.binary);
+    writeFlattenedArrays(model.f4, compressed.binary);
+    console.log(name);
+    console.log(model.f4);
   }
 
-  console.log(`Face patterns: ${totalFps}`);
+  console.log(compressed.models);
+
   console.log(`Compressed length: ${compressed.binary.length}`);
 
   return compressed;

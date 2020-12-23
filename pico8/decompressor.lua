@@ -1,8 +1,7 @@
 function decompress()
-  for _, obj in pairs(objects) do
+  for name, obj in pairs(objects) do
     obj.v = {}
     obj.f = {}
-    obj.fp = {}
 
     -- Read vertices
     local addr = obj.addr
@@ -15,19 +14,18 @@ function decompress()
       add(obj.v, v)
     end
 
-    -- Read face patterns
-    for c = 1, obj.fpn do
-      local fp = {peek(addr), peek(addr + 1)}
-      if (fp[1] > 127) fp[1] -= 256
-      if (fp[2] > 127) fp[2] -= 256
-      add(obj.fp, fp)
-      addr += 2
+    -- Read tri faces
+    for c = 1, obj.f3n do
+      local v, fp = peek(addr + 1), fp3[peek(addr + 2)]
+      --add(obj.f, {peek(addr) + 0x1000.5a5a, v, v + fp[1], v + fp[2]})
+      addr += 3
     end
 
-    -- Read faces
-    for c = 1, obj.fn do
-      local v, fp = peek(addr + 1), obj.fp[peek(addr + 2)]
-      add(obj.f, {peek(addr) + 0x1000.5a5a, v, v + fp[1], v + fp[2]})
+    -- Read quad faces
+    for c = 1, obj.f4n do
+      local color, v, fp = peek(addr) + 0x1000.5a5a, peek(addr + 1), fp4[peek(addr + 2)]
+      add(obj.f, {color, v, v + fp[1], v + fp[2]})
+      add(obj.f, {color, v + fp[2], v + fp[3], v})
       addr += 3
     end
   end
