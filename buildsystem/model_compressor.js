@@ -1,23 +1,30 @@
 const huffman = require("./huffman");
 
-function writeFlattenedArrays(src, dst) {
+function prepareArray(src, signed) {
+  const dst = [];
   for (let c = 0; c < src.length; c++) {
     if (typeof src[c] == "number") {
-      dst.push(src[c]);
-    } else {
-      for (let d = 0; d < src[c].length; d++) {
-        let v = src[c][d];
+      let v = src[c];
+      if (signed == true) {
+        if (v > 127) throw `Number too big ${v}`;
+        if (v < -128) throw `Number too small ${v}`;
         if (v < 0) v = 256 + v;
-        dst.push(v);
       }
+      if (v > 255) throw `Number too big ${v}`;
+      dst.push(v);
+    } else {
+      dst.push(...prepareArray(src[c], signed));
     }
   }
+  return dst;
 }
 
 module.exports.compressModels = function (convertedData) {
   const models = convertedData.models;
-  const compressed = {};
-  compressed.models = [];
+  const compressed = {
+    models: [],
+    arcs: [],
+  };
 
   const binary = [];
   const bVertices = [];
@@ -27,6 +34,7 @@ module.exports.compressModels = function (convertedData) {
   const bFP = [];
 
   for (const name in models) {
+    //console.log(name);
     const model = models[name];
     compressed.models.push({
       name: name,
@@ -40,18 +48,16 @@ module.exports.compressModels = function (convertedData) {
       pal: model.pal,
     });
 
-    if (name == "E1") continue;
+    if (name == "E") continue;
 
     // Write vertices
-    writeFlattenedArrays(model.v, bVertices);
+    bVertices.push(...prepareArray(model.v, false));
 
     // Write faces:
     // Triangles
-    let oldV = 0;
     for (let c = 0; c < model.f3.length; c++) {
       bColors.push(model.f3[c][0]);
-      bV3.push(model.f3[c][1] - oldV, model.f3[c][2] - model.f3[c][1], model.f3[c][3] - model.f3[c][1]);
-      oldV = model.f3[c][1];
+      bV3.push(model.f3[c][1], model.f3[c][2], model.f3[c][3]);
     }
 
     // Quads
@@ -66,27 +72,32 @@ module.exports.compressModels = function (convertedData) {
 
   console.log("Vertices:");
   const cbVertices = huffman.compress(bVertices);
-  writeFlattenedArrays(cbVertices.binary, binary);
+  compressed.arcs.push([binary.length, bVertices.length, cbVertices.tree]);
+  binary.push(...cbVertices.binary);
 
   console.log("Colors:");
   const cbColors = huffman.compress(bColors);
-  writeFlattenedArrays(cbColors.binary, binary);
+  compressed.arcs.push([binary.length, bColors.length, cbColors.tree]);
+  binary.push(...cbColors.binary);
 
   console.log("Triangles:");
-  const cbV3 = huffman.compress(bV3);
-  writeFlattenedArrays(cbV3.binary, binary);
+  const cbV3 = huffman.compress(prepareArray(bV3, false));
+  compressed.arcs.push([binary.length, bV3.length, cbV3.tree]);
+  binary.push(...cbV3.binary);
 
   console.log("Quads:");
-  const cbV4 = huffman.compress(bV4);
-  writeFlattenedArrays(cbV4.binary, binary);
+  const cbV4 = huffman.compress(prepareArray(bV4, true));
+  compressed.arcs.push([binary.length, bV4.length, cbV4.tree]);
+  binary.push(...cbV4.binary);
+
   const cbFP = huffman.compress(bFP);
-  writeFlattenedArrays(cbFP.binary, binary);
+  compressed.arcs.push([binary.length, bFP.length, cbFP.tree]);
+  binary.push(...cbFP.binary);
 
   const uncompressedLength = bVertices.length + bV3.length + bV4.length + bColors.length + bFP.length;
   console.log(`Uncompressed length: ${uncompressedLength}, compressed length: ${binary.length}, ratio: ${binary.length / uncompressedLength}`);
 
   compressed.binary = binary;
-  //compressed.htree = compressedBinary.tree;
 
   return compressed;
 }

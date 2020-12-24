@@ -25,43 +25,34 @@ init_models();
 // Convert models
 const convertedData = converter.convertModels(models);
 const convertedModels = convertedData.models;
-
 // Build palette
 const picoPalette = palette.buildPalette(convertedModels);
-const paletteLua = luaTools.json2lua(picoPalette);
-fs.writeFileSync("../pico8/colors.lua", `colors = ${paletteLua}`);
-
 // Compress models
 const compressedData = compressor.compressModels(convertedData);
-const objectsLua = luaTools.json2lua(compressedData.models);
-fs.writeFileSync("../pico8/objects.lua", `objects = ${objectsLua}`);
-
-const fp4lua = luaTools.json2lua(convertedData.fp4);
-fs.writeFileSync("../pico8/fp.lua", `fp4 = ${fp4lua}`);
-
 // Process camera
 const convertedCamera = camera.convertCamera(camPathList);
-const camPathLua = luaTools.json2lua(convertedCamera);
-fs.writeFileSync("../pico8/campath.lua", `campath = ${camPathLua}`);
-
 // Process renderlist
 const convertedRenderList = renderList.convertRenderList(modelRenderList);
-const renderListLua = luaTools.json2lua(convertedRenderList);
-fs.writeFileSync("../pico8/renderlist.lua", `renderlist = ${renderListLua}`);
+
+const luaData = `colors = ${luaTools.json2lua(picoPalette)}\n\n\
+fp = ${luaTools.json2lua(convertedData.fp4)}\n\n\
+renderlist = ${luaTools.json2lua(convertedRenderList)}\n\n\
+arcs = ${luaTools.json2lua(compressedData.arcs)}\n\n\
+objects = ${luaTools.json2lua(compressedData.models)}\n\n\
+campath = ${luaTools.json2lua(convertedCamera)}\n\n\
+`;
+fs.writeFileSync("../pico8/data.lua", luaData);
 
 // Write P8
 const luaCode = "\
 #include main.lua\n\
-#include decompressor.lua\n\
-#include colors.lua\n\
+#include huffman.lua\n\
+#include loader.lua\n\
 #include eg_triangle.lua\n\
 #include camera.lua\n\
 #include 3d.lua\n\
 #include misc.lua\n\
-#include campath.lua\n\
-#include renderlist.lua\n\
-#include fp.lua\n\
-#include objects.lua\n";
+#include data.lua\n";
 
 writer.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);
 

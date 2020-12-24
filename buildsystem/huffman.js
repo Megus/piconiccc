@@ -6,7 +6,12 @@ function calculateFrequencies(data) {
   for (let c = 0; c < data.length; c++) {
     freq[data[c]]++;
   }
-  const leafs = freq.map((f, byte) => ({f: f, v: byte}));
+  return freq;
+}
+
+function buildLeafs(freq) {
+  let leafs = freq.map((f, byte) => ({f: f, v: byte}));
+  leafs = leafs.filter((l) => l.f != 0);
   leafs.sort((a, b) => a.f - b.f);
   return leafs;
 }
@@ -99,23 +104,44 @@ function binaryStringToArray(bString) {
 }
 
 function encodeTree(tree) {
-  return tree;
+  let treeString = "";
+  const queue = [];
+  let node = tree;
+  while (node != null) {
+    if (node.v == null) {
+      treeString += ".";
+    } else {
+      if (node.v < 16) {
+        treeString += `0${node.v.toString(16)}`;
+      } else {
+        treeString += node.v.toString(16);
+      }
+    }
+    if (node.left != null) queue.push(node.left);
+    if (node.right != null) queue.push(node.right);
+    if (queue.length > 0) {
+      node = queue[0];
+      queue.splice(0, 1);
+    } else {
+      node = null;
+    }
+  }
+
+  return treeString
 }
 
-
 module.exports.compress = function(data) {
-  const leafs = calculateFrequencies(data);
+  const freq = calculateFrequencies(data);
+  const leafs = buildLeafs(freq);
   const tree = buildTree(leafs);
   const codes = buildCodes(tree);
   const binaryString = encode(data, codes);
   const binary = binaryStringToArray(binaryString);
-  const encodedTree = encodeTree(tree);
-  //console.log(binary);
-  //console.log(binaryString);
   console.log(`Uncompressed length: ${data.length}, Compressed length: ${binary.length}, ratio: ${binary.length / data.length}`);
 
   return {
     binary: binary,
-    tree: encodedTree,
+    freq: freq,
+    tree: encodeTree(tree),
   };
 }

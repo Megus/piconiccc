@@ -7,7 +7,6 @@ function _init()
 
   pal(0, 0, 1)
   pal(8, 0, 1)
-
 end
 
 function _update60()
@@ -34,7 +33,7 @@ function set_palette(pn)
 end
 
 function _draw()
-  cls()
+  --cls()
 
   total_tris = 0
 
