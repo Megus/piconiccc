@@ -1,12 +1,14 @@
 function _init()
-  decompress()
   poke(0x5f34, 1)
   poke(0x5f2d, 1)
-  frame = 1500
-  dframe = 0
-
   pal(0, 0, 1)
   pal(8, 0, 1)
+
+  load_models()
+
+  frame = 173
+  dframe = 0
+
 end
 
 function _update60()
@@ -33,7 +35,7 @@ function set_palette(pn)
 end
 
 function _draw()
-  --cls()
+  cls()
 
   total_tris = 0
 

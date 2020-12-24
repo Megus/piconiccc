@@ -63,7 +63,7 @@ module.exports.compressModels = function (convertedData) {
     // Quads
     oldV = 0;
     for (let c = 0; c < model.f4.length; c++) {
-      bColors.push(model.f4[c][0]);
+      bColors.push(model.f4[c][0] - ((model.pal % 2 == 0) ? 0x88 : 0));
       bV4.push(model.f4[c][1] - oldV);
       oldV = model.f4[c][1];
       bFP.push(model.f4[c][2]);
@@ -72,26 +72,26 @@ module.exports.compressModels = function (convertedData) {
 
   console.log("Vertices:");
   const cbVertices = huffman.compress(bVertices);
-  compressed.arcs.push([binary.length, bVertices.length, cbVertices.tree]);
+  compressed.arcs.push([binary.length, cbVertices.tree]);
   binary.push(...cbVertices.binary);
 
   console.log("Colors:");
   const cbColors = huffman.compress(bColors);
-  compressed.arcs.push([binary.length, bColors.length, cbColors.tree]);
+  compressed.arcs.push([binary.length, cbColors.tree]);
   binary.push(...cbColors.binary);
 
   console.log("Triangles:");
   const cbV3 = huffman.compress(prepareArray(bV3, false));
-  compressed.arcs.push([binary.length, bV3.length, cbV3.tree]);
+  compressed.arcs.push([binary.length, cbV3.tree]);
   binary.push(...cbV3.binary);
 
   console.log("Quads:");
   const cbV4 = huffman.compress(prepareArray(bV4, true));
-  compressed.arcs.push([binary.length, bV4.length, cbV4.tree]);
+  compressed.arcs.push([binary.length, cbV4.tree]);
   binary.push(...cbV4.binary);
 
   const cbFP = huffman.compress(bFP);
-  compressed.arcs.push([binary.length, bFP.length, cbFP.tree]);
+  compressed.arcs.push([binary.length, cbFP.tree]);
   binary.push(...cbFP.binary);
 
   const uncompressedLength = bVertices.length + bV3.length + bV4.length + bColors.length + bFP.length;

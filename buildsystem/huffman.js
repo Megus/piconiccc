@@ -17,22 +17,16 @@ function buildLeafs(freq) {
 }
 
 function dequeue(q1, q2) {
-  const deq = function(q) {
-    const n = q[0];
-    q.splice(0, 1);
-    return n;
-  }
-
   if (q1.length == 0) {
-    return deq(q2);
+    return q2.shift();
   }
   if (q2.length == 0) {
-    return deq(q1);
+    return q1.shift();
   }
   if (q1[0].f < q2[0].f) {
-    return deq(q1);
+    return q1.shift();
   } else {
-    return deq(q2);
+    return q2.shift();
   }
 }
 
@@ -105,9 +99,9 @@ function binaryStringToArray(bString) {
 
 function encodeTree(tree) {
   let treeString = "";
-  const queue = [];
-  let node = tree;
-  while (node != null) {
+  const stack = [tree];
+  while (stack.length > 0) {
+    const node = stack.pop();
     if (node.v == null) {
       treeString += ".";
     } else {
@@ -117,17 +111,11 @@ function encodeTree(tree) {
         treeString += node.v.toString(16);
       }
     }
-    if (node.left != null) queue.push(node.left);
-    if (node.right != null) queue.push(node.right);
-    if (queue.length > 0) {
-      node = queue[0];
-      queue.splice(0, 1);
-    } else {
-      node = null;
-    }
+    if (node.right != null) stack.push(node.right);
+    if (node.left != null) stack.push(node.left);
   }
 
-  return treeString
+  return treeString;
 }
 
 module.exports.compress = function(data) {
