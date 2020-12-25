@@ -47,10 +47,7 @@ const models_cubes2_fend = 9999;
 
 function init_models() {
   //init_testcube();
-  
-  //init_oxygene(); return;
-  
-  
+
   init_cubes();
   init_room();
   init_tonnel5();
@@ -65,7 +62,7 @@ function init_models() {
   //console.log(models);
   //console.log(camPathList);
   //console.log(modelRenderList);
-  
+
 
   // cam to cam
   if (camPathList['tonnel4'] != undefined && camPathList['tonnel3'] != undefined) {
@@ -73,7 +70,6 @@ function init_models() {
       camPathList['tonnel3'].push(camPathList['tonnel4'][c]);
     }
   }
- 
 }
 
 function show_models_stat() {
@@ -102,7 +98,7 @@ function vMov(v1,v2,dist) {
     v1[0] + v2[0] * dist,
     v1[1] + v2[1] * dist,
     v1[2] + v2[2] * dist,
-  ];  
+  ];
 }
 
 
@@ -1340,7 +1336,7 @@ function init_tonnel4_NEW() {
   const nqty = 20;
   const rz = -(180 / nqty);
   const rx = -1;
-  
+
   for (let n = 0; n <= nqty; n++) {
 
     // create points
@@ -1356,7 +1352,7 @@ function init_tonnel4_NEW() {
       model.v.push(points[p]);
     }
     //modify points
-    
+
     for (let v in model.v) {
       model.v[v] = vMov(model.v[v], [0,0,1], sz)
       model.v[v] = rotX(model.v[v], 2*rx);
@@ -1364,8 +1360,8 @@ function init_tonnel4_NEW() {
     for (let v in model.v) {
       model.v[v] = rotZ(model.v[v], rz);
     }
-    
-    
+
+
 
     // push polygons
     if (n < nqty) {
@@ -1467,7 +1463,7 @@ function init_tonnel4() {
     }
     camPathList['tonnel4'].push({"frame":590 + n*7, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
-    
+
     for (let p in points) {
       prevPoints[p] = [];
       prevPoints[p][0] = points[p][0];
@@ -1517,7 +1513,7 @@ function init_arch1() {
       '#5F3F1F', '#4F2F0F', '#3F1F0F', '#4F2F0F', '#6F4F2F',
     ],[
       '#7F5F4F',
-      '#7F5F4F', '#6F4F3F', '#5F3F2F', '#6F4F3F', '#7F6F5F', 
+      '#7F5F4F', '#6F4F3F', '#5F3F2F', '#6F4F3F', '#7F6F5F',
       '#6F4F3F', '#5F3F2F', '#4F2F1F', '#5F3F2F', '#7F5F4F',
     ],
   ];
@@ -1534,13 +1530,13 @@ function init_arch1() {
     var points = [
       //top
       [0, sy*1.25, 0],
-      
+
       //bott
       [-sx, -sy, sx],
       [sx, -sy, sx],
       [sx, -sy, -sx],
       [-sx, -sy, -sx],
-      
+
       //midl
       [-sx-dd, sy1, sx+dd],
       [sx+dd, sy1, sx+dd],
@@ -1550,12 +1546,12 @@ function init_arch1() {
     for (p in points) {
       points[p][2] += zmv;
       model.v.push(points[p]);
-    }  
+    }
     model.f.push([colors[j][0], jj+2, jj+3, jj+4, jj+5]);
     //model.f.push([colors[j][0], jj+4, jj+5, jj+2]);
 
     let rotList = [0,90,2*90,3*90];
-    
+
     let cList = [
       [0, 1,2,3,4,5, 6,7,8,9,10],
       [0, 1,2,3,4,5, 6,7,8,9,10],
@@ -1571,7 +1567,7 @@ function init_arch1() {
         [0, sy, sx + 2*sx*sx1],
         [sx+dd, sy1, sx + 2*sx*sx1+dd],
         [sx, -sy, sx + 2*sx*sx1],
-        
+
         [-sx, -sy, sx + 2*sx],
         [-sx-dd, sy1, sx + 2*sx],
         [0, sy, sx + 2*sx],
@@ -1583,7 +1579,7 @@ function init_arch1() {
         point[2] += zmv;
         model.v.push(point);
       }
-      
+
       let p1 = jj + 1;
       let p2 = jj + n+2;
       let p6 = jj + n+6;
@@ -1598,16 +1594,16 @@ function init_arch1() {
 
       model.f.push([colors[j][cList[n][3]], p1, p7, ni+13, ni+12]);
       //model.f.push([colors[j][cList[n][3]], ni+13, ni+12, p1]);
-      
+
       model.f.push([colors[j][cList[n][4]], p7, p3, ni+14, ni+13]);
       //model.f.push([colors[j][cList[n][4]], ni+14, ni+13, p7]);
 
       model.f.push([colors[j][cList[n][5]], p3, p2, ni+10, ni+14]);
       //model.f.push([colors[j][cList[n][5]], ni+10, ni+14, p3]);
-      
+
       model.f.push([colors[j][cList[n][6]], ni+10, ni+11, ni+16, ni+15]);
       //model.f.push([colors[j][cList[n][6]], ni+16, ni+15, ni+10]);
-      
+
       model.f.push([colors[j][cList[n][7]], ni+11, ni+12, ni+17, ni+16]);
       //model.f.push([colors[j][cList[n][7]], ni+17, ni+16, ni+11]);
 
@@ -1626,10 +1622,10 @@ function init_arch1() {
   let colors3 = [
     '#5F6F5F', '#3F4F3F', '#2F3F2F', '#2F3F2F', '#1F2F1F',
     '#4F5F4F',
-    
+
     '#3F4F3F', '#2F3F2F', '#1F2F1F',
     '#4F5F4F', '#2F3F2F', '#1F2F1F', '#0F1F0F',
-    
+
   ];
 
   let dzz = 0.1;
@@ -1648,20 +1644,20 @@ function init_arch1() {
 
     [-sx-dd, -sy, sx*2],
     [-sx-dd, sy1, sx*2],
-    
+
     [sx+dd + sx*4, sy1, sx*2],
     [sx+dd + sx*4, -sy, sx*2],
     [sx+dd + sx*4, sy1, 0],
     [sx+dd + sx*4, -sy, 0],
-    
+
     [sx+dd + sx*10, sy1, sx*2 +dzz],
     [sx+dd + sx*10, -sy, sx*2+dzz],
     [sx+dd + sx*10, sy1, 0+dzz],
-    [sx+dd + sx*10, -sy, 0+dzz],    
-    
+    [sx+dd + sx*10, -sy, 0+dzz],
+
   ]
-  
-  
+
+
   let nn = model.v.length;
   //console.log('nn', nn);
   let zmv2 = sx*11;
@@ -1676,29 +1672,29 @@ function init_arch1() {
 
   model.f.push([colors3[2], nn+3, nn+1, nn+7    , nn+1]); //triangle
   model.f.push([colors3[3], nn+8, nn+1, nn+4    , nn+1]); //triangle
-  
+
   model.f.push([colors3[4], nn+9, nn+8, nn+4, nn+5]);
   //model.f.push([colors3[4], nn+4, nn+5, nn+9]);
-  
+
   model.f.push([colors3[2], nn+6, nn+7, nn+11, nn+10]);
   //model.f.push([colors3[2], nn+11, nn+10, nn+6]);
 
   model.f.push([colors3[4], nn+7, nn+1, nn+11   , nn+1]); //triangle
   model.f.push([colors3[5], nn+9, nn+6, nn+10   , nn+6]); //triangle
   model.f.push([colors3[4], nn+11, nn+1, nn+8   , nn+1]); //triangle
-  
+
   model.f.push([colors3[6], nn+10, nn+11, nn+12, nn+13]);
   //model.f.push([colors3[6], nn+12, nn+13, nn+10]);
 
   model.f.push([colors3[7], nn+8, nn+11, nn+12, nn+14]);
   //model.f.push([colors3[7], nn+12, nn+14, nn+8]);
-  
+
   model.f.push([colors3[0], nn+9, nn+10, nn+13, nn+15]);
   //model.f.push([colors3[0], nn+13, nn+15, nn+9]);
-  
+
   model.f.push([colors3[6], nn+14, nn+8, nn+9, nn+15]);
   //model.f.push([colors3[6], nn+9, nn+15, nn+14]);
-  
+
   //9
   model.f.push([colors3[10], nn+13, nn+12, nn+16, nn+17]);
   //model.f.push([colors3[10], nn+16, nn+17, nn+13]);
@@ -1717,18 +1713,18 @@ function init_arch1() {
   for (v in model.v) {
     model.v[v][1] += sy-2;
   }
-  
+
   models['arch1'] = model;
-  
+
   resetCam();
-  
+
   //723
   picoEye = [0.11484566126632026, 0.47259810767827265, -4.2065662873773455];
   picoDir = [0.04000258131116996, -0.1674866528775259, 0.985062441978338];
   picoUp = [-0.3230266739648757, 0.9307450749888955, 0.1713691141691099];
   camPathList['arch1'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   camPathList['arch1'].push({"frame":723, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //753
   picoEye = [0.17202935661496702, 0.4843191535702412, 4.242364610555954];
   picoDir = [0.28863044609638255, -0.08854064510417704, 0.953337830860991];
@@ -1737,24 +1733,24 @@ function init_arch1() {
   picoDir = [0.2982694731260076, -0.21923568080905242, 0.9289623445874031];
   picoUp = [-0.23505477607740483, 0.9264182560366196, 0.29410621742028753];
   camPathList['arch1'].push({"frame":753, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //788
   picoEye = [0.5857844022594767, 0.05063321222484095, 13.205256303890724];
   picoDir = [0.48113326920972405, -0.17744192408687356, 0.8585016836535101];
   picoUp = [-0.15052100064703658, 0.9480362425012382, 0.280304675787523];
   camPathList['arch1'].push({"frame":788, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //802
   picoEye = [0.04505337879213915, -0.5601643211703359, 16.313553072835926];
   picoDir = [0.7923636449312694, -0.05752276944484389, 0.6073310342693089];
   picoUp = [-0.16973444746906755, 0.935447128700602, 0.3100465880285896];
   camPathList['arch1'].push({"frame":802, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //826
   picoEye = [-1.4791506422638072, -0.695926749914624, 18.805401647372953];
   picoDir = [0.8595396223400138, -0.09200315141386002, 0.5027196612004597];
   picoUp = [-0.06952015919461421, 0.953471054785015, 0.2933596685856906];
-  
+
   picoEye = [-0.263132192261912, 0.009707007319023754, 18.780053707716363];
   picoDir = [0.8486936028598389, -0.17749390336975238, 0.4982118853774518];
   picoUp = [0.009329180839097435, 0.9468819906361478, 0.32144589310457444];
@@ -1765,28 +1761,28 @@ function init_arch1() {
   picoDir = [0.9977509085365643, -0.025935197346167328, 0.061810112870596325];
   picoUp = [0.008468353707385362, 0.947160231580952, 0.32064900233277566];
   camPathList['arch1'].push({"frame":870, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
 
   //900
   picoEye = [8.560787006761341, -0.6253676918137399, 18.52725195101287];
   picoDir = [0.9982633939884555, 0.014328959021582963, -0.057139103563213514];
   picoUp = [0.009185312173469764, 0.9431730709587824, 0.3321749362285717];
   camPathList['arch1'].push({"frame":900, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //930
   picoEye = [13.795039211716912, -0.2206920900376906, 18.23997501824834];
   picoDir = [0.9826118802803139, -0.019165528724565235, 0.18467965573038672];
   picoUp = [-0.03816261285116531, 0.9462083343709203, 0.32129955329471077];
   camPathList['arch1'].push({"frame":930, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //941
   picoEye = [16.232524088034207, -0.2670726600250243, 18.694666200938613];
   picoDir = [0.9861848992339112, -0.012401168432870696, 0.16518339972436813];
   picoUp = [-0.03816261285116531, 0.9462083343709203, 0.32129955329471077];
   camPathList['arch1'].push({"frame":941, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   camPathList['arch1'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
 }
 
 
@@ -1817,7 +1813,7 @@ function init_arch2() {
       '#4F6F4F','#3F5F3F','#1F3F1F','#2F4F2F'
     ]
   ];
-  
+
   let nqty = 5;
   let sx = 1.05;
   let sy = 1.415;
@@ -1830,11 +1826,11 @@ function init_arch2() {
   let dd3 = 0;
 
   let sz2 = sz;
-  
+
   let rotList = [40,15,-25,-25,0];
-  
+
   for (let n = 0; n < nqty; n++) {
-    
+
     let points = [
       [-sx,         -sy,        0],
       [-sx,         sy+dsy*sy,  0],
@@ -1874,12 +1870,12 @@ function init_arch2() {
         [-sx, sy, sz],
         [sx, sy, sz],
         [sx, -sy, sz],
-        
+
         [-sx+ddx*sx, -sy-ddy2*sy, sz+sz2],
         [-sx+ddx*sx, sy-ddy1*sy, sz+sz2],
         [sx-ddx*sx, sy-ddy1*sy, sz+sz2],
         [sx-ddx*sx, -sy-ddy2*sy, sz+sz2],
-       
+
       ];
       for (let p in points2) {
         model.v.push(points2[p]);
@@ -1928,62 +1924,62 @@ function init_arch2() {
   picoUp = [-0.32953276747259136, 0.9434623625702654, 0.03587374492840594];
   camPathList['arch2'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   camPathList['arch2'].push({"frame":925, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //957
   picoEye = [-0.04644116658274998, 0.023309606823571753, 3.9174586594046756];
   picoDir = [-0.12703399744854244, 0.0013005806072383824, 0.9918975108257546];
   picoUp = [-0.3423572092908686, 0.9384879443444875, -0.045076818506042685];
   camPathList['arch2'].push({"frame":957, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //997
   picoEye = [-0.6434957299906102, 0.1400125795719423, 6.557687434723405];
   picoDir = [-0.43914450133406563, 0.017682707896304915, 0.898242410927868];
   picoUp = [-0.27315874099124804, 0.9498452895305872, -0.15224397583034668];
-  
-  
+
+
   picoEye = [-0.21225539854483114, 0.10417495971589374, 6.769223345475186];
   picoDir = [-0.43914450133406563, 0.017682707896304915, 0.898242410927868];
   picoUp = [-0.26867362202731593, 0.9514670412379687, -0.1500831578312131];
-  
+
   camPathList['arch2'].push({"frame":997, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  
+
+
   //picoEye = [-1.310643227934061, 0.03602009242347634, 8.231741000631523];
   //picoDir = [-0.8464457538103461, 0.05391272905630722, 0.5297386180958833];
   //picoUp = [-0.11548331813245116, 0.9515788410934742, -0.28488824548640074];
   //camPathList['arch2'].push({"frame":1021, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   //1035
   picoEye = [-2.3122132779618987, 0.10440123276589713, 8.540248213608823];
   picoDir = [-0.8082067982274096, 0.009918439416325687, 0.5888152476444067];
   picoUp = [-0.18561740212401198, 0.9446021721534561, -0.2706897049976327];
-  
+
   picoEye = [-2.100347097907221, 0.22230928215276835, 8.80349698931441];
   picoDir = [-0.8572152943505835, -0.020999469001588195, 0.5145298450363146];
   picoUp = [-0.1695895389059576, 0.9549426594444272, -0.24356499228515868];
-  
+
   camPathList['arch2'].push({"frame":1035, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   //1075
   picoEye = [-3.8477691374086906, -0.08977455607678658, 11.558865095358119];
   picoDir = [-0.5465413250505908, 0.0015413173287053984, 0.8374307161507969];
   picoUp = [-0.27228733506952485, 0.9453353094293807, -0.17944570183426914];
-  
+
   picoEye = [-3.852181660059961, -0.1657285552824447, 11.555499876711806];
   picoDir = [-0.5455875351623002, -0.0017585280972478928, 0.83805199662936];
   picoUp = [-0.2741934614516677, 0.9453349303246871, -0.17652142987516312];
-  
+
   picoEye = [-4.095857371201503, -0.1814087163616058, 11.396829525517264];
   picoDir = [-0.5455875351623003, -0.001758528097247893, 0.8380519966293601];
   picoUp = [-0.2741934614516677, 0.9453349303246871, -0.17652142987516312];
-  
+
   camPathList['arch2'].push({"frame":1075, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   //1135
   picoEye = [-5.2302520878087355, -0.20439112212620844, 14.25514340117561];
   picoDir = [0.01067514708391592, 0.04414123218133798, 0.998968264188733];
   picoUp = [-0.3282784634319882, 0.9438084165838624, -0.038195853599513066];
-  
+
   picoEye = [-5.173588692715296, -0.1846657073606614, 14.255552874999175];
   picoDir = [-0.018998231593679266, 0.03383142176377412, 0.9992469675199193];
   picoUp = [-0.3282784634319882, 0.9438084165838624, -0.038195853599513066];
@@ -2000,13 +1996,13 @@ function init_arch2() {
   camPathList['arch2'].push({"frame":1193, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   camPathList['arch2'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   /*let showCP = 6;
   picoEye = camPathList['arch2'][showCP].picoEye;
   picoDir = camPathList['arch2'][showCP].picoDir;
   picoUp = camPathList['arch2'][showCP].picoUp;
   */
-  
+
 }
 
 function init_cubes() {
@@ -2036,7 +2032,7 @@ function init_cubes() {
   }
   camPathList['cubes'] = [];
   let colors = [
-    
+
     '#3F0F3F', //top
     '#4F1F3F', // back
     '#5F2F3F', // bott
@@ -2076,7 +2072,7 @@ function init_cubes() {
           points[p][2] = mlt * ( points[p][2] + (2 *sz + dsz)*z + sz); // - ((zqty * 2 *sz + (zqty-1)*dsz)/2) );
           tgtModel.v.push(points[p]);
         }
-        
+
         if (true) { //y == 0 for modelling
         let nn = (z < 2 ? n1 : n2)  * 8;
           //front
@@ -2102,7 +2098,7 @@ function init_cubes() {
       }
     }
   }
-  
+
   // model to model
   for (v in model.v) {
     model.v[v][1] += 14.3;
@@ -2115,10 +2111,10 @@ function init_cubes() {
     model2.v[v][0] -= 4;
   }
 
-  
+
   models['cubes'] = model;
   models['cubes2'] = model2;
-  
+
 }
 
 function init_room() {
@@ -2158,7 +2154,7 @@ function init_room() {
   var r0 = 0.05;
   var drr = 1.05;
   var drr2 = 1;
-  
+
   var radList = [
     0.95,  1.15,  2.15,  2.575,  3,
     4, 5,
@@ -2171,10 +2167,10 @@ function init_room() {
     -0.5,  -1.5,
     -2.125,
     -2.75, -3.75,
-    -4.75, 
+    -4.75,
     -7
   ];
-  
+
   var nmax = radList.length;
   for (var n = 0; n < nmax; n++) {
   //for (var n in radList) {
@@ -2227,12 +2223,12 @@ function init_room() {
   point = vMov(point, dirH ,holeDx);
   point = vMov(point, dirV ,holeDy);
   model.v.push(point);
-  
+
   point = model.v[p2-1];
   point = vMov(point, dirH ,holeDx);
   point = vMov(point, dirV ,-holeDy);
   model.v.push(point);
-  
+
   point = model.v[p3-1];
   point = vMov(point, dirH ,-holeDx);
   point = vMov(point, dirV ,-holeDy);
@@ -2242,10 +2238,10 @@ function init_room() {
   point = vMov(point, dirH ,-holeDx);
   point = vMov(point, dirV ,holeDy);
   model.v.push(point);
-  
+
   model.f.push([clr, p1, p2, vv+2, vv+1]);
   //model.f.push([clr, vv+2, vv+1, p1]);
-  
+
   model.f.push([clr, p2, p3, vv+3, vv+2]);
   //model.f.push([clr, vv+3, vv+2, p2]);
 
@@ -2273,28 +2269,28 @@ function init_room() {
   picoUp = [-0.27402289091808474, -0.32797983858992125, -0.9040689579514523];
   camPathList['room'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   camPathList['room'].push({"frame":1343, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-1.2246132552957654, 0.43779695999867374, -6.399339515808495];
   picoDir = [-0.9721938223303, 0.17486551838303963, 0.1557601435009347];
   picoUp = [-0.27402289091808474, -0.32797983858992125, -0.9040689579514523];
   camPathList['room'].push({"frame":1352, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-1.101579899748767, -0.07703025225498565, -5.849388308050297];
   picoDir = [-0.9109872368276696, -0.3785740467429317, 0.16365801376580424];
   picoUp = [-0.05270666559674253, -0.40714334848615497, -0.9118422567446381];
   camPathList['room'].push({"frame":1367, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [1.06219922232528, 1.7839214514072315, -3.885877960195355];
   picoDir = [0.5206965977735927, -0.8378189797494002, 0.16411706260678513];
   picoUp = [0.3616286468007087, -0.006328737705283129, -0.932300739510672];
   camPathList['room'].push({"frame":1400, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  
+
+
   picoEye = [-2.8283857968378343, -0.42697674476829656, -3.3811563639147293];
   picoDir = [0.9563535724362506, 0.2660608213941003, 0.12082832369737577];
   picoUp = [0.0585608628778586, 0.35699980485005434, -0.9322670028892065];
   camPathList['room'].push({"frame":1450, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-2.3789418675268332, -2.5764910221601256, -1.8030954974651208];
   picoDir = [0.786685339054816, 0.5986843175166268, 0.1506760275420754];
   picoUp = [-0.05733593277993712, 0.34320045910221975, -0.9375105523055621];
@@ -2302,37 +2298,37 @@ function init_room() {
   picoDir = [0.788486247532753, 0.5885768312152666, 0.17851260798138022];
   picoUp = [-0.033935939108118776, 0.3606188271555752, -0.9320957105028365];
   camPathList['room'].push({"frame":1493, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
 
   picoEye = [-0.08617177850283218, -2.915735228747263, -2.5154866908391];
   picoDir = [0.10071350320492653, 0.8711591245831845, 0.4805606828774604];
   picoUp = [-0.2863519934995061, 0.4879594381549821, -0.8245593505226492];
   camPathList['room'].push({"frame":1538, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [2.03785758495921, -1.904919193018332, -2.4573104775540973];
   picoDir = [-0.5713398446386186, 0.6169325314840413, 0.5412624442218502];
   picoUp = [-0.5673796863997169, 0.17961088018623866, -0.8036294066170574];
   camPathList['room'].push({"frame":1565, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [1.856841733944268, -0.21380351831538608, -2.4892915991391935];
   picoDir = [-0.5403871341587289, 0.6726828965498378, 0.5054497659758448];
   picoUp = [-0.5390019599590818, 0.18453043873604735, -0.8218426883170223];
   camPathList['room'].push({"frame":1585, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [0.2734179136910122, 3.6974848014553365, -2.069942665974733];
   picoDir = [-0.18685457775855932, 0.9490221547746975, 0.2538549123366744];
   picoUp = [-0.2650333377250863, 0.20012610898764824, -0.9432427420318507];
   camPathList['room'].push({"frame":1615, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [0.16095173105482394, 9.97346422533326, -1.8219755085608407];
   picoDir = [-0.575192526120812, 0.8022380888822742, 0.1598987387107089];
   picoUp = [-0.18058219472143383, 0.06612086599477994, -0.9813348572376763];
   camPathList['room'].push({"frame":1640, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [0.6666571024287922, 16.79025418470249, -2.0245419295351135];
   picoDir = [-0.963285857021486, 0.2576792060321931, 0.07537761233284093];
   picoUp = [-0.105085270632809, -0.1035167322963368, -0.989060853552863];
- 
+
   picoEye = [0.690126230394534, 16.789241269873692, -1.9864870476396574];
   picoDir = [-0.964987155638782, 0.25096624336891604, 0.0762609607955943];
   picoUp = [-0.105085270632809, -0.1035167322963368, -0.989060853552863];
@@ -2340,7 +2336,7 @@ function init_room() {
   picoDir = [-0.964987155638782, 0.25096624336891604, 0.0762609607955943];
   picoUp = [-0.105085270632809, -0.1035167322963368, -0.989060853552863];
   camPathList['room'].push({"frame":1679, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [0.2747315946707258, 18.68829350542814, -2.2631200335677395];
   picoDir = [-0.9973460570088052, 0.05318073908411532, 0.04972576353819412];
   picoUp = [-0.05459475245937595, -0.11184958405307076, -0.9922243111066442];
@@ -2348,27 +2344,27 @@ function init_room() {
   picoDir = [-0.9977981110777385, -0.030039451495781157, 0.05913172484825467];
   picoUp = [-0.05459475245937595, -0.11184958405307076, -0.9922243111066442];
   camPathList['room'].push({"frame":1706, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-3.9916675061894242, 18.551947407296435, -3.8615485581601456];
   picoDir = [-0.8568021127075283, -0.5135466321659026, 0.04647575982138701];
   picoUp = [-0.014849350570148974, -0.06389915620588695, -0.9978458771893686];
   camPathList['room'].push({"frame":1742, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-7.301925824553604, 18.803862576558185, -4.648973050092361];
   picoDir = [-0.7624621250116146, -0.6373806300449806, -0.11134379356855378];
   picoUp = [0.17120984908152848, -0.03193306467959137, -0.9847169476340141];
   camPathList['room'].push({"frame":1768, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-8.735118477603116, 16.66024958956873, -6.10827658149331];
   picoDir = [-0.7926546810170815, -0.6062315195679682, -0.06466762206870541];
   picoUp = [0.16221612401142482, -0.1065566729110716, -0.9809850175047696];
   camPathList['room'].push({"frame":1790, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   picoEye = [-8.464187647803858, 14.943807057080956, -6.261179098817448];
   picoDir = [-0.9252704574216493, -0.3597602367080351, -0.12019630903863274];
   picoUp = [0.16774528275929823, -0.10232140981767666, -0.9805059149260275];
   camPathList['room'].push({"frame":1799, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
+
   camPathList['room'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 }
 
@@ -2414,6 +2410,11 @@ function init_testcube() {
 
 
 function init_oxygene() { 	// transform base model oxygene
+
+  let colors = [
+    '#7F7F0F',
+    '#6F3F0F', '#5F2F0F', '#4F1F0F', '#3F0F0F',
+  ]
 
   let models_oxygene = {
    "O": {
@@ -2867,6 +2868,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
     f: [],
   };
   var colors2 = [
+
     ['#4F1F0F', '#3F0F0F', '#4F1F0F', '#5F2F0F'],
     ['#5F2F0F', '#4F1F0F', '#5F2F0F', '#6F3F0F'],
     ['#6F3F0F', '#5F2F0F', '#6F3F0F', '#7F4F0F'],
@@ -2887,6 +2889,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
   var dirX = normalize(vSub(pointsList[2],pointsList[1]));
   var dirY = normalize(vSub(pointsList[0],pointsList[1]));
   var dirZ = normalize(cross(dirX,dirY));
+
   
   
   var nnyy = models['Y'].v.length;
@@ -2894,6 +2897,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
   var dz = -0.07//;-0.07;
   var dx = 0.177;//0.2;//0.055;
   var dy = 0.148;//0.15;//0.04;
+
   var ni0 = 1;
   var nii = 0;
   for (var ni = 0; ni <= 5; ni++) {
@@ -2913,7 +2917,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
     } else {
       nii += 0.03;
       console.log('nii', nii);
-      
+
     }*/
     nii = ni0 * ni;
     ni0 = ni0 / 1.255;
@@ -2950,14 +2954,15 @@ objects.js:2786 dist E,N = 0.7138940000000016
     }
   }
   console.log(models['Y']);
-  
+  //console.log(modelOxygeneIn);
+
   models['oxygenein'] = modelOxygeneIn;
   modelRenderList.push({
     model: 'oxygenein',
     campath: 'oxygene',
   });
 
-  
+
   camPathList['oxygene'] = [];
   //0
   picoEye = [-0.7166704786832006, -1.9876202786392057, -5.089986713413605];
@@ -2972,11 +2977,6 @@ objects.js:2786 dist E,N = 0.7138940000000016
   picoUp = [-0.018173544149487363, 0.8250772535454206, -0.5647275874038672];
   camPathList['oxygene'].push({"frame":25, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   //50
-  camSetLookAtDistRot([0,0,0], 1.7, 61, -2, 2);
-  camMov(-0.55, 0, 0);
-  camMovUp(-0.45);
-  camMovDir(0.4);
-  
   picoEye = [-0.408270457876739, -1.277812193722619, -0.2977625079618286];
   picoDir = [-0.060220437122824856, 0.7875912175218995, 0.6132483779310859];
   picoUp = [0.03460758092343095, 0.6156414077775421, -0.7872661382101447];
@@ -3009,10 +3009,11 @@ objects.js:2786 dist E,N = 0.7138940000000016
   picoEye = [-0.33568117957272725, -0.6297903860037376, 0.47796172137360754];
   picoDir = [-0.24159239006366603, 0.9644567626394306, -0.10703396686283657];
   picoUp = [0.1115495700911506, -0.08209913361403752, -0.9903617650496731];
+
   camPathList['oxygene'].push({"frame":89, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
   camPathList['oxygene'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
- 
+
 }
 
 // fake data

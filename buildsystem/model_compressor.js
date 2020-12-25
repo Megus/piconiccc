@@ -1,49 +1,103 @@
-function writeFlattenedArrays(src, dst) {
+const huffman = require("./huffman");
+
+function prepareArray(src, signed) {
+  const dst = [];
   for (let c = 0; c < src.length; c++) {
-    for (let d = 0; d < src[c].length; d++) {
-      let v = src[c][d];
-      if (v < 0) v = 256 + v;
+    if (typeof src[c] == "number") {
+      let v = src[c];
+      if (signed == true) {
+        if (v > 127) throw `Number too big ${v}`;
+        if (v < -128) throw `Number too small ${v}`;
+        if (v < 0) v = 256 + v;
+      }
+      if (v > 255) throw `Number too big ${v}`;
       dst.push(v);
+    } else {
+      dst.push(...prepareArray(src[c], signed));
     }
   }
-
+  return dst;
 }
 
-module.exports.compressModels = function (models) {
-  const compressed = {};
-  compressed.binary = [];
-  compressed.models = {};
+module.exports.compressModels = function (convertedData) {
+  const models = convertedData.models;
+  const compressed = {
+    models: [],
+    arcs: [],
+  };
 
-  let totalFps = 0;
+  const binary = [];
+  const bVertices = [];
+  const bV3 = [];
+  const bV4 = [];
+  const bColors = [];
+  const bFP = [];
 
   for (const name in models) {
+    //console.log(name);
     const model = models[name];
-    compressed.models[name] = {
+    compressed.models.push({
+      name: name,
       o: model.o,
       s: model.s,
-      addr: compressed.binary.length,
-      fpn: model.fp.length,
       vn: model.v.length,
-      fn: model.f.length,
+      f3n: model.f3.length,
+      f4n: model.f4.length,
       fstart: model.fstart,
       fend: model.fend,
       pal: model.pal,
-    };
+    });
 
-    totalFps += model.fp.length;
+    if (name == "E") continue;
 
     // Write vertices
-    writeFlattenedArrays(model.v, compressed.binary);
+    bVertices.push(...prepareArray(model.v, false));
 
-    // Write face patterns
-    writeFlattenedArrays(model.fp, compressed.binary);
+    // Write faces:
+    // Triangles
+    for (let c = 0; c < model.f3.length; c++) {
+      bColors.push(model.f3[c][0]);
+      bV3.push(model.f3[c][1], model.f3[c][2], model.f3[c][3]);
+    }
 
-    // Write faces
-    writeFlattenedArrays(model.f, compressed.binary);
+    // Quads
+    oldV = 0;
+    for (let c = 0; c < model.f4.length; c++) {
+      bColors.push(model.f4[c][0] - ((model.pal % 2 == 0) ? 0x88 : 0));
+      bV4.push(model.f4[c][1] - oldV);
+      oldV = model.f4[c][1];
+      bFP.push(model.f4[c][2]);
+    }
   }
 
-  console.log(`Face patterns: ${totalFps}`);
-  console.log(`Compressed length: ${compressed.binary.length}`);
+  console.log("Vertices:");
+  const cbVertices = huffman.compress(bVertices);
+  compressed.arcs.push([binary.length, cbVertices.tree]);
+  binary.push(...cbVertices.binary);
+
+  console.log("Colors:");
+  const cbColors = huffman.compress(bColors);
+  compressed.arcs.push([binary.length, cbColors.tree]);
+  binary.push(...cbColors.binary);
+
+  console.log("Triangles:");
+  const cbV3 = huffman.compress(prepareArray(bV3, false));
+  compressed.arcs.push([binary.length, cbV3.tree]);
+  binary.push(...cbV3.binary);
+
+  console.log("Quads:");
+  const cbV4 = huffman.compress(prepareArray(bV4, true));
+  compressed.arcs.push([binary.length, cbV4.tree]);
+  binary.push(...cbV4.binary);
+
+  const cbFP = huffman.compress(bFP);
+  compressed.arcs.push([binary.length, cbFP.tree]);
+  binary.push(...cbFP.binary);
+
+  const uncompressedLength = bVertices.length + bV3.length + bV4.length + bColors.length + bFP.length;
+  console.log(`Uncompressed length: ${uncompressedLength}, compressed length: ${binary.length}, ratio: ${binary.length / uncompressedLength}`);
+
+  compressed.binary = binary;
 
   return compressed;
 }
