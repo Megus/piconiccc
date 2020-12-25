@@ -1,13 +1,14 @@
 'use strict';
 // 957 997 1035 1075 1135 1187
-let frameNumberStart = 0;//150;
+let frameNumberStart = 0;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 0;
+let isHover = 1;
 let isNeedChangeCam = true;
 let isUseCamPath = true;
+var isRandomize = 0;
 
 let picoRenderPointList = [];
 
@@ -109,6 +110,9 @@ function drawFrame(time) {
     for (v in models['rotorin'].v) {
       models['rotorin'].v[v] = rotVec(models['rotorin'].v[v], rotorin,  3);
     }
+    
+  }
+  if (isRandomize || models['rotorin'] != undefined) {
     //buffers = initBuffers(gl);
   }
 

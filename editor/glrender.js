@@ -59,16 +59,29 @@ function initBuffers(gl) {
 
   for (let m in models) {
     let vertexCountStart = vertexCount;
+    
+    var vList = [];
+    for (v in models[m].v) {
+      var rx = isRandomize ? (Math.random() * models[m].rnd - models[m].rnd/2) * 2 : 0;
+      var ry = isRandomize ? (Math.random() * models[m].rnd - models[m].rnd/2) * 2 : 0;
+      var rz = isRandomize ? (Math.random() * models[m].rnd - models[m].rnd/2) * 2 : 0;
+      vList.push(
+        [models[m].v[v][0]+rx, models[m].v[v][1]+ry, models[m].v[v][2]+rz]
+      );
+    }
+  
+    
+    
     for (let f in models[m].f) {
       var color = getGlColor(models[m].f[f][0]);
       for (var c = 0; c < 3; c++) {
         glColors.push(color[0], color[1], color[2], color[3]);
       }
-      pos = models[m].v[ models[m].f[f][1] - 1 ];
+      pos = vList[ models[m].f[f][1] - 1 ];
       glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
-      pos = models[m].v[ models[m].f[f][2] - 1 ];
+      pos = vList[ models[m].f[f][2] - 1 ];
       glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
-      pos = models[m].v[ models[m].f[f][3] - 1 ];
+      pos = vList[ models[m].f[f][3] - 1 ];
       glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
       glIndices.push(vertexCount++);
       glIndices.push(vertexCount++);
@@ -79,11 +92,11 @@ function initBuffers(gl) {
           for (var c = 0; c < 3; c++) {
             glColors.push(color[0], color[1], color[2], color[3]);
           }
-          pos = models[m].v[ models[m].f[f][3] - 1 ];
+          pos = vList[ models[m].f[f][3] - 1 ];
           glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
-          pos = models[m].v[ models[m].f[f][4] - 1 ];
+          pos = vList[ models[m].f[f][4] - 1 ];
           glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
-          pos = models[m].v[ models[m].f[f][1] - 1 ];
+          pos = vList[ models[m].f[f][1] - 1 ];
           glPositions.push(pos[0]); glPositions.push(pos[1]); glPositions.push(pos[2]);
           glIndices.push(vertexCount++);
           glIndices.push(vertexCount++);
@@ -147,21 +160,6 @@ function glDrawFrame(gl) {
   // Clear the canvas before we start drawing on it.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  // Create a perspective matrix, a special matrix that is
-  // used to simulate the distortion of perspective in a camera.
-  // Our field of view is 45 degrees, with a width/height
-  // ratio that matches the display size of the canvas
-  // and we only want to see objects between 0.1 units
-  // and 100 units away from the camera.
-
-  const fovAngle = 90;
-  const fieldOfView = fovAngle * Math.PI / 180; // in radians
-  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  const zNear = 0.001;
-  const zFar = 100.0;
-  let projectionMatrix = mat4.create();
-  mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
-
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute
   {
@@ -208,12 +206,10 @@ function glDrawFrame(gl) {
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program);
 
-  // Set the shader uniforms
-  gl.uniformMatrix4fv(
-    programInfo.uniformLocations.projectionMatrix,
-    false,
-    projectionMatrix
-  );
+
+
+
+
 
   const type = gl.UNSIGNED_SHORT;
   for (let mrlId in modelRenderList) {
@@ -221,28 +217,48 @@ function glDrawFrame(gl) {
     let m = mrl.model;
     // render if model is visible
     if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
+
       // clean z-buff
       gl.clear(gl.DEPTH_BUFFER_BIT);
+
       // get & spline cam
       if (isUseCamPath && (isNeedChangeCam || isPlay)) {
         changeCamPath(mrl.campath);
         spline_cam(mrl.campath);
       }
-      // calculate camera matrix
-      let modelViewMatrix = mat4.create();
-      let camCenter = [picoEye[0]+picoDir[0], picoEye[1]+picoDir[1], picoEye[2]+picoDir[2]];
+
+      // calculate & setcamera matrix
+      var modelViewMatrix = mat4.create();
+      var camCenter = [picoEye[0]+picoDir[0], picoEye[1]+picoDir[1], picoEye[2]+picoDir[2]];
       mat4.lookAt(modelViewMatrix, picoEye, camCenter, picoUp);
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.modelViewMatrix,
         false,
         modelViewMatrix
       );
+      
+      // calculate & projection matrix
+      var fovAngle = models[m].fov;
+      var fieldOfView = fovAngle * Math.PI / 180; // in radians
+      var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+      var zNear = 0.001;
+      var zFar = 100.0;
+      var projectionMatrix = mat4.create();
+      mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+      gl.uniformMatrix4fv(
+        programInfo.uniformLocations.projectionMatrix,
+        false,
+        projectionMatrix
+      );
+      
       // render
-      let offset = glRenderList[m].offset*2;
-      let count = glRenderList[m].count;
+      
+      var offset = glRenderList[m].offset * 2;
+      var count = glRenderList[m].count;
       if (count > 0) {
         gl.drawElements(wireframe == 0 ? gl.TRIANGLES : gl.LINES, count, type, offset);
       }
+
     }
   }
 }

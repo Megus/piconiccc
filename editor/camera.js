@@ -69,7 +69,6 @@ function spline_cam(camId) {
 
 }
 
-// ��������� ��������� ������ �� ������� � ����������� �� ������
 function changeCamPath(camId) {
   if (camId == undefined) {
     console.log('bad');
@@ -83,9 +82,6 @@ function changeCamPath(camId) {
 
 }
 
-
-
-
 function showCamData() {
 	let html =
 		'&nbsp;&nbsp;picoEye = [' + picoEye[0] + ', ' + picoEye[1] + ', ' + picoEye[2] + '];<br>'
@@ -94,6 +90,18 @@ function showCamData() {
 		;
   if (document.getElementById('camdata').innerHTML != html) {
     document.getElementById('camdata').innerHTML = html;
+  }
+  // render list
+  html = 'Render list: ';
+  for (let mrlId in modelRenderList) {
+    let mrl = modelRenderList[mrlId];
+    let m = mrl.model;
+    if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
+      html += m + '; ';
+    }
+  }
+  if (document.getElementById('render-list').innerHTML != html) {
+    document.getElementById('render-list').innerHTML = html;
   }
 }
 
