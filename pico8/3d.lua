@@ -1,6 +1,6 @@
 v2d = {}
 
-znear, zfar = 0.1, 15
+znear, zfar = 0.1, 30
 sc = 64
 tminx = -64/sc
 tmaxx = 64/sc

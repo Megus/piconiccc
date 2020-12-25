@@ -46,13 +46,16 @@ fs.writeFileSync("../pico8/data.lua", luaData);
 // Write P8
 const luaCode = "\
 #include main.lua\n\
+#include misc.lua\n\
+#include demoengine.lua\n\
+#include eg_triangle.lua\n\
+#include 3d.lua\n\
+#include data.lua\n\
 #include huffman.lua\n\
 #include loader.lua\n\
-#include eg_triangle.lua\n\
-#include camera.lua\n\
-#include 3d.lua\n\
-#include misc.lua\n\
-#include data.lua\n";
+#include fx_niccc.lua\n\
+#include script.lua\n\
+";
 
 writer.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);
 

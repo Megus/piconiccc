@@ -12,6 +12,7 @@ const picoPalette = [
 
 const modelPalettes = [
   ["oxygenein", "Y", "G", "E", "N", "E1", "X", "O"],
+  ["tonnel1"],
   ["tonnel2"],
   ["tonnel3"],
   ["rotor", "rotorin"],
