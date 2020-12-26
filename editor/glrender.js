@@ -31,7 +31,9 @@ const fsSource = `
 
 // init
 function glInit(gl) {
-  gl.enable(gl.CULL_FACE);
+  if (isGlCullFace) {
+    gl.enable(gl.CULL_FACE);
+  }
   shaderProgram = initShaderProgram(gl, vsSource, fsSource);
   programInfo = {
     program: shaderProgram,
@@ -56,12 +58,11 @@ function initBuffers(gl) {
   var glIndices = [];
   var glColors = [];
   var pos = 0;
-
   for (let m in models) {
+    console.log('init model: ' + m);
     let vertexCountStart = vertexCount;
-    
     var vList = [];
-    for (v in models[m].v) {
+    for (var v in models[m].v) {
       var rx = isRandomize ? (Math.random() * models[m].rnd - models[m].rnd/2) * 2 : 0;
       var ry = isRandomize ? (Math.random() * models[m].rnd - models[m].rnd/2) * 2 : 0;
       var rz = isRandomize ? (Math.random() * models[m].rnd - models[m].rnd/2) * 2 : 0;
@@ -219,10 +220,12 @@ function glDrawFrame(gl) {
     if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
 
       // clean z-buff
-      gl.clear(gl.DEPTH_BUFFER_BIT);
+      if (isGlClearZBuff) {
+        gl.clear(gl.DEPTH_BUFFER_BIT);
+      }
 
       // get & spline cam
-      if (isUseCamPath && (isNeedChangeCam || isPlay)) {
+      if (isForceCamPath || (isNeedChangeCam || isPlay)) {
         changeCamPath(mrl.campath);
         spline_cam(mrl.campath);
       }

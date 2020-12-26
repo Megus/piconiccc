@@ -92,12 +92,12 @@ function showCamData() {
     document.getElementById('camdata').innerHTML = html;
   }
   // render list
-  html = 'Render list: ';
+  html = 'Render-list: ';
   for (let mrlId in modelRenderList) {
     let mrl = modelRenderList[mrlId];
     let m = mrl.model;
     if (models[m].fstart <= frameNumber && models[m].fend > frameNumber) {
-      html += m + '; ';
+      html += '<b style="color:red;">' + m + '</b> <span style="color:#8090ff;">[' + modelRenderList[mrlId].campath + ']</span>' + '; ';
     }
   }
   if (document.getElementById('render-list').innerHTML != html) {
