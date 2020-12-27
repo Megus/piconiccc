@@ -59,7 +59,7 @@ function initBuffers(gl) {
   var glColors = [];
   var pos = 0;
   for (let m in models) {
-    console.log('init model: ' + m);
+    //console.log('init model: ' + m);
     let vertexCountStart = vertexCount;
     var vList = [];
     for (var v in models[m].v) {

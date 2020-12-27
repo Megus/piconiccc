@@ -29,7 +29,7 @@ const models_arch1_fend = 941;
 const models_arch2_fstart = 800;
 const models_arch2_fend = 1193;
 
-const models_tonnel5_fstart = 1190;
+const models_tonnel5_fstart = 900; //1080;//1190;
 const models_tonnel5_fend = 1347;
 
 const models_room_fstart = 1245;//1245-1334 first time;
@@ -42,8 +42,6 @@ const models_cubes2_fstart = 1450;
 const models_cubes2_fend = 9999;
 
 //1784 must invert
-
-
 
 function init_models() {
   //init_testcube();
@@ -70,7 +68,7 @@ function init_models() {
 
 
   // tonnel4 - cam to cam
-  console.log(camPathList['tonnel4']);
+  //console.log(camPathList['tonnel4']);
   if (camPathList['tonnel4'] != undefined && camPathList['rotor'] != undefined) {
     for (var c in camPathList['tonnel4']) {
       if (camPathList['tonnel4'][c].frame != - 1 && c > 1
@@ -124,20 +122,113 @@ function init_models() {
     console.log('camPathList - rotor: ', camPathList['rotor']);
   }
   
-  
-  
-      for (var rl in modelRenderList) {
-        if (modelRenderList[rl].model == 'room') {
-          modelRenderList[rl].campath = 'tonnel5';
-        }
+  //tonnel5
+  if (models['tonnel5'] != undefined && models['arch2'] != undefined) {
+    for (v in models['tonnel5'].v) {
+      models['tonnel5'].v[v] = rotY(models['tonnel5'].v[v], 5.6);
+      models['tonnel5'].v[v] = rotX(models['tonnel5'].v[v], 15);
+      models['tonnel5'].v[v][0] += models['arch2'].endTarget[0];
+      models['tonnel5'].v[v][1] += models['arch2'].endTarget[1];
+      models['tonnel5'].v[v][2] += models['arch2'].endTarget[2];
+      models['tonnel5'].v[v] = vMov(models['tonnel5'].v[v], models['arch2'].endDir, -1.5);
+      models['tonnel5'].v[v] = vMov(models['tonnel5'].v[v], models['arch2'].endUp, -0.05);
+    }
+
+    models['tonnel5'].endTarget = vecHalf(models['tonnel5'].v[5], models['tonnel5'].v[0]);
+    models['tonnel5'].endH = normalize(vSub(models['tonnel5'].v[4], models['tonnel5'].v[5]));
+    models['tonnel5'].endUp = normalize(vSub(models['tonnel5'].v[3], models['tonnel5'].v[2]));
+    models['tonnel5'].endDir = normalize(cross(models['tonnel5'].endUp, models['tonnel5'].endH));
+    console.log('tonnel5 endTarget: ' + models['tonnel5'].endTarget);
+    
+    
+    
+    
+
+    //camPathList['arch2'].push({"frame":'--------------', "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});    
+    for (var c in camPathList['tonnel5']) {
+      picoEye = camPathList['tonnel5'][c].picoEye;
+      picoDir = camPathList['tonnel5'][c].picoDir;
+      picoUp = camPathList['tonnel5'][c].picoUp;
+
+      picoEye = rotY(picoEye, 5.6);
+      picoEye = rotX(picoEye, 15);
+      picoEye[0] += models['arch2'].endTarget[0];
+      picoEye[1] += models['arch2'].endTarget[1];
+      picoEye[2] += models['arch2'].endTarget[2];
+      picoEye = vMov(picoEye, models['arch2'].endDir, -1.5);
+      picoEye = vMov(picoEye, models['arch2'].endUp, -0.05);
+
+      picoDir = normalize(rotY(picoDir, 5.6));
+      picoDir = normalize(rotX(picoDir, 15));
+
+      picoUp = normalize(rotY(picoUp, 5.6));
+      picoUp = normalize(rotX(picoUp, 15));
+      if (camPathList['tonnel5'][c].frame != -1
+        && camPathList['tonnel5'][c].frame != 1201
+        && camPathList['tonnel5'][c].frame != 1212
+        
+        && camPathList['tonnel5'][c].frame != 1234
+        && camPathList['tonnel5'][c].frame != 1245
+
+        && camPathList['tonnel5'][c].frame != 1267
+        && camPathList['tonnel5'][c].frame != 1278
+        
+        && camPathList['tonnel5'][c].frame != 1300
+        && camPathList['tonnel5'][c].frame != 1322
+      ) {
+          //camPathList['arch2'].push({"frame":1180, "picoEye":picoEye2, "picoDir":picoDir2, "picoUp":picoUp2});
+          if (camPathList['tonnel5'][c].frame == 1344) {
+            
+            console.log('debug' + picoEye + ' ' + models['tonnel5'].endDir);
+            picoEye = vMov(picoEye, models['tonnel5'].endDir, 0.1);
+            console.log('debug' + picoEye + ' ' + models['tonnel5'].endDir);
+          }
+      
+        camPathList['arch2'].push({"frame":camPathList['tonnel5'][c].frame, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
       }
+      /*
+      {frame: 1190, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      13: {frame: 1201, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      14: {frame: 1212, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      15: {frame: 1223, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      16: {frame: 1234, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      17: {frame: 1245, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      18: {frame: 1256, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      19: {frame: 1267, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      20: {frame: 1278, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      21: {frame: 1289, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      22: {frame: 1300, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      23: {frame: 1311, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      24: {frame: 1322, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      25: {frame: 1333, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      26: {frame: 1344, picoEye: Array(3), picoDir: Array(3), picoUp: Array(3)}
+      */
+    }
+    //camPathList['arch2'].push({"frame":'------------', "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+    
+    console.log('camPathList - arch2: ', camPathList['arch2']);
+
+    for (var rl in modelRenderList) {
+      if (modelRenderList[rl].model == 'tonnel5') {
+        modelRenderList[rl].campath = 'arch2';
+      }
+    }
+
+  }
+
   //room
-  if (models['room'] != undefined && models['tonnel5'] != undefined) {
+  if (models['room'] != undefined && models['tonnel5'] != undefined && models['arch2'] != undefined) {
     for (v in models['room'].v) {
-      models['room'].v[v] = rotZ(models['room'].v[v],-90);
-      models['room'].v[v] = rotX(models['room'].v[v],-138);
-      models['room'].v[v][1] -= 28;
-      models['room'].v[v][2] -= 16;
+      models['room'].v[v] = rotZ(models['room'].v[v],-98);
+      models['room'].v[v] = rotX(models['room'].v[v],-120);
+      models['room'].v[v] = rotZ(models['room'].v[v],-8);
+
+      models['room'].v[v][0] += models['tonnel5'].endTarget[0];
+      models['room'].v[v][1] += models['tonnel5'].endTarget[1];
+      models['room'].v[v][2] += models['tonnel5'].endTarget[2];
+
+      models['room'].v[v] = vMov(models['room'].v[v], models['tonnel5'].endDir, 11);
+      models['room'].v[v] = vMov(models['room'].v[v], models['tonnel5'].endUp, -0.75);
     }
   
     for (var c in camPathList['room']) {
@@ -145,32 +236,38 @@ function init_models() {
       picoDir = camPathList['room'][c].picoDir;
       picoUp = camPathList['room'][c].picoUp;
       
-      picoEye = rotZ(picoEye,-90);
-      picoEye = rotX(picoEye,-138);
-      picoEye[1] -= 28;
-      picoEye[2] -= 16;
+      picoEye = rotZ(picoEye,-98);
+      picoEye = rotX(picoEye,-120);
+      picoEye = rotZ(picoEye,-8);
+      picoEye[0] += models['tonnel5'].endTarget[0];
+      picoEye[1] += models['tonnel5'].endTarget[1];
+      picoEye[2] += models['tonnel5'].endTarget[2];
+      picoEye = vMov(picoEye, models['tonnel5'].endDir, 11);
+      picoEye = vMov(picoEye, models['tonnel5'].endUp, -0.75);
+      
+      picoDir = normalize(rotZ(picoDir,-98));
+      picoDir = normalize(rotX(picoDir,-120));
+      picoDir = normalize(rotZ(picoDir,-8));
 
-      picoDir = normalize(rotZ(picoDir,-90));
-      picoDir = normalize(rotX(picoDir,-138));
-
-      picoUp = normalize(rotZ(picoUp,-90));
-      picoUp = normalize(rotX(picoUp,-138));
+      picoUp = normalize(rotZ(picoUp,-98));
+      picoUp = normalize(rotX(picoUp,-120));
+      picoUp = normalize(rotZ(picoUp,-8));      
 
       //camPathList['room'][c].picoEye = picoEye;
       //camPathList['room'][c].picoDir = picoDir;
       //camPathList['room'][c].picoUp = picoUp;
       if (camPathList['room'][c].frame >= 1347) {
-        camPathList['tonnel5'].push({"frame":camPathList['room'][c].frame, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+        camPathList['arch2'].push({"frame":camPathList['room'][c].frame, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
       }
 
 
     }
     for (var rl in modelRenderList) {
       if (modelRenderList[rl].model == 'room') {
-        modelRenderList[rl].campath = 'tonnel5';
+        modelRenderList[rl].campath = 'arch2';
       }
     }
-    console.log('camPathList - RooM: ', camPathList['tonnel5']);
+    console.log('camPathList - arch2 + room: ', camPathList['arch2']);
   }
 
 }
@@ -178,11 +275,13 @@ function init_models() {
 function show_models_stat() {
   total_v = 0;
   total_f = 0;
+  console.log('--------- MODELS STATS:');
   for (m in models) {
     console.log(m + ', v:' + models[m].v.length + ' f:' + models[m].f.length);
     total_v += models[m].v.length;
     total_f += models[m].f.length;
   }
+  console.log('--------- MODELS STATS TOTAL:');
   console.log('total v:' + total_v + ', f:' + total_f);
 }
 
@@ -687,23 +786,23 @@ function init_tonnel5() {
       camRotUp(0.5);
     }
     if (n == 0) {
-      camMovDir(-0.1);
       camPathList['tonnel5'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-      camMovDir(0.1);
     }
     camPathList['tonnel5'].push({"frame":1190+frm, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
     frm += frmStep;
   }
 
+  /*
   let vdir = normalize(vSub(camPathList['tonnel5'][camPathList['tonnel5'].length-1].picoEye, camPathList['tonnel5'][camPathList['tonnel5'].length-2].picoEye));
   picoEye[0] += vdir[0]*1.75;
   picoEye[1] += vdir[1]*1.75;
   picoEye[2] += vdir[2]*1.75;
   camRotH(-5);
+  */
   //camPathList['tonnel5'].push({"frame":1190+frm+frmStep, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   //camPathList['tonnel5'].push({"frame":1190+frm+frmStep+1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   //camPathList['tonnel5'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  console.log('1347 => ', picoEye);
+  //console.log('1347 => ', picoEye);
 
 }
 
@@ -1531,7 +1630,7 @@ function init_tonnel4() {
     
     
     camRotDir(-n*rz + (n < 14 ? 25 : lastRot[n]));
-    console.log(n*rz);
+    //console.log(n*rz);
     if ((n%4) == 0) {
     if (camPathList['tonnel4'].length == 0) {
       camPathList['tonnel4'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
@@ -1540,7 +1639,7 @@ function init_tonnel4() {
     }
     n++;
   }
-  console.log('MAX-N = ' + (n-1));
+  //console.log('MAX-N = ' + (n-1));
   picoEye = [1.0800971742272778, -8.780894422808187, 14.72663402707766];
   picoDir = [-0.8981366501176266, 0.15431825043865477, 0.41174802403538113];
   picoUp = [0.35265624400876233, 0.8116053457377626, 0.46575780866403016];  
@@ -2025,8 +2124,6 @@ function init_arch2() {
   let dd2 = 0.25;
   let dd3 = 0;
 
-  let sz2 = sz;
-
   let rotList = [40,15,-25,-25,0];
 
   for (let n = 0; n < nqty; n++) {
@@ -2059,11 +2156,12 @@ function init_arch2() {
       [sx-dd1-dsx*sx,   sy-dd1,         sz],
       [sx-dd1,          sy-dd3+dsy*sy,  sz],
       [sx-dd1,          -sy+dd2,         sz],
-    ]
+    ];
 
-    let ddx = 0.45;
-    let ddy1 = 1.75;
-    let ddy2 = 0.25;
+    let ddx = 0.04;//0.45;
+    let ddy1 = 2.35;//1.75;
+    let ddy2 = 1.2; //0.25 *2;
+    let sz2 = sz+4;
     if (n == 0) {
       let points2 = [
         [-sx, -sy, sz],
@@ -2116,8 +2214,12 @@ function init_arch2() {
       //model.f.push([colors[n%2][j*4+0], nn+1, nn+7, nn+12]);
     }
   }
+  model.endTarget = vecHalf(model.v[4+0], model.v[4+2]);
+  model.endUp = normalize(vSub(model.v[4+0], model.v[4+1]));
+  model.endH = normalize(vSub(model.v[4+2], model.v[4+1]));
+  model.endDir = normalize(cross(model.endUp, model.endH));
+  
   models['arch2'] = model;
-
 
   //800
   picoEye = [-1.328740729350648, 0.2418324139788771, -4.79706972843573];
@@ -2223,10 +2325,10 @@ function init_arch2() {
   //camPathList['arch2'].push({"frame":1187, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   //1193
-  camMovDir(0.535);
-  camPathList['arch2'].push({"frame":1193, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  //camMovDir(0.535);
+  //camPathList['arch2'].push({"frame":1193, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
-  camPathList['arch2'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  //camPathList['arch2'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   /*let showCP = 6;
   picoEye = camPathList['arch2'][showCP].picoEye;
@@ -2648,7 +2750,7 @@ function init_testcube() {
 
 		]
 	};
-	console.log(models);
+	//console.log(models);
 
 }
 
@@ -3135,7 +3237,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
       m2x = Math.min(m2x, models_oxygene[m2].v[v][0])
     }
     var dist = m2x - m1x;
-    console.log('dist ' + m1 + ',' + m2 + ' = ' + dist);
+    //console.log('dist ' + m1 + ',' + m2 + ' = ' + dist);
   }
   
   
@@ -3247,7 +3349,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
 
     }
   }
-  console.log(models['Y']);
+  //console.log(models['Y']);
   //console.log(modelOxygeneIn);
 
   models['oxygenein'] = modelOxygeneIn;

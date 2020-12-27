@@ -1,17 +1,17 @@
 'use strict';
 // 957 997 1035 1075 1135 1187
-let frameNumberStart = 1295;
+let frameNumberStart = 0;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
-let isHover = 1;
+let isHover = 0;
 let isNeedChangeCam = true;
-let isForceCamPath = 0;
+let isForceCamPath = 1;
 let isRandomize = 0;
 
 let isGlClearZBuff = 1;
-let isGlCullFace = 0;
+let isGlCullFace = 1;
 
 let picoRenderPointList = [];
 
@@ -82,13 +82,6 @@ function drawFrame(time) {
   // debug cam set
   if (isNeedChangeCam) {
     //resetCam();
-  //picoEye = [2.464575339048298, -8.837603821671333, 14.285055153196831];
-  //picoDir = [-0.8914863914816074, 0.13340209063814326, 0.43296177200357416];
-  //picoUp = [0.34503715552000974, 0.8182609883900712, 0.4597807262049641];
-  
-  //picoEye = [-15.230575043921425, -19.443153208856277, -10.312405699503273];
-  //picoDir = [0.9841454503406092, -0.0885328889249591, 0.15368688998245988];
-  //picoUp = [-0.17520646288927857, -0.349687784134149, 0.9203375190598156];
   }
 
   isNeedChangeCam = false;
@@ -103,17 +96,6 @@ function drawFrame(time) {
       }
     }
   }
-  
-  //animate debug arch1
-  /*
-  for (let v in models['arch1'].v) {
-    models['arch1'].v[v] = rotY(models['arch1'].v[v], 2);
-  }
-  buffers = initBuffers(gl);
-  */
-  
-  
-
 
   //animate rotor in
   if (models['rotorin'] != undefined) {
@@ -123,7 +105,7 @@ function drawFrame(time) {
     
   }
   if (isRandomize || models['rotorin'] != undefined) {
-    //buffers = initBuffers(gl);
+    buffers = initBuffers(gl);
   }
 
   showCamData();
