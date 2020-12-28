@@ -3321,8 +3321,6 @@ objects.js:2786 dist E,N = 0.7138940000000016
   var dirY = normalize(vSub(pointsList[0],pointsList[1]));
   var dirZ = normalize(cross(dirX,dirY));
 
-  
-  
   var nnyy = models['Y'].v.length;
 
   var dz = -0.07//;-0.07;
@@ -3338,8 +3336,7 @@ objects.js:2786 dist E,N = 0.7138940000000016
       pointsList[2],
       pointsList[3],
     ];
-    
-    
+
     /*if (ni < 4) {
       nii = ni0 * ni;
       if (ni != 0) {
@@ -3367,7 +3364,9 @@ objects.js:2786 dist E,N = 0.7138940000000016
       points[p] = vMov(points[p], dirZ, ni*dz);
       modelOxygeneIn.v.push(points[p]);
       var pointY = points[p];
-      models['Y'].v.push([pointY[0], pointY[1], pointY[2]]);
+      if (ni != 0) {
+        models['Y'].v.push([pointY[0], pointY[1], pointY[2]]);
+      }
     }
 
     var nn = ni * 4;
@@ -3377,10 +3376,19 @@ objects.js:2786 dist E,N = 0.7138940000000016
       modelOxygeneIn.f.push([colors2[ni][2], nn+3, nn+4, nn+8, nn+7]);
       modelOxygeneIn.f.push([colors2[ni][3], nn+4, nn+1, nn+5, nn+8]);
       
-      models['Y'].f.push([colors2[ni][0], nnyy+nn+1, nnyy+nn+2, nnyy+nn+6, nnyy+nn+5]);
-      models['Y'].f.push([colors2[ni][1], nnyy+nn+2, nnyy+nn+3, nnyy+nn+7, nnyy+nn+6]);
-      models['Y'].f.push([colors2[ni][2], nnyy+nn+3, nnyy+nn+4, nnyy+nn+8, nnyy+nn+7]);
-      models['Y'].f.push([colors2[ni][3], nnyy+nn+4, nnyy+nn+1, nnyy+nn+5, nnyy+nn+8]);      
+      nn = (ni-1) * 4;
+      if (ni == 0) {
+        models['Y'].f.push([colors2[ni][0], pointsListY[0], pointsListY[1], nnyy+nn+6, nnyy+nn+5]);
+        models['Y'].f.push([colors2[ni][1], pointsListY[1], pointsListY[2], nnyy+nn+7, nnyy+nn+6]);
+        models['Y'].f.push([colors2[ni][2], pointsListY[2], pointsListY[3], nnyy+nn+8, nnyy+nn+7]);
+        models['Y'].f.push([colors2[ni][3], pointsListY[3], pointsListY[0], nnyy+nn+5, nnyy+nn+8]);
+
+      } else {
+        models['Y'].f.push([colors2[ni][0], nnyy+nn+1, nnyy+nn+2, nnyy+nn+6, nnyy+nn+5]);
+        models['Y'].f.push([colors2[ni][1], nnyy+nn+2, nnyy+nn+3, nnyy+nn+7, nnyy+nn+6]);
+        models['Y'].f.push([colors2[ni][2], nnyy+nn+3, nnyy+nn+4, nnyy+nn+8, nnyy+nn+7]);
+        models['Y'].f.push([colors2[ni][3], nnyy+nn+4, nnyy+nn+1, nnyy+nn+5, nnyy+nn+8]);
+      }
 
     }
   }
@@ -3392,7 +3400,19 @@ objects.js:2786 dist E,N = 0.7138940000000016
     model: 'oxygenein',
     campath: 'oxygene',
   });
-
+  
+  //merge letters to model oxygene
+  /*
+  let mergeList = ['O','X','Y','G','E','N'];
+  let model_merged_oxygene = {
+    fov: 90,
+    rnd: 0.1,
+    fstart: models_oxygene_fstart,
+    fend: models_oxygene_fend,
+    v: [],
+    f: [],
+  }
+  */
 
   camPathList['oxygene'] = [];
   //0
