@@ -1,6 +1,6 @@
 function fx_niccc()
 
-nframe = 0
+nframe = 580
 dframe = 0
 
 pal(0, 0, 1)
@@ -17,7 +17,7 @@ function()
   elseif btn(0) then
     nframe -= 1
   else
-    nframe += 0.2
+    --nframe += 0.2
   end
 end,
 
@@ -60,15 +60,23 @@ function()
   oprint(models, 0, 8, pcol)
   oprint(cameras, 0, 16, pcol)
   oprint("t: " .. total_tris, 104, 0, pcol)
+
+  oprint("eye: " .. eye[1] .. " " .. eye[2] .. " " .. eye[3], 0, 96, pcol)
+  oprint("dir: " .. dir[1] .. " " .. dir[2] .. " " .. dir[3], 0, 104, pcol)
+  oprint("up:  " .. up[1] .. " " .. up[2] .. " " .. up[3], 0, 112, pcol)
 end
 end
 
 function spline_coord_katmulrom(v0, v1, v2, v3, p)
-  local t2, t3 = p * p
-  local t3 = t2 * p
-  return (t3 * (-1 * v0 + 3 * v1 - 3 * v2 + v3) +
-    t2 * (2 * v0 - 5 * v1 + 4 * v2 - v3) +
-    p * (-1 * v0 + v2) + 2 * v1) * 0.5
+  --[[v0 *= 32
+  v1 *= 32
+  v2 *= 32
+  v3 *= 32]]
+  --local t2 = p * p
+  --local t3 = t2 * p
+  return ((p * p * p * (-1 * v0 + 3 * v1 - 3 * v2 + v3) +
+    p * p * (2 * v0 - 5 * v1 + 4 * v2 - v3) +
+    p * (-1 * v0 + v2) + 2 * v1) * 0.5) / 32
 end
 
 function spline(i, p)

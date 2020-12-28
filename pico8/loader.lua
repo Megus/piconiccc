@@ -7,6 +7,11 @@ function load_models()
 
     if obj.name == "E" then
       obj.v, obj.f = nobjects["E1"].v, nobjects["E1"].f
+      for c = 1, #obj.v do
+        for d = 1, 3 do
+          obj.v[c][d] += obj.o[d] - nobjects["E1"].o[d]
+        end
+      end
     else
       obj.v, obj.f = {}, {}
       local col_add = (obj.pal % 2 == 0) and 0x1088.5a5a or 0x1000.5a5a
