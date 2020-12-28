@@ -1,6 +1,6 @@
 function fx_niccc()
 
-nframe = 0
+nframe = 580
 dframe = 0
 
 pal(0, 0, 1)
@@ -17,7 +17,7 @@ function()
   elseif btn(0) then
     nframe -= 1
   else
-    nframe += 0.2
+    --nframe += 0.2
   end
 end,
 
@@ -64,11 +64,9 @@ end
 end
 
 function spline_coord_katmulrom(v0, v1, v2, v3, p)
-  local t2, t3 = p * p
-  local t3 = t2 * p
-  return (t3 * (-1 * v0 + 3 * v1 - 3 * v2 + v3) +
-    t2 * (2 * v0 - 5 * v1 + 4 * v2 - v3) +
-    p * (-1 * v0 + v2) + 2 * v1) * 0.5
+  return (p * p * p * (3 * v1 - 3 * v2 + v3 - v0) +
+    p * p * (2 * v0 - 5 * v1 + 4 * v2 - v3) +
+    p * (v2 - v0) + 2 * v1) * 0.5
 end
 
 function spline(i, p)

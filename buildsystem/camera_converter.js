@@ -1,5 +1,6 @@
 module.exports.convertCamera = function(camPathList) {
   const converted = {};
+  const scale = 1;
 
   for (let name in camPathList) {
     const camera = camPathList[name];
@@ -7,15 +8,15 @@ module.exports.convertCamera = function(camPathList) {
     for (let c = 0; c < camera.length; c++) {
       const data = [];
       data.push(camera[c].frame);
-      data.push(camera[c].picoEye[0]);
-      data.push(camera[c].picoEye[1]);
-      data.push(camera[c].picoEye[2]);
-      data.push(camera[c].picoDir[0]);
-      data.push(camera[c].picoDir[1]);
-      data.push(camera[c].picoDir[2]);
-      data.push(camera[c].picoUp[0]);
-      data.push(camera[c].picoUp[1]);
-      data.push(camera[c].picoUp[2]);
+      data.push(camera[c].picoEye[0] * scale);
+      data.push(camera[c].picoEye[1] * scale);
+      data.push(camera[c].picoEye[2] * scale);
+      data.push(camera[c].picoDir[0] * scale);
+      data.push(camera[c].picoDir[1] * scale);
+      data.push(camera[c].picoDir[2] * scale);
+      data.push(camera[c].picoUp[0] * scale);
+      data.push(camera[c].picoUp[1] * scale);
+      data.push(camera[c].picoUp[2] * scale);
       cCamera.push(data);
     }
     converted[name] = cCamera;

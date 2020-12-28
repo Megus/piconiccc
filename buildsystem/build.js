@@ -12,9 +12,9 @@ let models = {};
 let camPathList = {};
 let modelRenderList = [];
 
+eval(fs.readFileSync("../editor/objects.js").toString());
 eval(fs.readFileSync("../editor/camera.js").toString());
 eval(fs.readFileSync("../editor/math3d.js").toString());
-eval(fs.readFileSync("../editor/objects.js").toString());
 
 init_models();
 
@@ -53,6 +53,7 @@ const luaCode = "\
 #include data.lua\n\
 #include huffman.lua\n\
 #include loader.lua\n\
+#include fx_intro.lua\n\
 #include fx_niccc.lua\n\
 #include script.lua\n\
 ";

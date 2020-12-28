@@ -1,14 +1,22 @@
 v2d = {}
 
-znear, zfar = 0.1, 30
+znear, zfar = 0.05, 30
 sc = 64
 tminx = -64/sc
 tmaxx = 64/sc
 
 function normalize(v)
+	local x1=shl(v[1],2)
+	local y1=shl(v[2],2)
+	local z1=shl(v[3],2)
+
+	local inv_dist=1/sqrt(x1*x1+y1*y1+z1*z1)
+
+	return {x1*inv_dist,y1*inv_dist,z1*inv_dist}
+--[[
 	local x,y,z = v[1],v[2],v[3]
 	local len = sqrt(x*x+y*y+z*z)
-	return {x/len,y/len,z/len}
+	return {x/len,y/len,z/len}]]
 end
 
 function cross(v1, v2)

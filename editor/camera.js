@@ -1,6 +1,6 @@
-let picoEye = [0, 0, -2];
-let picoDir = [0, 0, 1];
-let picoUp = [0, 1, 0];
+picoEye = [0, 0, -2];
+picoDir = [0, 0, 1];
+picoUp = [0, 1, 0];
 
 /*
 1. camMove(x,y,z) �� ����� camEye[0] = camEye[0] + x, ... - �������� � ������������
@@ -42,6 +42,7 @@ function spline_cam(camId) {
     if (frameNumber == camPathList[camId][camPathId + 0].frame) {
       splineTime = 0;
     }
+
     picoEye = spline(
       camPathList[camId][camPathId - 1].picoEye,
       camPathList[camId][camPathId + 0].picoEye,
@@ -66,7 +67,6 @@ function spline_cam(camId) {
     );
     picoUp = normalize(picoUp);
   }
-
 }
 
 function changeCamPath(camId) {
