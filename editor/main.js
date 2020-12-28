@@ -7,7 +7,7 @@ let prevFrame = 0;
 let wireframe = 0;
 let isHover = 0;
 let isNeedChangeCam = true;
-let isForceCamPath = 1;
+let isForceCamPath = 0;
 let isRandomize = 0;
 
 let isGlClearZBuff = 1;
