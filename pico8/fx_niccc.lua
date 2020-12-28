@@ -60,23 +60,13 @@ function()
   oprint(models, 0, 8, pcol)
   oprint(cameras, 0, 16, pcol)
   oprint("t: " .. total_tris, 104, 0, pcol)
-
-  oprint("eye: " .. eye[1] .. " " .. eye[2] .. " " .. eye[3], 0, 96, pcol)
-  oprint("dir: " .. dir[1] .. " " .. dir[2] .. " " .. dir[3], 0, 104, pcol)
-  oprint("up:  " .. up[1] .. " " .. up[2] .. " " .. up[3], 0, 112, pcol)
 end
 end
 
 function spline_coord_katmulrom(v0, v1, v2, v3, p)
-  --[[v0 *= 32
-  v1 *= 32
-  v2 *= 32
-  v3 *= 32]]
-  --local t2 = p * p
-  --local t3 = t2 * p
-  return ((p * p * p * (-1 * v0 + 3 * v1 - 3 * v2 + v3) +
+  return (p * p * p * (3 * v1 - 3 * v2 + v3 - v0) +
     p * p * (2 * v0 - 5 * v1 + 4 * v2 - v3) +
-    p * (-1 * v0 + v2) + 2 * v1) * 0.5) / 32
+    p * (v2 - v0) + 2 * v1) * 0.5
 end
 
 function spline(i, p)

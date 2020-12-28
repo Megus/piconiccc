@@ -1,6 +1,6 @@
 module.exports.convertCamera = function(camPathList) {
   const converted = {};
-  const scale = 32;
+  const scale = 1;
 
   for (let name in camPathList) {
     const camera = camPathList[name];

@@ -12,9 +12,9 @@ let models = {};
 let camPathList = {};
 let modelRenderList = [];
 
+eval(fs.readFileSync("../editor/objects.js").toString());
 eval(fs.readFileSync("../editor/camera.js").toString());
 eval(fs.readFileSync("../editor/math3d.js").toString());
-eval(fs.readFileSync("../editor/objects.js").toString());
 
 init_models();
 
