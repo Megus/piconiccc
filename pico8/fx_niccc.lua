@@ -1,6 +1,6 @@
 function fx_niccc()
 
-nframe = 580
+nframe = 0
 dframe = 0
 
 pal(0, 0, 1)
@@ -17,7 +17,7 @@ function()
   elseif btn(0) then
     nframe -= 1
   else
-    --nframe += 0.2
+    nframe += 0.5
   end
 end,
 
@@ -26,6 +26,7 @@ function()
 
   local models = "m: "
   local cameras = "c: "
+  local oldcam
   for c = 1, #renderlist, 2 do
     local model = objects[renderlist[c]]
     if model.fstart <= nframe and model.fend > nframe then
@@ -44,12 +45,17 @@ function()
         end
       end
 
-      set_cam_idx()
-      spline_cam()
+      if oldcam ~= camera then
+        set_cam_idx()
+        spline_cam()
+      end
+      oldcam = camera
+
+      local srt = modelsort[renderlist[c]]
       if renderlist[c] == "rotorin" then
-        m3d(model, eye, dir, up, -dframe / 150)
+        m3d(model, eye, dir, up, srt[1], srt[2], srt[3], -dframe / 150)
       else
-        m3d(model, eye, dir, up)
+        m3d(model, eye, dir, up, srt[1], srt[2], srt[3])
       end
     end
   end
@@ -92,3 +98,26 @@ function set_cam_idx()
     end
   end
 end
+
+modelsort = {
+  oxygenein = {max, 1, 0x.1},
+  O = {min, 0x.8, 0x.02},
+  X = {max, 0x.8, 0x.01},
+  Y = {min, 1, 0x.01},
+  G = {min, 1, 0x.08},
+  E = {min, 1, 0x.1},
+  N = {min, 1, 0x.08},
+  E1 = {min, 1, 0x.1},
+  cubes = {max, 2, 0x.1},
+  cubes2 = {max, 2, 0x.1},
+  room = {max, 2, 0x.08},
+  tonnel5 = {max, 1, 0x.8},
+  arch2 = {max, 2, 0x.2},
+  arch1 = {max, 2, 0x.4},
+  tonnel4 = {max, 1, 0x.8},
+  rotor = {max, 0x.8, 0x.08},
+  rotorin = {max, 0x.8, 0x.02},
+  tonnel3 = {max, 2, 0x.4},
+  tonnel2 = {max, 1, 0x.04},
+  tonnel1 = {max, 4, 0x.01}
+}

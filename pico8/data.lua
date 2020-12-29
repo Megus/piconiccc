@@ -43,7 +43,7 @@ s={0x3b.bcb6,0xa.ea2d,0x19.c1cc},
 vn=160,
 f3n=0,
 f4n=150,
-fstart=900,
+fstart=1080,
 fend=1347,
 pal=9,
 },{
