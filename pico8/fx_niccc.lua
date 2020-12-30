@@ -35,14 +35,9 @@ function()
       cameras = cameras .. renderlist[c + 1] .. " "
 
       local pn = model.pal
-      if pn & 1 == 1 then
-        for i = 1, #colors[pn] do
-          pal(i, colors[pn][i], 1)
-        end
-      else
-        for i = 1, #colors[pn] do
-          pal(i + 8, colors[pn][i], 1)
-        end
+      local padd = (pn & 1 == 1) and 0 or 8
+      for i = 1, #colors[pn] do
+        pal(i + padd, colors[pn][i], 1)
       end
 
       if oldcam ~= camera then
