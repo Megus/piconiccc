@@ -2,7 +2,7 @@ function fx_intro()
 
   local dots = {}
   local fr = 0
-  pal({129, 130, 1, 131, 141, 134, 7}, 1)
+  pal({129, 130, 1, 131, 141, 140, 12}, 1)
 
   local function add_text(text, ox, oy)
     cls()
@@ -45,14 +45,13 @@ function ()
 end,
 
 function ()
-  cls()
-  color(7)
   for c = 1, #dots do
     local x, y, t = dots[c][1], dots[c][2], (dots[c][3] - fr) / 3
     if (t < 0) t = 0
     local x, y, col = dots[c][1] + t * sin(t / 17) + rnd(t / 3), dots[c][2] + t * cos(t / 20) + rnd(t / 2), 7 - (t / 10)
     rectfill(x, y, x + 1, y + 1, (col < 1) and 1 or flr(col))
   end
-end
+end,
+1
 
 end

@@ -44,8 +44,8 @@ function colorDistance(col1, col2) {
 
 function modifyColor(col) {
   // Make them brighter for now
-  const br = 1.3;
-  const res = [col[0] * br, col[1] * br, col[2] * br];
+  const br = 1.2;
+  const res = col.map((c) => (Math.pow(Math.sin(c / 255 * Math.PI / 2), 1)) * 255);
   if (res[0] > 255) res[0] = 255;
   if (res[1] > 255) res[1] = 255;
   if (res[2] > 255) res[2] = 255;
@@ -60,8 +60,8 @@ function toGrayscale(col) {
 function mixColors(col1, col2) {
   return [
     Math.sqrt(col1[0] * col1[0] * 0.5 + col2[0] * col2[0] * 0.5),
-    Math.sqrt(col1[1] * col1[1] * 0.5 + col2[0] * col2[1] * 0.5),
-    Math.sqrt(col1[2] * col1[2] * 0.5 + col2[0] * col2[2] * 0.5),
+    Math.sqrt(col1[1] * col1[1] * 0.5 + col2[1] * col2[1] * 0.5),
+    Math.sqrt(col1[2] * col1[2] * 0.5 + col2[2] * col2[2] * 0.5),
   ]
 }
 
@@ -69,12 +69,27 @@ function notBlack(col) {
   return col[0] > 0 && col[1] > 0 && col[2] > 0;
 }
 
+function equalColors(col1, col2) {
+  return Math.floor(col1[0]) == Math.floor(col2[0]) && Math.floor(col1[1]) == Math.floor(col2[1]) && Math.floor(col1[2]) == Math.floor(col2[2]);
+}
+
 function findClosestPair(color, palette) {
-  let minDiff = 1000;
+  const mYellow = modifyColor([0x7f, 0x7f, 0x0f]);
+  if (equalColors(color, mYellow)) {
+    // Special case for the yellow color
+    for (let c = 0; c < palette.length; c++) {
+      //if (equalColors(palette[c], picoPalette[23])) {
+      if (equalColors(palette[c], picoPalette[10])) {
+        return [c, c];
+      }
+    }
+  }
+
+  let minDiff = 10000;
   let pico1 = 0;
   let pico2 = 0;
   for (let c = 0; c < palette.length; c++) {
-    for (let d = 0; d < palette.length; d++) {
+    for (let d = c; d < palette.length; d++) {
       const mixedColor = mixColors(palette[c], palette[d]);
       const mixedDiff = colorDistance(palette[c], palette[d]);
       const diff = colorDistance(color, mixedColor);
@@ -90,34 +105,33 @@ function findClosestPair(color, palette) {
   return [pico1, pico2];
 }
 
-function buildModelPalette(models, palIdx) {
+function findUsedColors(models) {
   const usedColors = {};
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    for (let c = 0; c < model.f3.length; c++) {
+      usedColors[model.f3[c][0]] = true;
+    }
+    for (let c = 0; c < model.f4.length; c++) {
+      usedColors[model.f4[c][0]] = true;
+    }
+  }
+  return usedColors;
+}
+
+
+function buildModelPalette(models, palIdx) {
   const picoPaletteCounts = {};
   const palette = [];
   const res = [];
 
-  let originalColorsCount = 0;
-
   // Find all colors used in models
-  for (let i = 0; i < models.length; i++) {
-    const model = models[i];
-    for (let c = 0; c < model.f3.length; c++) {
-      if (usedColors[model.f3[c][0]] === undefined) originalColorsCount++;
-      usedColors[model.f3[c][0]] = true;
-    }
-    for (let c = 0; c < model.f4.length; c++) {
-      if (usedColors[model.f4[c][0]] === undefined) originalColorsCount++;
-      usedColors[model.f4[c][0]] = true;
-    }
-  }
-
-  //console.log(`Total colors: ${originalColorsCount}`);
+  const usedColors = findUsedColors(models);
 
   // Pick the closest colors from the overall PICO-8 palette
   let paletteLength = 0;
   for (const hexColor in usedColors) {
     const color = modifyColor(decodeHex(hexColor));
-    let minDiff = 1000;
     const picoColors = findClosestPair(color, picoPalette);
     picoColors.forEach((picoColor) => {
       if (picoPaletteCounts[picoColor] === undefined) {
@@ -158,6 +172,8 @@ function buildModelPalette(models, palIdx) {
 
       weighedColors.push(wcol);
     }
+
+    // Sort colors
     weighedColors.sort((a, b) => b[3] - a[3]);
     //console.log(weighedColors);
 
@@ -210,8 +226,7 @@ function buildModelPalette(models, palIdx) {
   return res;
 }
 
-
-module.exports.buildPalette = function(models) {
+function buildPalette(models) {
   const palettes = [];
   for (let c = 0; c < modelPalettes.length; c++) {
     const pm = modelPalettes[c].map((name) => models[name]);
@@ -219,4 +234,8 @@ module.exports.buildPalette = function(models) {
     palettes.push(palette);
   }
   return palettes;
+}
+
+if (typeof module !== "undefined") {
+  module.exports.buildPalette = buildPalette;
 }
