@@ -8,7 +8,7 @@ const width = canvas.width;
 const height = canvas.height;
 
 
-const usedByPal = [];
+const autoMapping = [];
 
 function init() {
   init_models();
@@ -19,9 +19,9 @@ function init() {
 
   for (let c = 0; c < modelPalettes.length; c++) {
     const pm = modelPalettes[c].map((name) => cModels[name]);
-    const usedColors = findUsedColors(pm);
-    usedByPal.push(usedColors);
-    console.log(usedColors);
+    const mapping = buildModelPalette(pm);
+    console.log(mapping);
+    autoMapping.push(mapping);
   }
 
   window.requestAnimationFrame(drawFrame);
@@ -29,40 +29,47 @@ function init() {
 
 function drawFrame() {
   ctx.fillStyle = "#000000";
+  ctx.strokeStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
 
-  let y = 32;
 
   // Draw PICO8-palette
   for (let c = 0; c < 32; c++) {
     drawColor(64 + c * 16, 0, picoPalette[c]);
+    ctx.strokeText(`${c.toString(16)}`, 64 + c * 16, 24);
   }
 
-  // Draw used colors
-  for (let c = 0; c < usedByPal.length; c++) {
-    for (let colHex in usedByPal[c]) {
+  drawMapping(autoMapping, 8);
+  drawMapping(manualMapping, 80);
+
+
+
+  //window.requestAnimationFrame(drawFrame);
+}
+
+function drawMapping(mapping, x) {
+  let y = 32;
+  for (let c = 0; c < mapping.length; c++) {
+    for (let colHex in mapping[c].usedColors) {
       const col = decodeHex(colHex);
-      const mCol = modifyColor(col);
-      drawColor(0x8, y, col);
-      drawColor(0x18, y, mCol);
+      drawColor(x, y, col);
+      drawColor(x + 0x10, y, modifyColor(col));
 
-      const picos = findClosestPair(col, picoPalette);
-      const mPicos = findClosestPair(mCol, picoPalette);
-      drawColor(0x40, y, picoPalette[picos[0]]);
-      drawColor(0x50, y, picoPalette[picos[1]]);
-      drawMix(0x60, y, picoPalette[picos[0]], picoPalette[picos[1]]);
-
-      drawColor(0x80, y, picoPalette[mPicos[0]]);
-      drawColor(0x90, y, picoPalette[mPicos[1]]);
-      drawMix(0xa0, y, picoPalette[mPicos[0]], picoPalette[mPicos[1]]);
+      const p1 = mapping[c].usedColors[colHex] & 0xf;
+      const p2 = (mapping[c].usedColors[colHex] & 0xf0) >> 4;
+      const c1 = (p1 == 0) ? picoPalette[0] : picoColor(mapping[c].palette[p1 - 1]);
+      const c2 = (p2 == 0) ? picoPalette[0] : picoColor(mapping[c].palette[p2 - 1]);
+      drawMix(x + 0x20, y, c1, c2);
 
       y += 16;
     }
     y += 16;
   }
 
+}
 
-  //window.requestAnimationFrame(drawFrame);
+function picoColor(c) {
+  return (c < 128) ? picoPalette[c] : picoPalette[c - 128 + 16];
 }
 
 function drawColor(x, y, col) {
@@ -72,6 +79,15 @@ function drawColor(x, y, col) {
 
 function drawMix(x, y, c1, c2) {
   ctx.fillStyle = `rgb(${c1[0]},${c1[1]},${c1[2]})`;
-
+  for (let c = 0; c < 8; c++) {
+    for (let d = 0; d < 8; d++) {
+      if (((c ^ d) & 1) == 0) ctx.fillRect(x + c * 2, y + d * 2, 2, 2);
+    }
+  }
   ctx.fillStyle = `rgb(${c2[0]},${c2[1]},${c2[2]})`;
+  for (let c = 0; c < 8; c++) {
+    for (let d = 0; d < 8; d++) {
+      if (((c ^ d) & 1) == 1) ctx.fillRect(x + c * 2, y + d * 2, 2, 2);
+    }
+  }
 }

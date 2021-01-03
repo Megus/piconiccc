@@ -24,6 +24,49 @@ const modelPalettes = [
   ["cubes", "cubes2"]
 ];
 
+const manualMapping = [
+  // Oxygene
+  { palette: [0x80, 0x84, 0x04, 0x19, 0x09, 0x0a, 0x06],
+    usedColors: {"#4F1F0F": 0x22, "#3F0F0F": 0x12, "#5F2F0F": 0x23, "#6F3F0F": 0x33,
+    "#7F4F0F": 0x34, "#7F5F0F": 0x45, "#7F7F0F": 0x66, "#7F7F7F": 0x77}
+  },
+  // Tonnel 1
+  {palette: [], usedColors: {}},
+  // Tonnel 2
+  { palette: [1, 140, 5, 13, 134, 12, 10],
+    usedColors: {
+      "#0F0F2F": 17,
+      "#0F1F3F": 17,
+      "#0F2F4F": 2,
+      "#0F3F5F": 18,
+      "#1F1F1F": 3,
+      "#1F4F6F": 36,
+      "#2F2F2F": 19,
+      "#2F5F7F": 54,
+      "#3F3F3F": 51,
+      "#4F4F4F": 52,
+      "#5F5F5F": 69,
+      "#6F6F6F": 69,
+      "#7F7F0F": 119,}
+  },
+  // tonnel3
+  {palette: [], usedColors: {}},
+  // rotor
+  {palette: [], usedColors: {}},
+  // tonnel4
+  {palette: [], usedColors: {}},
+  // arch1
+  {palette: [], usedColors: {}},
+  // arch2
+  {palette: [], usedColors: {}},
+  // tonnel5
+  {palette: [], usedColors: {}},
+  // room
+  {palette: [], usedColors: {}},
+  // cubes
+  {palette: [], usedColors: {}},
+];
+
 function decodeHex(hexColor) {
   const rgb = parseInt(hexColor.substring(1), 16);
   const r = (rgb & 0xff0000) / 0x10000;
@@ -120,7 +163,7 @@ function findUsedColors(models) {
 }
 
 
-function buildModelPalette(models, palIdx) {
+function buildModelPalette(models) {
   const picoPaletteCounts = {};
   const palette = [];
   const res = [];
@@ -205,33 +248,42 @@ function buildModelPalette(models, palIdx) {
   for (const hexColor in usedColors) {
     const color = modifyColor(decodeHex(hexColor));
     const pico = findClosestPair(color, palette);
-    if (palIdx % 2 == 1) {
-      pico[0] += 8;
-      pico[1] += 8;
-    }
     usedColors[hexColor] = pico[0] * 16 + pico[1];
   }
 
+  return {
+    palette: res,
+    usedColors: usedColors,
+  };
+}
+
+function remapModelColors(models, palIdx, usedColors) {
+  const colAdd = (palIdx % 2 == 1) ? 0x88 : 0x00;
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
     model.pal = palIdx + 1;
     for (let c = 0; c < model.f3.length; c++) {
-      model.f3[c][0] = usedColors[model.f3[c][0]];
+      model.f3[c][0] = usedColors[model.f3[c][0]] + colAdd;
     }
     for (let c = 0; c < model.f4.length; c++) {
-      model.f4[c][0] = usedColors[model.f4[c][0]];
+      model.f4[c][0] = usedColors[model.f4[c][0]] + colAdd;
     }
   }
-
-  return res;
 }
 
 function buildPalette(models) {
   const palettes = [];
   for (let c = 0; c < modelPalettes.length; c++) {
     const pm = modelPalettes[c].map((name) => models[name]);
-    const palette = buildModelPalette(pm, c);
-    palettes.push(palette);
+    let mapping;
+    if (manualMapping[c].palette.length != 0) {
+      mapping = manualMapping[c];
+    } else {
+      mapping = buildModelPalette(pm);
+    }
+
+    remapModelColors(pm, c, mapping.usedColors);
+    palettes.push(mapping.palette);
   }
   return palettes;
 }
