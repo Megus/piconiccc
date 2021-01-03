@@ -53,13 +53,13 @@ function drawMapping(mapping, x) {
     for (let colHex in mapping[c].usedColors) {
       const col = decodeHex(colHex);
       drawColor(x, y, col);
-      drawColor(x + 0x10, y, modifyColor(col));
+      drawColor(x + 0x20, y, modifyColor(col));
 
       const p1 = mapping[c].usedColors[colHex] & 0xf;
       const p2 = (mapping[c].usedColors[colHex] & 0xf0) >> 4;
       const c1 = (p1 == 0) ? picoPalette[0] : picoColor(mapping[c].palette[p1 - 1]);
       const c2 = (p2 == 0) ? picoPalette[0] : picoColor(mapping[c].palette[p2 - 1]);
-      drawMix(x + 0x20, y, c1, c2);
+      drawMix(x + 0x10, y, c1, c2);
 
       y += 16;
     }

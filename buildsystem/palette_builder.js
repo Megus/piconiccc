@@ -26,45 +26,163 @@ const modelPalettes = [
 
 const manualMapping = [
   // Oxygene
-  { palette: [0x80, 0x84, 0x04, 0x19, 0x09, 0x0a, 0x06],
-    usedColors: {"#4F1F0F": 0x22, "#3F0F0F": 0x12, "#5F2F0F": 0x23, "#6F3F0F": 0x33,
-    "#7F4F0F": 0x34, "#7F5F0F": 0x45, "#7F7F0F": 0x66, "#7F7F7F": 0x77}
+  {
+    palette: [0x80, 0x84, 0x04, 0x89, 0x09, 0x87, 0x06],
+    usedColors: {
+      "#4F1F0F": 0x22,
+      "#3F0F0F": 0x12,
+      "#5F2F0F": 0x23,
+      "#6F3F0F": 0x33,
+      "#7F4F0F": 0x34,
+      "#7F5F0F": 0x45,
+      "#7F7F0F": 0x66,
+      "#7F7F7F": 0x77
+    }
   },
   // Tonnel 1
   {palette: [], usedColors: {}},
   // Tonnel 2
-  { palette: [1, 140, 5, 13, 134, 12, 10],
+  {
+    palette: [0x81, 0x01, 0x8c, 0x0c, 0x05, 0x06, 0x0a],
     usedColors: {
-      "#0F0F2F": 17,
-      "#0F1F3F": 17,
-      "#0F2F4F": 2,
-      "#0F3F5F": 18,
-      "#1F1F1F": 3,
-      "#1F4F6F": 36,
-      "#2F2F2F": 19,
-      "#2F5F7F": 54,
-      "#3F3F3F": 51,
-      "#4F4F4F": 52,
-      "#5F5F5F": 69,
-      "#6F6F6F": 69,
-      "#7F7F0F": 119,}
+      "#0F0F2F": 0x12,
+      "#0F1F3F": 0x22,
+      "#0F2F4F": 0x13,
+      "#0F3F5F": 0x23,
+      "#1F1F1F": 0x15,
+      "#1F4F6F": 0x33,
+      "#2F2F2F": 0x15,
+      "#2F5F7F": 0x34,
+      "#3F3F3F": 0x25,
+      "#4F4F4F": 0x55,
+      "#5F5F5F": 0x56,
+      "#6F6F6F": 0x66,
+      "#7F7F0F": 0x77,
+    }
   },
   // tonnel3
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x85, 0x82, 0x05, 0x0d, 0x86, 0x06, 0x0a],
+    usedColors: {
+      "#1F1F0F": 0x03,
+      "#2F1F1F": 0x11,
+      "#2F2F1F": 0x13,
+      "#3F2F2F": 0x14,
+      "#3F3F2F": 0x33,
+      "#4F3F3F": 0x34,
+      "#4F4F3F": 0x35,
+      "#5F4F4F": 0x45,
+      "#5F5F4F": 0x36,
+      "#6F5F5F": 0x46,
+      "#6F6F5F": 0x66,
+      "#7F6F6F": 0x56,
+      "#7F7F0F": 0x77,
+    }
+  },
   // rotor
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x80, 0x85, 0x05, 0x0d, 0x86, 0x06, 0x0a],
+    usedColors: {
+      "#1F1F0F": 0x03,
+      "#2F2F1F": 0x23,
+      "#3F3F2F": 0x33,
+      "#4F4F3F": 0x35,
+      "#5F5F4F": 0x36,
+      "#6F6F5F": 0x66,
+      "#7F7F0F": 0x77,
+    }},
   // tonnel4
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x80, 0x83, 0x03, 0x05, 0x86, 0x06, 0x0a],
+    usedColors: {
+      "#0F1F0F": 0x12,
+      "#1F2F1F": 0x22,
+      "#2F3F2F": 0x23,
+      "#4F5F4F": 0x35,
+      "#5F6F5F": 0x56,
+      "#7F7F0F": 0x77,
+    }
+  },
   // arch1
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x80, 0x84, 0x04, 0x83, 0x03, 0x05, 0x86],
+    usedColors: {
+      "#0F1F0F": 0x14,
+      "#1F2F1F": 0x15,
+      "#2F3F2F": 0x25,
+      "#3F1F0F": 0x12,
+      "#3F4F3F": 0x47,
+      "#4F2F0F": 0x22,
+      "#4F2F1F": 0x22,
+      "#4F5F4F": 0x35,
+      "#5F3F1F": 0x34,
+      "#5F3F2F": 0x34,
+      "#5F6F5F": 0x57,
+      "#6F4F2F": 0x36,
+      "#6F4F3F": 0x36,
+      "#7F5F3F": 0x37,
+      "#7F5F4F": 0x37,
+      "#7F6F5F": 0x67,
+    }
+  },
   // arch2
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x80, 0x83, 0x03, 0x8b, 0x85, 0x05, 0x06],
+    usedColors: {
+      "#0F2F1F": 0x12,
+      "#1F3F1F": 0x13,
+      "#1F3F2F": 0x13,
+      "#2F4F2F": 0x53,
+      "#2F4F3F": 0x53,
+      "#3F5F3F": 0x23,
+      "#3F5F4F": 0x23,
+      "#4F6F4F": 0x63,
+      "#4F6F5F": 0x63,
+      "#5F7F5F": 0x47,
+      "#5F7F6F": 0x47,
+      "#6F7F6F": 0x77,
+    }
+  },
   // tonnel5
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x81, 0x01, 0x82, 0x8c, 0x05, 0x06, 0x0a],
+    usedColors: {
+      "#0F0F1F": 0x01,
+      "#0F1F2F": 0x11,
+      "#000000": 0x00,
+      "#1F2F3F": 0x12,
+      "#2F3F4F": 0x34,
+      "#3F4F5F": 0x54,
+      "#4F5F6F": 0x56,
+      "#7F7F0F": 0x57,
+    }
+  },
   // room
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x80, 0x82, 0x84, 0x04, 0x09, 0x89, 0x0a],
+    usedColors: {
+      "#2F0F0F": 0x01,
+      "#3F0F0F": 0x03,
+      "#4F0F0F": 0x13,
+      "#5F1F0F": 0x33,
+      "#6F2F0F": 0x34,
+      "#7F3F0F": 0x44,
+      "#7F4F0F": 0x45,
+      "#7F7F0F": 0x47,
+    }
+  },
   // cubes
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x82, 0x02, 0x85, 0x04, 0x86, 0x8f],
+    usedColors: {
+      "#3F0F3F": 0x11,
+      "#4F1F3F": 0x12,
+      "#5F2F3F": 0x32,
+      "#6F3F3F": 0x34,
+      "#7F4F3F": 0x44,
+      "#7F5F3F": 0x55,
+    }
+  },
 ];
 
 function decodeHex(hexColor) {

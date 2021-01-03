@@ -1,6 +1,6 @@
 function fx_niccc()
 
-nframe = 173
+nframe = 0
 dframe = 0
 
 pal(0, 0, 1)
