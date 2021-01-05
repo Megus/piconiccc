@@ -1,4 +1,5 @@
-function load_models()
+function load_data()
+  -- Models
   local avertices, acolors, atris, aquads, afp, nobjects = huffman(arcs[1]), huffman(arcs[2]), huffman(arcs[3]), huffman(arcs[4]), huffman(arcs[5]), {}
 
   for i = 1, #objects do
@@ -41,4 +42,12 @@ function load_models()
     end
   end
   objects = nobjects
+
+  -- Logo
+  memcpy(0x4300, arcs[6][1], 1753)
+  arcs[6][1] = 0x4300
+  local a = huffman(arcs[6])
+  for i = 0, 8191 do
+    poke(i, a())
+  end
 end
