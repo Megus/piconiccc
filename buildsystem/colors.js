@@ -42,8 +42,6 @@ function drawFrame() {
   drawMapping(autoMapping, 8);
   drawMapping(manualMapping, 80);
 
-
-
   //window.requestAnimationFrame(drawFrame);
 }
 

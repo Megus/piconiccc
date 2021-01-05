@@ -4,7 +4,9 @@ const compressor = require("./model_compressor");
 const camera = require("./camera_converter");
 const palette = require("./palette_builder");
 const renderList = require("./renderlist_converter");
-const writer = require("./p8writer");
+const image = require("./image");
+
+const p8tools = require("./p8tools");
 const luaTools = require("./lua_tools");
 
 // Get models and camera paths
@@ -34,6 +36,12 @@ const convertedCamera = camera.convertCamera(camPathList);
 // Process renderlist
 const convertedRenderList = renderList.convertRenderList(modelRenderList);
 
+// Process PICONICCC image
+const compressedLogo = image.compressLogo();
+compressedData.arcs.push([compressedData.binary.length, compressedLogo.tree]);
+compressedData.binary.push(...compressedLogo.binary);
+
+
 const luaData = `colors = ${luaTools.json2lua(picoPalette)}\n\n\
 fp = ${luaTools.json2lua(convertedData.fp4)}\n\n\
 renderlist = ${luaTools.json2lua(convertedRenderList)}\n\n\
@@ -55,9 +63,10 @@ const luaCode = "\
 #include loader.lua\n\
 #include fx_intro.lua\n\
 #include fx_landscape.lua\n\
+#include fx_logo.lua\n\
 #include fx_niccc.lua\n\
 #include script.lua\n\
 ";
 
-writer.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);
+p8tools.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);
 
