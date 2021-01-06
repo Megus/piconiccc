@@ -24,6 +24,167 @@ const modelPalettes = [
   ["cubes", "cubes2"]
 ];
 
+const manualMapping = [
+  // Oxygene
+  {
+    palette: [0x80, 0x84, 0x04, 0x89, 0x09, 0x87, 0x06],
+    usedColors: {
+      "#4F1F0F": 0x22,
+      "#3F0F0F": 0x12,
+      "#5F2F0F": 0x23,
+      "#6F3F0F": 0x33,
+      "#7F4F0F": 0x34,
+      "#7F5F0F": 0x45,
+      "#7F7F0F": 0x66,
+      "#7F7F7F": 0x77
+    }
+  },
+  // Tonnel 1
+  {palette: [], usedColors: {}},
+  // Tonnel 2
+  {
+    palette: [0x81, 0x01, 0x8c, 0x0c, 0x05, 0x06, 0x0a],
+    usedColors: {
+      "#0F0F2F": 0x12,
+      "#0F1F3F": 0x22,
+      "#0F2F4F": 0x13,
+      "#0F3F5F": 0x23,
+      "#1F1F1F": 0x15,
+      "#1F4F6F": 0x33,
+      "#2F2F2F": 0x15,
+      "#2F5F7F": 0x34,
+      "#3F3F3F": 0x25,
+      "#4F4F4F": 0x55,
+      "#5F5F5F": 0x56,
+      "#6F6F6F": 0x66,
+      "#7F7F0F": 0x77,
+    }
+  },
+  // tonnel3
+  {
+    palette: [0x85, 0x82, 0x05, 0x0d, 0x86, 0x06, 0x0a],
+    usedColors: {
+      "#1F1F0F": 0x03,
+      "#2F1F1F": 0x11,
+      "#2F2F1F": 0x13,
+      "#3F2F2F": 0x14,
+      "#3F3F2F": 0x33,
+      "#4F3F3F": 0x34,
+      "#4F4F3F": 0x35,
+      "#5F4F4F": 0x45,
+      "#5F5F4F": 0x36,
+      "#6F5F5F": 0x46,
+      "#6F6F5F": 0x66,
+      "#7F6F6F": 0x56,
+      "#7F7F0F": 0x77,
+    }
+  },
+  // rotor
+  {
+    palette: [0x80, 0x85, 0x05, 0x0d, 0x86, 0x06, 0x0a],
+    usedColors: {
+      "#1F1F0F": 0x03,
+      "#2F2F1F": 0x23,
+      "#3F3F2F": 0x33,
+      "#4F4F3F": 0x35,
+      "#5F5F4F": 0x36,
+      "#6F6F5F": 0x66,
+      "#7F7F0F": 0x77,
+    }},
+  // tonnel4
+  {
+    palette: [0x80, 0x83, 0x03, 0x05, 0x86, 0x06, 0x0a],
+    usedColors: {
+      "#0F1F0F": 0x12,
+      "#1F2F1F": 0x22,
+      "#2F3F2F": 0x23,
+      "#4F5F4F": 0x35,
+      "#5F6F5F": 0x56,
+      "#7F7F0F": 0x77,
+    }
+  },
+  // arch1
+  {
+    palette: [0x80, 0x84, 0x04, 0x83, 0x03, 0x05, 0x86],
+    usedColors: {
+      "#0F1F0F": 0x14,
+      "#1F2F1F": 0x15,
+      "#2F3F2F": 0x25,
+      "#3F1F0F": 0x12,
+      "#3F4F3F": 0x47,
+      "#4F2F0F": 0x22,
+      "#4F2F1F": 0x22,
+      "#4F5F4F": 0x35,
+      "#5F3F1F": 0x34,
+      "#5F3F2F": 0x34,
+      "#5F6F5F": 0x57,
+      "#6F4F2F": 0x36,
+      "#6F4F3F": 0x36,
+      "#7F5F3F": 0x37,
+      "#7F5F4F": 0x37,
+      "#7F6F5F": 0x67,
+    }
+  },
+  // arch2
+  {
+    palette: [0x80, 0x83, 0x03, 0x8b, 0x85, 0x05, 0x06],
+    usedColors: {
+      "#0F2F1F": 0x12,
+      "#1F3F1F": 0x13,
+      "#1F3F2F": 0x13,
+      "#2F4F2F": 0x53,
+      "#2F4F3F": 0x53,
+      "#3F5F3F": 0x23,
+      "#3F5F4F": 0x23,
+      "#4F6F4F": 0x63,
+      "#4F6F5F": 0x63,
+      "#5F7F5F": 0x47,
+      "#5F7F6F": 0x47,
+      "#6F7F6F": 0x77,
+    }
+  },
+  // tonnel5
+  {
+    palette: [0x81, 0x01, 0x82, 0x8c, 0x05, 0x06, 0x0a],
+    usedColors: {
+      "#0F0F1F": 0x01,
+      "#0F1F2F": 0x11,
+      "#000000": 0x00,
+      "#1F2F3F": 0x12,
+      "#2F3F4F": 0x34,
+      "#3F4F5F": 0x54,
+      "#4F5F6F": 0x56,
+      "#7F7F0F": 0x57,
+    }
+  },
+  // room
+  {
+    palette: [0x80, 0x82, 0x84, 0x04, 0x09, 0x89, 0x0a],
+    usedColors: {
+      "#2F0F0F": 0x01,
+      "#3F0F0F": 0x03,
+      "#4F0F0F": 0x13,
+      "#5F1F0F": 0x33,
+      "#6F2F0F": 0x34,
+      "#7F3F0F": 0x44,
+      "#7F4F0F": 0x45,
+      "#7F7F0F": 0x47,
+    }
+  },
+  // cubes
+  {
+    palette: [0x82, 0x02, 0x85, 0x04, 0x86, 0x8f],
+    usedColors: {
+      "#3F0F3F": 0x11,
+      "#4F1F3F": 0x12,
+      "#5F2F3F": 0x32,
+      "#6F3F3F": 0x34,
+      "#7F4F3F": 0x44,
+      "#7F5F3F": 0x55,
+    }
+  },
+];
+
 function decodeHex(hexColor) {
   const rgb = parseInt(hexColor.substring(1), 16);
   const r = (rgb & 0xff0000) / 0x10000;
@@ -44,8 +205,8 @@ function colorDistance(col1, col2) {
 
 function modifyColor(col) {
   // Make them brighter for now
-  const br = 1.3;
-  const res = [col[0] * br, col[1] * br, col[2] * br];
+  const br = 1.2;
+  const res = col.map((c) => (Math.pow(Math.sin(c / 255 * Math.PI / 2), 1)) * 255);
   if (res[0] > 255) res[0] = 255;
   if (res[1] > 255) res[1] = 255;
   if (res[2] > 255) res[2] = 255;
@@ -60,8 +221,8 @@ function toGrayscale(col) {
 function mixColors(col1, col2) {
   return [
     Math.sqrt(col1[0] * col1[0] * 0.5 + col2[0] * col2[0] * 0.5),
-    Math.sqrt(col1[1] * col1[1] * 0.5 + col2[0] * col2[1] * 0.5),
-    Math.sqrt(col1[2] * col1[2] * 0.5 + col2[0] * col2[2] * 0.5),
+    Math.sqrt(col1[1] * col1[1] * 0.5 + col2[1] * col2[1] * 0.5),
+    Math.sqrt(col1[2] * col1[2] * 0.5 + col2[2] * col2[2] * 0.5),
   ]
 }
 
@@ -69,12 +230,27 @@ function notBlack(col) {
   return col[0] > 0 && col[1] > 0 && col[2] > 0;
 }
 
+function equalColors(col1, col2) {
+  return Math.floor(col1[0]) == Math.floor(col2[0]) && Math.floor(col1[1]) == Math.floor(col2[1]) && Math.floor(col1[2]) == Math.floor(col2[2]);
+}
+
 function findClosestPair(color, palette) {
-  let minDiff = 1000;
+  const mYellow = modifyColor([0x7f, 0x7f, 0x0f]);
+  if (equalColors(color, mYellow)) {
+    // Special case for the yellow color
+    for (let c = 0; c < palette.length; c++) {
+      //if (equalColors(palette[c], picoPalette[23])) {
+      if (equalColors(palette[c], picoPalette[10])) {
+        return [c, c];
+      }
+    }
+  }
+
+  let minDiff = 10000;
   let pico1 = 0;
   let pico2 = 0;
   for (let c = 0; c < palette.length; c++) {
-    for (let d = 0; d < palette.length; d++) {
+    for (let d = c; d < palette.length; d++) {
       const mixedColor = mixColors(palette[c], palette[d]);
       const mixedDiff = colorDistance(palette[c], palette[d]);
       const diff = colorDistance(color, mixedColor);
@@ -90,34 +266,33 @@ function findClosestPair(color, palette) {
   return [pico1, pico2];
 }
 
-function buildModelPalette(models, palIdx) {
+function findUsedColors(models) {
   const usedColors = {};
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    for (let c = 0; c < model.f3.length; c++) {
+      usedColors[model.f3[c][0]] = true;
+    }
+    for (let c = 0; c < model.f4.length; c++) {
+      usedColors[model.f4[c][0]] = true;
+    }
+  }
+  return usedColors;
+}
+
+
+function buildModelPalette(models) {
   const picoPaletteCounts = {};
   const palette = [];
   const res = [];
 
-  let originalColorsCount = 0;
-
   // Find all colors used in models
-  for (let i = 0; i < models.length; i++) {
-    const model = models[i];
-    for (let c = 0; c < model.f3.length; c++) {
-      if (usedColors[model.f3[c][0]] === undefined) originalColorsCount++;
-      usedColors[model.f3[c][0]] = true;
-    }
-    for (let c = 0; c < model.f4.length; c++) {
-      if (usedColors[model.f4[c][0]] === undefined) originalColorsCount++;
-      usedColors[model.f4[c][0]] = true;
-    }
-  }
-
-  //console.log(`Total colors: ${originalColorsCount}`);
+  const usedColors = findUsedColors(models);
 
   // Pick the closest colors from the overall PICO-8 palette
   let paletteLength = 0;
   for (const hexColor in usedColors) {
     const color = modifyColor(decodeHex(hexColor));
-    let minDiff = 1000;
     const picoColors = findClosestPair(color, picoPalette);
     picoColors.forEach((picoColor) => {
       if (picoPaletteCounts[picoColor] === undefined) {
@@ -158,6 +333,8 @@ function buildModelPalette(models, palIdx) {
 
       weighedColors.push(wcol);
     }
+
+    // Sort colors
     weighedColors.sort((a, b) => b[3] - a[3]);
     //console.log(weighedColors);
 
@@ -189,34 +366,46 @@ function buildModelPalette(models, palIdx) {
   for (const hexColor in usedColors) {
     const color = modifyColor(decodeHex(hexColor));
     const pico = findClosestPair(color, palette);
-    if (palIdx % 2 == 1) {
-      pico[0] += 8;
-      pico[1] += 8;
-    }
     usedColors[hexColor] = pico[0] * 16 + pico[1];
   }
 
+  return {
+    palette: res,
+    usedColors: usedColors,
+  };
+}
+
+function remapModelColors(models, palIdx, usedColors) {
+  const colAdd = (palIdx % 2 == 1) ? 0x88 : 0x00;
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
     model.pal = palIdx + 1;
     for (let c = 0; c < model.f3.length; c++) {
-      model.f3[c][0] = usedColors[model.f3[c][0]];
+      model.f3[c][0] = usedColors[model.f3[c][0]] + colAdd;
     }
     for (let c = 0; c < model.f4.length; c++) {
-      model.f4[c][0] = usedColors[model.f4[c][0]];
+      model.f4[c][0] = usedColors[model.f4[c][0]] + colAdd;
     }
   }
-
-  return res;
 }
 
-
-module.exports.buildPalette = function(models) {
+function buildPalette(models) {
   const palettes = [];
   for (let c = 0; c < modelPalettes.length; c++) {
     const pm = modelPalettes[c].map((name) => models[name]);
-    const palette = buildModelPalette(pm, c);
-    palettes.push(palette);
+    let mapping;
+    if (manualMapping[c].palette.length != 0) {
+      mapping = manualMapping[c];
+    } else {
+      mapping = buildModelPalette(pm);
+    }
+
+    remapModelColors(pm, c, mapping.usedColors);
+    palettes.push(mapping.palette);
   }
   return palettes;
+}
+
+if (typeof module !== "undefined") {
+  module.exports.buildPalette = buildPalette;
 }

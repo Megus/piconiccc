@@ -4,7 +4,9 @@ const compressor = require("./model_compressor");
 const camera = require("./camera_converter");
 const palette = require("./palette_builder");
 const renderList = require("./renderlist_converter");
-const writer = require("./p8writer");
+const huffman = require("./huffman");
+
+const p8tools = require("./p8tools");
 const luaTools = require("./lua_tools");
 
 // Get models and camera paths
@@ -18,22 +20,26 @@ eval(fs.readFileSync("../editor/math3d.js").toString());
 
 init_models();
 
-//console.log(models.rotorin);
-//console.log(camPathList);
-//console.log(modelRenderList);
-
 // Convert models
 const convertedData = converter.convertModels(models);
 const convertedModels = convertedData.models;
 // Build palette
 const picoPalette = palette.buildPalette(convertedModels);
-// Compress models
-const compressedData = compressor.compressModels(convertedData);
 // Process camera
 const convertedCamera = camera.convertCamera(camPathList);
 // Process renderlist
 const convertedRenderList = renderList.convertRenderList(modelRenderList);
 
+// Compress models
+const compressedData = compressor.compressModels(convertedData);
+
+// PICONICCC image
+const logo = p8tools.png2pico("./piconiccc.png", p8tools.defaultPalette);
+const compressedLogo = huffman.compress(logo.data);
+compressedData.arcs.push([compressedData.binary.length, compressedLogo.tree]);
+compressedData.binary.push(...compressedLogo.binary);
+
+// Write demo data
 const luaData = `colors = ${luaTools.json2lua(picoPalette)}\n\n\
 fp = ${luaTools.json2lua(convertedData.fp4)}\n\n\
 renderlist = ${luaTools.json2lua(convertedRenderList)}\n\n\
@@ -54,9 +60,17 @@ const luaCode = "\
 #include huffman.lua\n\
 #include loader.lua\n\
 #include fx_intro.lua\n\
+#include fx_landscape.lua\n\
+#include fx_ball.lua\n\
 #include fx_niccc.lua\n\
+#include fx_ending.lua\n\
 #include script.lua\n\
 ";
 
-writer.writeP8("../pico8/piconiccc.p8", luaCode, compressedData.binary);
-
+p8tools.writeP8("../pico8/piconiccc.p8", {
+  luaCode: luaCode,
+  graphics: compressedData.binary,
+  label: logo.data,
+  title: "piconiccc",
+  credits: "by megus, demarche & stardust",
+});

@@ -1,4 +1,4 @@
-module.exports.convertModels = function (models) {
+function convertModels(models) {
   // TODO: Idea with global list of face patterns (Dec 5: 21 patterns repeat across models, 117 vs 138)
 
   const converted = {};
@@ -91,4 +91,8 @@ module.exports.convertModels = function (models) {
     fp4: facePatterns4,
     models: converted,
   };
+}
+
+if (typeof module !== "undefined") {
+  module.exports.convertModels = convertModels;
 }

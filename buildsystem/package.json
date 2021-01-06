@@ -1,0 +1,14 @@
+{
+  "name": "buildsystem",
+  "version": "1.0.0",
+  "description": "PICONICCC build system",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Megus",
+  "license": "ISC",
+  "dependencies": {
+    "pngjs": "^6.0.0"
+  }
+}

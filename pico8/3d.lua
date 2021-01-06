@@ -42,7 +42,7 @@ function mmult(m1, m2)
 	return r
 end
 
-function radix_sort(arr, mask, idx1, idx2)
+function radix_sort(arr, mask, idx1, idx2, sortmin)
 	local c, rb = idx1, idx2 + 1
 	while c < rb do
 		if arr[c][1] & mask ~= 0 then
@@ -54,10 +54,10 @@ function radix_sort(arr, mask, idx1, idx2)
 		end
 		c += 1
 	end
-	if mask >= 0x0.1 then
+	if mask >= sortmin then
 		mask /= 2
-		if (rb - 1 > idx1) radix_sort(arr, mask, idx1, rb - 1)
-		if (rb < idx2) radix_sort(arr, mask, rb, idx2)
+		if (rb - 1 > idx1) radix_sort(arr, mask, idx1, rb - 1, sortmin)
+		if (rb < idx2) radix_sort(arr, mask, rb, idx2, sortmin)
 	end
 end
 
@@ -70,8 +70,7 @@ function lerp(a,b,alpha)
 	return a + (b - a) * alpha
 end
 
-
-function m3d(obj, eye, dir, up, angle)
+function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
 	-- Camera matrix
 	local xaxis = normalize(cross(dir, up))
 	local yaxis = cross(xaxis, dir)
@@ -90,7 +89,7 @@ function m3d(obj, eye, dir, up, angle)
 		})
 	end
 
-	local sorted = {}
+	sorted = {}
 
 	-- Tranform all objects
 	for c = 1, #obj.v do
@@ -104,7 +103,7 @@ function m3d(obj, eye, dir, up, angle)
 		local tri = obj.f[c]
 		local p1, p2, p3 = v2d[tri[2]], v2d[tri[3]], v2d[tri[4]]
 		local p1z,p2z,p3z = p1[3],p2[3],p3[3]
-		local z_paint = -0.1 * max(p1z, max(p2z, p3z))
+		local z_paint = -0.08 * zp(p1z, zp(p2z, p3z))
 
 		if p1z < zfar or p2z < zfar or p3z < zfar then
 			if p1z > znear and p2z > znear and p3z > znear then
@@ -152,7 +151,7 @@ function m3d(obj, eye, dir, up, angle)
 	end
 
 	-- Sort faces and draw them
-	radix_sort(sorted, 4, 1, #sorted)
+	radix_sort(sorted, sortmax, 1, #sorted, sortmin)
 	for c = 1, #sorted do
 		local tri = sorted[c]
 		triangle(
