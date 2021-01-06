@@ -40,12 +40,12 @@ compressedData.arcs.push([compressedData.binary.length, compressedLogo.tree]);
 compressedData.binary.push(...compressedLogo.binary);
 
 // Write demo data
-const luaData = `colors = ${luaTools.json2lua(picoPalette)}\n\n\
-fp = ${luaTools.json2lua(convertedData.fp4)}\n\n\
-renderlist = ${luaTools.json2lua(convertedRenderList)}\n\n\
-arcs = ${luaTools.json2lua(compressedData.arcs)}\n\n\
-objects = ${luaTools.json2lua(compressedData.models)}\n\n\
-campath = ${luaTools.json2lua(convertedCamera)}\n\n\
+const luaData = `colors=${luaTools.json2lua(picoPalette)}\n\
+fp=${luaTools.json2lua(convertedData.fp4)}\n\
+renderlist=${luaTools.json2lua(convertedRenderList)}\n\
+arcs=${luaTools.json2lua(compressedData.arcs)}\n\
+objects=${luaTools.json2lua(compressedData.models)}\n\
+campath=${luaTools.json2lua(convertedCamera)}\
 `;
 fs.writeFileSync("../pico8/data.lua", luaData);
 

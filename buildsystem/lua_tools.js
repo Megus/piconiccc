@@ -29,9 +29,9 @@ function json2lua(json) {
   } else if (Array.isArray(json)) {
     return `{${json.map((v) => json2lua(v)).join(",")}}`;
   } else if (typeof json === "object") {
-    let lua = "{\n";
+    let lua = "{";
     for (const key in json) {
-      lua += `${key}=${json2lua(json[key])},\n`;
+      lua += `${key}=${json2lua(json[key])},`;
     }
     lua += "}";
     return lua;
