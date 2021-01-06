@@ -419,8 +419,10 @@ function init_rotor() {
         let v1 = 2+i <= 16 ? 2+i : 1;
         let v2 = 18+i <= 32 ? 18+i : 17;
         if (!(i==3 && n ==0)) {
+          if (i != 9) {
           model.f.push([colors[ci][clr1], nn+1+i, nn+17+i, nn+v2, nn+v1]);
           //model.f.push([colors[ci][clr1], nn+v2, nn+v1, nn+1+i]);
+          }
         }
       }
     }
