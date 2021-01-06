@@ -418,11 +418,11 @@ function init_rotor() {
         //let clr1 = i == 1 ? 3 : clr;
         let v1 = 2+i <= 16 ? 2+i : 1;
         let v2 = 18+i <= 32 ? 18+i : 17;
-        if (!(i==3 && n ==0)) {
-          if (i != 9) {
+        // (i==9 && n == 4) - maybe this is error block?
+        // !(i==3 && n ==0) - blackhole
+        if (!(i==3 && n ==0) && !(i==9 && n == 4)) {
           model.f.push([colors[ci][clr1], nn+1+i, nn+17+i, nn+v2, nn+v1]);
           //model.f.push([colors[ci][clr1], nn+v2, nn+v1, nn+1+i]);
-          }
         }
       }
     }
@@ -2056,7 +2056,14 @@ function init_arch1() {
 
       model.f.push([colors[j][cList[n][10]], ni+14, ni+10, ni+15, ni+19]);
       //model.f.push([colors[j][cList[n][10]], ni+15, ni+19, ni+14]);
+      
+      //--- arch1 black window
+      if (j == 1 && n == 1) {
+        model.f.push(['#000000', ni+15, ni+16, ni+18, ni+19]);
+      }
+
     }
+
   }
 
 
