@@ -1,7 +1,7 @@
 'use strict';
 
 function drawScene1Frame(ctx) {
-  const frame = frames[frameNumber];
+  const frame = frames[Math.floor(frameNumber)];
   const scale = (128 / 200) * 4;
   const offset = (512 - 256 * scale) / 2;
 

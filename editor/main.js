@@ -2,6 +2,7 @@
 // 957 997 1035 1075 1135 1187
 let frameNumberStart = 0;//115;
 let frameNumber = frameNumberStart;
+let timeStart = 0;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
@@ -12,6 +13,8 @@ let isRandomize = 0;
 
 let isGlClearZBuff = 1;
 let isGlCullFace = 1;
+
+let isFrameNumberFloat = 0;
 
 let picoRenderPointList = [];
 
@@ -85,12 +88,17 @@ function drawFrame(time) {
   }
 
   isNeedChangeCam = false;
-  if (isPlay) {
+  if (isPlay && (time > timeStart)) {
     if (frameNumber < frames.length - 1) {
-      let nowFrame = Math.floor((time / (1000 / 15))) % frames.length;
+      if (isFrameNumberFloat) {
+        frameNumber = ((time - timeStart) / (1000 / 15));
+      }
+      let nowFrame = Math.floor(((time - timeStart) / (1000 / 15))) % frames.length;
       if (nowFrame != prevFrame) {
         prevFrame = nowFrame;
-        frameNumber++;
+        if (!isFrameNumberFloat) {
+          frameNumber++;
+        }
         document.getElementById('frame').value = frameNumber;
         isNeedChangeCam = true;
       }
@@ -113,6 +121,7 @@ function drawFrame(time) {
 }
 
 function plPlay() {
+  timeStart = performance.now();
   frameNumber = frameNumberStart;
   isPlay = 1;
 }
