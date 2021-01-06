@@ -244,7 +244,7 @@ function glDrawFrame(gl) {
       var fovAngle = models[m].fov;
       var fieldOfView = fovAngle * Math.PI / 180; // in radians
       var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-      var zNear = 0.001;
+      var zNear = 0.04;
       var zFar = 100.0;
       var projectionMatrix = mat4.create();
       mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
