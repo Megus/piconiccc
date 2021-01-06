@@ -1,13 +1,13 @@
 'use strict';
 // 957 997 1035 1075 1135 1187
-let frameNumberStart = 0;
+let frameNumberStart = 0;//115;
 let frameNumber = frameNumberStart;
 let isPlay = 0;
 let prevFrame = 0;
 let wireframe = 0;
 let isHover = 0;
 let isNeedChangeCam = true;
-let isForceCamPath = 0;
+let isForceCamPath = 1;
 let isRandomize = 0;
 
 let isGlClearZBuff = 1;

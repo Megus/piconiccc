@@ -8,10 +8,13 @@ const models_oxygene_fend = 71;
 const models_oxygenein_fstart = 70;
 const models_oxygenein_fend = 90;
 
-const models_tonnel1_fstart = 75;
-const models_tonnel1_fend = 177;
+const models_tonnel0_fstart = 75;
+const models_tonnel0_fend = 103;//177
 
-const models_tonnel2_fstart = 173;
+const models_tonnel1_fstart = 103;
+const models_tonnel1_fend = 180;//177
+
+const models_tonnel2_fstart = 149;//170;
 const models_tonnel2_fend = 276;
 
 const models_tonnel3_fstart = 215;
@@ -29,7 +32,7 @@ const models_arch1_fend = 941;
 const models_arch2_fstart = 800;
 const models_arch2_fend = 1193;
 
-const models_tonnel5_fstart = 900; //1080;//1190;
+const models_tonnel5_fstart = 1080; //1080;//1190;
 const models_tonnel5_fend = 1347;
 
 const models_room_fstart = 1245;//1245-1334 first time;
@@ -46,9 +49,12 @@ const models_cubes2_fend = 9999;
 function init_models() {
   //init_testcube();
   
-  //init_arch2();
-  //init_arch1();
-  //init_room();
+  
+  //init_tonnel0();
+  //return;
+  
+  //init_tonnel2();
+  //init_tonnel1();
   //return;
 
   init_cubes();
@@ -61,6 +67,7 @@ function init_models() {
   init_tonnel3();
   init_tonnel2(); //tonnel-2 + squad
   init_tonnel1();
+  init_tonnel0();
   init_oxygene();
   //console.log(models);
   //console.log(camPathList);
@@ -494,6 +501,10 @@ function init_rotor() {
       }
     }
   }
+  //down faces
+  model.f.push(['#000000', 2, 3, 6, 7]);
+  model.f.push(['#000000', 2, 7, 10, 15]);
+  
 
   // modify
   for (v in model.v) {
@@ -1197,14 +1208,136 @@ function init_tonnel2() {
   let mA1 = 17;
   let mA2 = 3;
 
-  picoEye = [0.16315171008539667, 0.010040940234602069, -2.0926391519412997];
-  picoDir = [-0.16676849271283986, 0.001745328365898307, 0.9859945353130425];
-  picoUp = [0.18223551240280153, 0.9832534076734651, -0.0017188129062887829];
-
   camPathList['tonnel2'] = [];
-  camMovDir(0.1);
+ 
+  picoEye = [-7.446457450352005, -4.747363017482455, -5.877386124215282];
+  picoDir = [0.7848102825131585, 0.009657453272029298, -0.6196608379250014];
+  picoUp = [0.2216923926606057, 0.9138861534110582, 0.34009495973912324];
+
   camPathList['tonnel2'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  camMovDir(-0.1);
+  camPathList['tonnel2'].push({"frame":103, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  /*
+  picoEye = [-7.436094243004112, -4.61276688873281, -6.070493697280719];
+  picoDir = [0.7249022579984409, 0.1041464499209189, -0.680933354534518];
+  picoUp = [0.21189504132540796, 0.8889245142488019, 0.40609567767859256];  
+  camPathList['tonnel2'].push({"frame":104, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  */
+
+  picoEye = [-7.250577996140098, -4.389221014114983, -6.982998999113046];
+  picoDir = [0.5323211679897528, 0.31314375857892074, -0.7864954930405464];
+  picoUp = [0.13307056453541935, 0.8698738188431709, 0.47498606731716136];
+  camPathList['tonnel2'].push({"frame":107, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [-7.205563711338004, -4.018864882274031, -7.803037956504104];
+  picoDir = [0.5078079855815409, 0.2651785161979858, -0.8196410216226687];
+  picoUp = [0.07013663238403364, 0.9227331915616731, 0.3790043667139414];
+  camPathList['tonnel2'].push({"frame":110, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [-7.2336468072046465, -3.485360352951314, -8.788133325344738];
+  picoDir = [0.5902372396788419, -0.10911006853409941, -0.7998218513148947];
+  picoUp = [0.2316366335128061, 0.9697835038192973, 0.07657953861718549];
+  camPathList['tonnel2'].push({"frame":113, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [-7.293977868706795, -2.751780579176205, -9.676582044247704];
+  picoDir = [0.6920346548932802, -0.3713433334011056, -0.6190251732888525];
+  picoUp = [0.28465613830445596, 0.9384395900058593, -0.19570901572290753];
+  camPathList['tonnel2'].push({"frame":116, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [-7.196246999611913, -2.262269974947921, -11.29279401234931];
+  picoDir = [0.8445238984492812, -0.361761763993072, -0.39485163170569426];
+  picoUp = [0.2622865801497862, 0.938995544938544, -0.22247048446680928];
+  camPathList['tonnel2'].push({"frame":119, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+
+  picoEye = [-6.887359469724662, -2.0068831201896113, -13.014280156605809];
+  picoDir = [0.980276699259482, -0.1591722719540957, -0.11714000482288918];
+  picoUp = [0.1134289495382685, 0.9849826317369278, -0.1301656198204451];
+  camPathList['tonnel2'].push({"frame":122, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+
+  picoEye = [-6.270267127988868, -1.6465123278488025, -14.041229003947775];
+  picoDir = [0.9996413337304231, -0.022376474462475968, 0.014713846821652969];
+  picoUp = [-0.0061389869540930545, 0.9902523608304867, -0.13914946894913072];
+  camPathList['tonnel2'].push({"frame":125, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+
+  picoEye = [-5.578081422108226, -1.6312080103656126, -14.748556339919354];
+  picoDir = [0.9435869435025024, 0.13453628323493314, 0.3025618425131223];
+  picoUp = [-0.10841496630071276, 0.974677940355276, -0.19557379084839685];
+  camPathList['tonnel2'].push({"frame":128, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+  
+  picoEye = [-4.184540158497977, -2.194193997732857, -14.601551918700881];
+  picoDir = [0.7732342127126898, 0.3491646137082086, 0.5293325276464542];
+  picoUp = [-0.3435462926965798, 0.9244751257240958, -0.16529273030551933];
+  camPathList['tonnel2'].push({"frame":131, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+  
+  picoEye = [-3.397958286108556, -2.2845142413781083, -14.744144387355401];
+  picoDir = [0.5658196010808897, 0.3998279780571494, 0.7211003862122072];
+  picoUp = [-0.3748973847687595, 0.8944235658542434, -0.24384100503837478]
+  camPathList['tonnel2'].push({"frame":134, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+  
+  picoEye = [-2.612403241164554, -2.368960676428526, -14.630688237332969];
+  picoDir = [0.45554418824105597, 0.37305107710802865, 0.8082774192245735];
+  picoUp = [-0.3144511451765945, 0.9073229275689941, -0.27907988534603895];
+  camPathList['tonnel2'].push({"frame":137, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+  
+  picoEye = [-1.8541007888950316, -2.277985318254273, -14.128520475727326];
+  picoDir = [0.4828339608015847, 0.21949150137432738, 0.8477587198732299];
+  picoUp = [-0.17774703017437754, 0.9665669179028292, -0.18480905410724413];
+  camPathList['tonnel2'].push({"frame":140, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+
+  picoEye = [-1.228377441776075, -2.1906096119800695, -13.499029650375524];
+  picoDir = [0.45849713592424896, 0.08550905482427912, 0.8845725396440471];
+  picoUp = [-0.01566457978055515, 0.9923924241482454, -0.12211428021925928];
+  camPathList['tonnel2'].push({"frame":143, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+  
+  picoEye = [-0.42227357938337384, -2.1342047645132305, -12.837613608164407];
+  picoDir = [0.1274580590765869, 0.0485849558337298, 0.9906532921476938];
+  picoUp = [0.10045748137879318, 0.9906657548352765, -0.09213933270694623];
+  camPathList['tonnel2'].push({"frame":146, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+  
+  picoEye = [0.18395798779710829, -2.0550871894666756, -11.82232709915454];
+  picoDir = [-0.23979462082480468, 0.09127986459908385, 0.9665229051306861];
+  picoUp = [0.16248067041081662, 0.9831356208376749, -0.08393082141246612];
+  camPathList['tonnel2'].push({"frame":149, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});  
+
+  picoEye = [0.6687745029524097, -1.8786042026661252, -10.151380545165622];
+  picoDir = [-0.523252579161377, 0.10306091942217992, 0.8459226828078449];
+  picoUp = [0.14194569605484395, 0.9875099094449659, -0.06837834539897397];
+  camPathList['tonnel2'].push({"frame":152, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.9169754318421249, -1.667983007586845, -8.707821222280273];
+  picoDir = [-0.6484385495905257, 0.11812287539946643, 0.7520468294676188];
+  picoUp = [0.17193747214516436, 0.9840025642294078, -0.04665253757601066];
+  camPathList['tonnel2'].push({"frame":155, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.8920722347601971, -1.4353433975952143, -7.320401250838114];
+  picoDir = [-0.6672246065765551, 0.1320337612821817, 0.7330609867265077];
+  picoUp = [0.20074696064907274, 0.9790174334876446, -0.035007466595358076];
+  
+  camPathList['tonnel2'].push({"frame":158, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [0.6719641099726203, -1.171905159409121, -6.093505028380356];
+  picoDir = [-0.6195412061073974, 0.11823915591477045, 0.776007858171265];
+  picoUp = [0.19724153279983536, 0.9798657821135286, -0.030964928254632526];
+  camPathList['tonnel2'].push({"frame":161, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.601759893614608, -0.859051092182687, -4.894566576820735];
+  picoDir = [-0.5790351217706383, 0.08450840004300807, 0.8109110050296723];
+  picoUp = [0.181969943171665, 0.9832534076734653, -0.009983790894215699];  
+  camPathList['tonnel2'].push({"frame":164, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.3154354083799253, -0.6317746860840776, -3.625434055475847];
+  picoDir = [-0.4729667549994263, 0.06556609159719083, 0.878637317838243];
+  picoUp = [0.181969943171665, 0.9832534076734653, -0.009983790894215699];
+  camPathList['tonnel2'].push({"frame":167, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [0.12068843347496638, -0.47660949059774366, -2.5703329473340006];
+  picoDir = [-0.3372194247945543, 0.04816656405225195, 0.940193087428657];
+  picoUp = [0.1843274228734161, 0.9827258087072879, -0.016534390749346387];
+  camPathList['tonnel2'].push({"frame":170, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [0.09804306984424772, -0.27244265061067424, -1.4435085403656986];
+  picoDir = [-0.19563601288190938, 0.009954021468114672, 0.980626059168469];
+  picoUp = [0.18097639940579444, 0.9834754914632717, -0.004847736501783769];
   camPathList['tonnel2'].push({"frame":173, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   resetCam();
@@ -1212,7 +1345,11 @@ function init_tonnel2() {
   picoEye[2] += 1.90;
   picoEye[0] += 0.35;
   picoEye[1] -= 0.35;
+  picoEye = [0.3447905546699921, -0.3792092684157897, -0.033972860347217915];
+  picoDir = [-0.0017188129062887755, -0.010168711694331742, 0.9999468200782834];
+  picoUp = [0.1736481776669305, 0.9847537553782618, 0.010312694185548947];
   camPathList['tonnel2'].push({"frame":177, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  //--- end tonnel1
 
   picoEye = [1.2118811795646676, -0.1618976747122177, 4.208205932368166];
   picoDir = [0.5272266745256553, 0.0020149889469579653, 0.8497222919802461];
@@ -1234,7 +1371,7 @@ function init_tonnel2() {
 
   camPathList['tonnel2'].push({"frame":196, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
-    picoEye = [6.288305489964638, -0.09382970283748764, 8.097398648591554];
+  picoEye = [6.288305489964638, -0.09382970283748764, 8.097398648591554];
   picoDir = [0.2921571597249339, 0.22181894557153808, 0.9302905725669752];
   picoUp = [0.09971676123145778, 0.973440729217379, -0.20608181440934106];
   camPathList['tonnel2'].push({"frame":202, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
@@ -3495,18 +3632,452 @@ objects.js:2786 dist E,N = 0.7138940000000016
 
 }
 
-// fake data
+
 function init_tonnel1(){
   modelRenderList.push({
     model: 'tonnel1',
-    campath: 'tonnel1',
+    campath: 'tonnel2',
   });
-  camPathList['tonnel1'] = [];
   let model = {
-    fov: 45,
+    fov: 90,
     rnd: 0.5,
 		fstart: useFrameLimit ? models_tonnel1_fstart : 0,
 		fend: useFrameLimit ? models_tonnel1_fend : 9999,
+    v: [],
+    f: [],
+  };
+  var colors = [
+    [
+      '#7F5F3F','#7F6F4F','#7F5F3F','#6F4F2F','#5F3F1F','#4F2F0F',
+      '#3F1F0F','#2F0F0F','#3F1F0F','#4F2F0F','#5F3F1F','#6F4F2F'
+    ],[
+      '#6F4F2F','#7F5F3F','#7F6F4F','#7F5F3F','#6F4F2F','#5F3F1F',
+      '#4F2F0F','#3F1F0F','#4F2F0F','#5F3F1F','#6F4F2F','#7F5F3F'
+    ],[
+      '#5F3F1F','#6F4F2F','#7F5F3F','#7F6F4F','#7F5F3F','#6F4F2F',
+      '#5F3F1F','#4F2F0F','#5F3F1F','#3F1F0F','#4F2F0F','#5F3F1F'
+    ],
+  ];
+  var colorsDiff = {
+    //'1-2' : '#3F1F0F'
+  };
+  resetCam();
+
+  var ration = 1;
+  var ratioX = ration*0.5;//0.925;
+  var ratioY = ration*0.5;
+  var dz = ration*1.25;//ration*1.2;
+  var ppy = 0.0;//0.2;
+  
+  var pointList = [
+    {
+      //--- points 0
+      clr: 2,
+      rz: -30,
+      ry: 0,
+      ryy: 0,
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-1.125, 1.1], [-0.9, 0.4], [-1.4, -0.125],
+        [-1, -1],
+        [1, -1],
+        [1, 0.1], [-0.75, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 1
+      rz: -20,
+      ry: -8,
+      ryy: 0,
+      mv:[-0.1,0,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.9, 1.1], [-0.8, 0.5], [-1.0, -0.125],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.75, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 2
+      rz: -20,
+      ry: 0,
+      ryy: 10,
+      mv:[-0.1,0,-0.1],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.8, 1.1], [-0.8, 0.5], [-1.0, -0.125],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.5, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 3
+      rz: -17,
+      ry: -5,
+      ryy: 0,
+      dz: 1.2,
+      mv:[-0.1,0,-0.1],
+      mvR:[0.05,0,0],
+      mvL:[-0.05,0,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.1, 1.7], [-0.4, 0.8], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.5, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 4
+      rz: -15,
+      ry:  0,
+      ryy: -5,
+      dz: 1.5,
+      mv:[-0.1,0,-0.1],
+      mvR:[0.5,0.25,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.2, 1.7], [-0.4, 0.8], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.5, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 5
+      rz: -15,
+      ry:  1,
+      ryy: -12,
+      dz: 0.5,
+      mv:[-0.1,0,-0.1],
+      mvR:[0.5,0.125,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.4, 1.1], [-0.5, 0.5], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.5, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+
+    },{
+      //--- points 6
+      rz: -15,
+      ry:  1,
+      ryy: -25,
+      dz: 0.5,
+      mv:[-0.1,0,-0.1],
+      mvR:[0.1,0.0,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.4, 1.1], [-0.5, 0.5], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.5, 1.8],   [-1.6, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 7
+      rz: -15,
+      ry:  0,
+      ryy: -5,
+      dz: 0.0,
+      mv:[-0.1,0,-0.1],
+      mvR:[0.1,0.0,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.4, 1.1], [-0.5, 0.5], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1], [-0.1, 1.8],   [-0.5, 2.2], [1, 5], [1, 6]
+      ],
+    },{
+      //--- points 8
+      rz: -15,
+      ry:  1,
+      ryy: -5,
+      dz: 0.2,
+      mv:[-0.1,-0.15,-0.1],
+      mvR:[0.1,0.0,0],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.4, 1.4], [-0.5, 0.5], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.1, 0.1,0.1], [0, 1.8],   [-0.8, 3.5], [-0.3, 4.5], [0.5, 6.5]
+      ],
+    },{
+      //--- points 9 //выпирающая часть
+      rz: -15,
+      ry:  1,
+      ryy: -12,
+      dz: -0.3,
+      mv:[-0.1,-0.15,-0.1],
+      mvR:[0.1,0.0,0.1],
+      points: [
+        [-3.95, 3.45], [-3.95, 2.55], [-1.65, 1.8],    [-0.4, 1.2], [-0.5, 0.5], [-1.1, -0.0],
+        [-1, -1],
+        [1, -1, 0.3],
+        [1.2, 0.1], [0.7, 2.3],   [0.2, 4.3], [0.3, 5.5], [0.9, 7]
+      ],
+    },{
+      //--- points 10
+      rz: -15,
+      ry:  1,
+      ryy: -25,
+      rx: -15,
+      dz: -0.45,
+      mv:[-0.1,-0.1,-0.1],
+      mvL:[-0.1,-0.05,0],
+      mvR:[0.0,-0.025,0],
+      points: [
+        [-3.95, 3.45], [-1.6, 2.7], [-1.4, 1.8],    [-1.2, 0.9], [-1.2, 0.2], [-1.1, -0.3],
+        [-1, -1],
+        [1, -1],
+        [1.3, -0.3], [1.1, 2.1],   [0.9, 4.0], [1.5, 5.5], [1.9, 6.5]
+      ],
+
+    },{
+      //--- points 11 //начало спуска
+      rz: -15,
+      ry:  -20,
+      ryy: -20,
+      rx: -15,
+      mv:[-0.1,-0.4,-0.1],
+      mvL:[0.075,-0.05,0],
+      dz: -0.2,
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.3, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 12
+      rz: -15,
+      ry:  2,
+      ryy: -30,
+      rx: -15,
+      mv:[-0.15,-0.7,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.2,0,0],
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.3, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 13
+      rz: -15,
+      ry:  0,
+      ryy: -35,
+      rx: -15,
+      mv:[-0.15,-1.0,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.1,0,0],
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.1, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 14
+      rz: -15,
+      ry:  0,
+      ryy: 0,
+      rx: -15,
+      mv:[-0.15,-1.3,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[0,0,0],
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 15
+      rz: -15,
+      ry:  0,
+      ryy: -10,
+      rx: -15,
+      mv:[-0.15,-1.6,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.1,-0.15,0],
+      dz: 1,
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 1.0], [-1.0, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 16 // выступ снизу слева
+      rz: -15,
+      ry:  0,
+      ryy: -25,
+      rx: -15,
+      mv:[-0.15,-1.9,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.1,0,0],
+      dz: 0.25,
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-2.0, 1.0], [-0.9, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 17
+      rz: -15,
+      ry:  0,
+      ryy: 0,
+      rx: -15,
+      mv:[-0.15,-2.2,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.1,0,0],
+      dz: 0,
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.3, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+    },{
+      //--- points 18
+      rz: -15,
+      ry: -25,
+      ryy: 0,
+      rx: -25,
+      mv:[-0.15,-2.5,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.1,0,0],
+      dz: 0.4,
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.3, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+      
+    },{
+      //--- points 19 //крутой поворот
+      rz: -15,
+      ry: 0,
+      ryy: 0,
+      rx: 0,
+      mv:[-0.15,-2.5,-0.1],
+      mvL:[0,-0.15,0],
+      mvR:[-0.1,0,0],
+      dz: 0,
+      points: [
+        [-2.4, 5.8], [-1.6, 4.0], [-2.1, 2.8],    [-2.2, 1.9], [-1.9, 0.8], [-1.3, -0.0],
+        [-1, -1],
+        [1, -1],
+        [1.5, -0.5], [2.1, 2.3],   [2.0, 4.2], [2.5, 5.5], [2.5, 6]
+      ],
+      
+      
+    }
+  ];
+  //-->CARET
+
+  //create model
+  for (var p = 0; p < pointList.length; p++) {
+    //OxOyOz
+    var pCoordList = {x:[1,0,0],y:[0,1,0],z:[0,0,1]};
+    for (var pcl in pCoordList) {
+      pCoordList[pcl] = normalize(rotZ(pCoordList[pcl], pointList[p].rz));
+    }
+    // prev model points
+    for (var v = 0; v < model.v.length; v++) {
+      model.v[v][2] += dz;
+      if (pointList[p].dz != undefined) {
+        model.v[v][2] += pointList[p].dz;
+      }
+      model.v[v] = rotVec(model.v[v], pCoordList.y, pointList[p].ryy);
+    }
+    // add points
+    for (var p1 in pointList[p].points) {
+      var point = [
+        pointList[p].points[p1][0] * ratioX,
+        pointList[p].points[p1][1] * ratioY,
+        pointList[p].points[p1][2] != undefined ? 0 + pointList[p].points[p1][2] : 0
+      ];
+      
+      if (pointList[p].mvR != undefined && (p1 >= 7)) {
+        point = vMov(point, pCoordList.x, pointList[p].mvR[0]);
+        point = vMov(point, pCoordList.y, pointList[p].mvR[1]);
+        point = vMov(point, pCoordList.z, pointList[p].mvR[2]);
+      }
+      if (pointList[p].mvL != undefined && (p1 < 7)) {
+        point = vMov(point, pCoordList.x, pointList[p].mvL[0]);
+        point = vMov(point, pCoordList.y, pointList[p].mvL[1]);
+        point = vMov(point, pCoordList.z, pointList[p].mvL[2]);
+      }
+      
+      point = rotZ(point, pointList[p].rz);
+      point = rotVec(point, pCoordList.y, pointList[p].ry);
+      if (pointList[p].rx != undefined) {
+        point = rotVec(point, pCoordList.x, pointList[p].rx);  
+      }
+      point = vMov(point, pCoordList.y, -0.185);
+      point = vMov(point, pCoordList.x, 0.25);
+      point = vMov(point, pCoordList.y, -0.1);
+      point = vMov(point, pCoordList.z, ppy);
+      
+      
+      point = vMov(point, pCoordList.y, -0.2 * p);
+      if (pointList[p].mv != undefined) {
+        point = vMov(point, pCoordList.x, pointList[p].mv[0]);
+        point = vMov(point, pCoordList.y, pointList[p].mv[1]);
+        point = vMov(point, pCoordList.z, pointList[p].mv[2]);
+      }
+      
+      model.v.push(point);
+    }
+
+    // add faces
+    var nn = parseInt(p) * 13;
+    if (p < pointList.length - 1) {
+      for (var ci in colors[p&1]) {
+        var c = parseInt(ci);
+        var clr = colors[(p&1)][ci];
+        var clrDiffIdx = p + '-' + ci;
+        if (pointList[p].clr != undefined) {
+          clr = colors[pointList[p].clr][ci];
+        }
+        if (colorsDiff[clrDiffIdx] != undefined) {
+          clr = colorsDiff[clrDiffIdx];
+        }
+        model.f.push([clr, nn+c+2, nn+c+15, nn+c+14, nn+c+1]);
+      }
+    }
+  }
+
+  // model back to zero-point
+  for (var p = pointList.length - 1; p >= 0; p--) {
+    var pCoordList = {x:[1,0,0],y:[0,1,0],z:[0,0,1]};
+    for (var pcl in pCoordList) {
+      pCoordList[pcl] = rotZ(pCoordList[pcl], pointList[p].rz);
+    }
+    for (v in model.v) {
+      
+      model.v[v] = rotVec(model.v[v], pCoordList.y, -pointList[p].ryy);
+      model.v[v][2] -= dz;
+      if (pointList[p].dz != undefined) {
+        model.v[v][2] -= pointList[p].dz;
+      }
+    }
+  }
+  //mov dz
+  for (v in model.v) {
+    model.v[v][2] += dz;
+  }
+  
+
+  models['tonnel1'] = model;
+}
+
+function init_tonnel0(){
+  modelRenderList.push({
+    model: 'tonnel0',
+    campath: 'tonnel0',
+  });
+  camPathList['tonnel0'] = [];
+  let model = {
+    fov: 45,
+    rnd: 0.5,
+		fstart: useFrameLimit ? models_tonnel0_fstart : 0,
+		fend: useFrameLimit ? models_tonnel0_fend : 9999,
     v: [],
     f: [],
   };
@@ -3516,78 +4087,94 @@ function init_tonnel1(){
   picoEye = [20.57234299239195, 13.809656737288963, -105.05321874712453];
   picoDir = [-0.208132696627178, -0.14641606774873758, 0.967079684255489];
   picoUp = [-0.18714999845420416, 0.9764220619601768, 0.10758640711552842];
-  camPathList['tonnel1'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  camPathList['tonnel1'].push({"frame":75, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":75, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
 
   picoEye = [15.52234338506376, 11.942056881160418, -92.98027657293242];
   picoDir = [-0.208132696627178, -0.14641606774873758, 0.967079684255489];
   picoUp = [-0.18714999845420416, 0.9764220619601768, 0.10758640711552842];
-  camPathList['tonnel1'].push({"frame":80, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":80, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   picoEye = [8.865503886845268, 8.997676862328445, -63.18506419132778];
   picoDir = [-0.2522471743767325, -0.15773374810591761, 0.9547206019183903];
   picoUp = [-0.18763946645297008, 0.975870055126243, 0.111664972740551];
-  camPathList['tonnel1'].push({"frame":85, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":85, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   picoEye = [7.0340697930835585, 8.178426355359687, -54.08280958404747];
   picoDir = [-0.25868983362578296, -0.15900706020709704, 0.9527834616443347];
   picoUp = [-0.18783361559759612, 0.9758112338550025, 0.11185244178788507];
-  camPathList['tonnel1'].push({"frame":86, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":86, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   picoEye = [5.664917066529857, 5.755977298266675, -38.814884051788916];
   picoDir = [-0.28848983757622504, -0.15735890049106147, 0.944463757934357];
   picoUp = [-0.1912543011483121, 0.9759945730892593, 0.10419398059669933];
-  camPathList['tonnel1'].push({"frame":87, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":87, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
   picoEye = [4.276093297240586, 2.773782196966995, -24.87278530314575];
   picoDir = [-0.31057170023884867, -0.1308767632361972, 0.9414969420319788];
   picoUp = [-0.19212312676530702, 0.9786765148406343, 0.07267037540367907];
-  camPathList['tonnel1'].push({"frame":88, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":88, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
   picoEye = [3.597863747464183, 1.4831318725022853, -15.860426748629045];
   picoDir = [-0.3353524000887721, -0.12824755582923456, 0.9333227374164456];
   picoUp = [-0.1947885183716996, 0.9787224561849861, 0.06449640974338194];
-  camPathList['tonnel1'].push({"frame":89, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":89, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   picoEye = [2.6909098701084186, 1.1648614524756595, -8.363562231378262];
   picoDir = [-0.3255604582868887, -0.11843073144600233, 0.9380749169704923];
   picoUp = [-0.19410244551454073, 0.979365507829128, 0.05628003837835463];
-  camPathList['tonnel1'].push({"frame":92, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":92, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
  
   picoEye = [1.2874764002021166, 1.2950555052725192, 0.21745320262776288];
   picoDir = [-0.2666065319066442, -0.10755888762177562, 0.9577849669097328];
   picoUp = [-0.19335227863491486, 0.9795197239756608, 0.056178347157348645];
-  camPathList['tonnel1'].push({"frame":94, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":94, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
-  picoEye = [-0.32241392691324444, 1.8131207219782064, 9.47244798257579];
-  picoDir = [-0.17503038382799238, -0.12181284433672097, 0.9769984624817091];
-  picoUp = [-0.231372204107548, 0.9693869815702432, 0.08219357109012976];
-  camPathList['tonnel1'].push({"frame":96, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp}); // можно удалить
+  picoEye = [-0.30122381925132835, 1.6177190377146164, 9.149802009240224];
+  picoDir = [-0.24675218266298535, -0.15697873965805584, 0.9562797894164767];
+  picoUp = [-0.2361404360601308, 0.96650109386065, 0.1005650536891335];
+  camPathList['tonnel0'].push({"frame":96, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp}); // можно удалить
   
-  picoEye = [-0.6475692907346025, 2.2319942830087656, 18.389689527219247];
-  picoDir = [-0.09288722864344526, -0.10752133486733229, 0.9898540929365738];
-  picoUp = [-0.23912796833399996, 0.9674640752614712, 0.08265033477802775];
-  camPathList['tonnel1'].push({"frame":98, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  picoEye = [-1.1774251397816213, 1.671008383403344, 19.422866235685863];
+  picoDir = [-0.2306499178894333, -0.17686003563524588, 0.9568286906090856];
+  picoUp = [-0.24727762192178526, 0.9617135730149602, 0.11815574965064356];
+  camPathList['tonnel0'].push({"frame":98, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
-  picoEye = [2.4469723199851914, 3.4744640718056377, 29.847035081971413];
-  picoDir = [-0.007981691125274894, -0.051307993684407915, 0.9986509812696633];
-  picoUp = [-0.23917125773463083, 0.9697982795362621, 0.047837291751737704];
-  picoEye = [1.7983805825743255, 3.0757131556195523, 29.884095607546325];
-  picoDir = [0.044122393803019855, -0.011937470314195182, 0.9989548093720702];
-  picoUp = [-0.27938058637690194, 0.9598870760184333, 0.023733715437771783];
-  camPathList['tonnel1'].push({"frame":102, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  picoEye = [0.5252559808674484, 2.351200610053095, 30.385742180167814];
+  picoDir = [-0.19086976198273212, -0.15497331637184, 0.9693049082581646];
+  picoUp = [-0.2814524872485607, 0.9546467969444111, 0.09712873161621749];
+  camPathList['tonnel0'].push({"frame":102, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
   
   picoEye = [6.76271393755772, 3.4880829825366373, 42.21440415697963];
   picoDir = [0.3203425285542074, 0.06611578493891143, 0.9449917287370343];
   picoUp = [-0.2099596261209737, 0.9777068322735126, 0.0025110804118001905];
-  camPathList['tonnel1'].push({"frame":106, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  
-  camPathList['tonnel1'].push({"frame":177, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
-  camPathList['tonnel1'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":106, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
- 
+
+  picoEye = [10.68409433319284, 3.9539303720173415, 48.61780487995796];
+  picoDir = [0.38243054983184444, 0.07951175954450687, 0.9205567634043268];
+  picoUp = [-0.2099596261209737, 0.9777068322735126, 0.0025110804118001905];
+  camPathList['tonnel0'].push({"frame":108, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [17.279020172407005, 5.6915146593093215, 58.455107855333594];
+  picoDir = [0.3762351642056294, -0.04339639334424707, 0.9255073496520029];
+  picoUp = [-0.16478391409462545, 0.9798711758712844, 0.11268868777424668];
+  camPathList['tonnel0'].push({"frame":111, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+
+  picoEye = [26.99482865464798, 10.618635275190885, 70.21669640646928];
+  picoDir = [0.24295104749719043, -0.38720418745880103, 0.8894086269732197];
+  picoUp = [-0.18087404617475503, 0.8828200262225028, 0.4334897700302421]
+  camPathList['tonnel0'].push({"frame":115, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  picoEye = [34.5684727039392, 12.806787426086466, 79.00152553700053];
+  picoDir = [0.04541013419376156, -0.4583764896578104, 0.8875972698479238];
+  picoUp = [-0.21115412721832932, 0.8638153523254002, 0.4574242796852945];
+  camPathList['tonnel0'].push({"frame":119, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  
+  camPathList['tonnel0'].push({"frame":177, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
+  camPathList['tonnel0'].push({"frame":-1, "picoEye":picoEye, "picoDir":picoDir, "picoUp":picoUp});
 
   
   var colors = [
@@ -3602,9 +4189,7 @@ function init_tonnel1(){
   var colorsDiff = {
     '1-2' : '#3F1F0F'
   };
-  
-  
-  var centerXY = 256.0;
+
   var ratioX = 3;//0.925;
   var ratioY = 3;
   var dz = 4.5*3;
@@ -3630,26 +4215,27 @@ function init_tonnel1(){
       ]
     },{
       //--- points 3
-      rotZ: 10,
-      mv: [0, 1, 0],
+      rotZ: 5,
+      mv: [-1, 0, 0],
       points: [
         [-1.9, 2.65], [-1.7, 2.0], [-1.55,1.45],    [-1.35, 1.0], [-1.375, 0.25], [-1.125, -0.25], [-1, -1],
         [0.8, -0.8], [0.8, 0], [-0.25, 3],   [1, 3], [1, 3], [1, 4]
       ]
-    },{
+    /*},{
+      
       //--- points 4
-      rotZ: 10,
-      rotYdz: 20,
-      mv: [0, 2, 0],
+      //rotZ: 10,
+      //rotYdz: 20,
+      //mv: [0, 2, 0],
       points: [
         [-2.5, 2.95], [-1.9, 2.0], [-2.0, 1.25],    [-1.8, 0.8], [-1.8, 0.0], [-1.3, -0.25], [-1, -1],
         [0.7, -1], [0.85, 0], [1, 2],   [1, 2], [1, 3], [1, 4]
-      ]
+      ]*/
     },{
       //--- points 5
       rotZ: 10,
-      rotYdz: 60,
-      mv: [0, 2, 0],
+      //rotYdz: 60,
+      mv: [1, 1, 0],
       points: [
         [-2.5, 2.95], [-1.8, 2.0], [-1.9, 1.1],    [-1.8, 0.7], [-1.6, 0.1], [-1.4, -0.3], [-1, -1],
         [0.7, -1], [0.85, 0], [1, 2],   [1, 2], [1, 3], [1, 4]
@@ -3658,39 +4244,121 @@ function init_tonnel1(){
       //--- points 6
       rotZ: 10,
       rotYdz: 60,
-      mv: [12, 3, 0],
+      mv: [5, 6, 0],
+      rightX: 2,
       points: [
         [-2.9, 3.95], [-2.3, 2.95], [-2.7, 1.95],    [-2.8, 1.35], [-2.5, 0.45], [-1.3, -0.15], [-1, -1],
-        [0.7, -1], [0.85, 0], [1, 2],   [1, 2], [1, 3], [1, 4]
+        [0.7, -1], [1, 0], [1.2, 2.3],   [1, 3.6], [1.2, 5.3], [1.5, 5.9]
       ]
+    //----
+    /*},{
+      //--- points 7
+      rotZ: 10,
+      //rotY: 120,
+      mv: [38, 6, 0],
+      leftX: -2,
+      points: [
+        [-2.9, 3.95], [-2.3, 2.95], [-2.7, 1.95],    [-2.8, 1.35], [-2.5, 0.45], [-1.3, -0.15], [-1, -1],
+        [0.7, -1], [1, 0], [1.2, 2.3],   [1, 3.6], [1.2, 5.3], [1.5, 5.9]
+      ]
+    },{
+      //--- points 8
+      rotZ: 10,
+      rotYdz: -10,
+      mv: [46, 6.0, 1],
+      leftX: -2,
+      points: [
+        [-2.9, 3.95], [-2.3, 2.95], [-2.7, 1.95],    [-2.8, 1.35], [-2.5, 0.45], [-1.3, -0.15], [-1, -1],
+        [0.7, -1], [1.2, 0], [1.4, 2.1],   [1, 3.2], [1.2, 4.6], [2, 5.5]
+      ]
+    },{
+      //--- points 9
+      doNext: true,
+      
+      points: [
+        [-2.9, 3.95], [-2.3, 2.95], [-2.7, 1.95],    [-2.8, 1.35], [-2.5, 0.45], [-1.3, -0.15], [-1, -1],
+        [0.7, -1], [1.2, 0], [1.4, 2.1],   [1, 3.2], [1.2, 4.6], [2, 5.5]
+      ]
+    },{
+      //--- points 9
+      doNext: true,
+      points: [
+        [-2.9, 3.95], [-2.3, 2.95], [-2.7, 1.95],    [-2.8, 1.35], [-2.5, 0.45], [-1.3, -0.15], [-1, -1],
+        [0.7, -1], [1.2, 0], [1.4, 2.1],   [1, 3.2], [1.2, 4.6], [2, 5.5]
+      ]*/
     }
+    
+    
   ];
   
   for (var p in pointList) {
     for (var p1 in pointList[p].points) {
+      var dzdz = pointList[p].dz != undefined ? pointList[p].dz : dz;
       var point = [
         pointList[p].points[p1][0] * ratioX,
         pointList[p].points[p1][1] * ratioY,
         0
       ];
-      if (point, pointList[p].rotYdz != undefined) {
-        point[2] += dz;
+      if (pointList[p].leftX != undefined) {
+        if (parseInt(p1) < 7) {
+          point[0] += pointList[p].leftX;
+        }
+      }
+      if (pointList[p].leftY != undefined) {
+        if (parseInt(p1) < 7) {
+          point[1] += pointList[p].leftY;
+        }
+      }
+      if (pointList[p].leftZ != undefined) {
+        if (parseInt(p1) < 7) {
+          point[2] += pointList[p].leftZ;
+        }
+      }
+      if (pointList[p].rightX != undefined) {
+        if (parseInt(p1) >= 7) {
+          point[0] += pointList[p].rightX;
+        }
+      }
+      
+      if (pointList[p].rotYdz != undefined) {
+        point[2] += dzdz;
         point = rotY(point, pointList[p].rotYdz);
-        point[2] -= dz;
+        point[2] -= dzdz;
       }
 
-      if (point, pointList[p].rotY != undefined) {
+      if (pointList[p].rotY != undefined) {
         point = rotY(point, pointList[p].rotY);
       }
-      if (point, pointList[p].rotZ != undefined) {
+      if (pointList[p].rotZ != undefined) {
         point = rotZ(point, pointList[p].rotZ);
       }
+      if (pointList[p].mvPrev != undefined) {
+        var pto1 = model.v[parseInt(p-1) * 13 + 6];
+        var pto2 = model.v[parseInt(p-1) * 13 + 7];
+        var pto = vecHalf(pto1, pto2);
+        point[0] += pto[0];
+        point[1] += pto[1];
+        point[2] += pto[2];
+      }
+      
       if (point, pointList[p].mv != undefined) {
         point[0] += pointList[p].mv[0];
         point[1] += pointList[p].mv[1];
         point[2] += pointList[p].mv[2];
       }
-      point[2] += (p-1) * dz;
+      
+      if (pointList[p].doNext != undefined) {
+        var pto1 = model.v[parseInt(p-1) * 13 + 6];
+        var pto2 = model.v[parseInt(p-1) * 13 + 7];
+        var pto = vecHalf(pto1, pto2);
+        point[0] += pto[0];
+        point[1] += pto[1];
+        point[2] += pto[2];
+        
+      } else {
+        point[2] += (p-1) * dzdz;
+      }
+
       model.v.push(point);
     }
 
@@ -3709,7 +4377,7 @@ function init_tonnel1(){
     }
   }
 
-  models['tonnel1'] = model;
+  models['tonnel0'] = model;
 }
 
 // вспомогательная функция для смены палитры
