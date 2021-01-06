@@ -1,24 +1,52 @@
-function triangle(x1, y1, x2, y2, x3, y3, col)
-	if (min(x1, min(x2, x3)) > 127 or max(x1, max(x2, x3)) < 0 or min(y1, min(y2, y3)) > 127 or max(y1, max(y2, y3)) < 0) return
+function eg_triangle(x1,y1,x2,y2,x3,y3,color)
+  local x1,x2,y1,y2,x3,y3=x1 & 0xffff,x2 & 0xffff,y1 & 0xffff,y2 & 0xffff,x3 & 0xffff,y3 & 0xffff
+  local nsx,nex,min_y
 
 	if (y1 > y2) y1, y2, x1, x2 = y2, y1, x2, x1
 	if (y1 > y3) y1, y3, x1, x3 = y3, y1, x3, x1
 	if (y2 > y3) y2, y3, x2, x3 = y3, y2, x3, x2
 
-	local dx1, tx1, tx2, dx2 = (x3 - x1) / (y3 - y1), x1, x1
+  if y1 ~= y2 then
+    local delta_sx,delta_ex=(x3-x1)/(y3-y1),(x2-x1)/(y2-y1)
 
-	local function fill(y1, y2)
-		for y = y1, min(y2, 127) do
-			rectfill(tx1, y, tx2, y, col)
-			tx1 += dx1
-			tx2 += dx2
-		end
-	end
+    if y1 > 0 then
+      nsx,nex,min_y = x1,x1,y1
+    else --top edge clip
+      nsx,nex,min_y = x1-delta_sx*y1,x1-delta_ex*y1, 0
+    end
 
-	if y2 > y1 then
-		dx2 = (x2 - x1) / (y2 - y1)
-		fill(y1, y2)
-	end
-	tx1, tx2, dx2 = x1 + (y2 - y1) * dx1, x2, (x3 - x2) / (y3 - y2)
-	fill(y2, y3)
+    local max_y=min(y2,128)-1
+    for y=min_y,max_y do
+      rectfill(nsx,y,nex,y,color)
+      nsx+=delta_sx
+      nex+=delta_ex
+    end
+  else --where top edge is horizontal
+    nsx,nex=x1,x2
+  end
+
+  if y3 ~= y2 then
+    local delta_sx,delta_ex=(x3-x1)/(y3-y1),(x3-x2)/(y3-y2)
+
+    min_y=y2
+    local max_y=min(y3,127)
+    if y2 < 0 then
+      nex,nsx,min_y=x2-delta_ex*y2,x1-delta_sx*y1,0
+    end
+
+    for y=min_y,max_y do
+      rectfill(nsx,y,nex,y,color)
+      nex+=delta_ex
+      nsx+=delta_sx
+    end
+  else --where bottom edge is horizontal
+    rectfill(nsx,y3,nex,y3,color)
+  end
+end
+
+function striangle(x1,y1,x2,y2,x3,y3)
+  eg_triangle(x1,y1,x2,y2,x3,y3,0x1100.5a5a)
+  line(x1,y1,x2,y2,0x1001)
+  line(x2,y2,x3,y3,1)
+  line(x3,y3,x1,y1,1)
 end

@@ -1,22 +1,10 @@
-v2d = {}
-
-znear, zfar = 0.05, 30
-sc = 64
-tminx = -64/sc
-tmaxx = 64/sc
+v2d,znear,zfar,sc = {},0.05,30,64
+tminx,tmaxx =-64/sc, 64/sc
 
 function normalize(v)
-	local x1=shl(v[1],2)
-	local y1=shl(v[2],2)
-	local z1=shl(v[3],2)
-
-	local inv_dist=1/sqrt(x1*x1+y1*y1+z1*z1)
-
-	return {x1*inv_dist,y1*inv_dist,z1*inv_dist}
---[[
 	local x,y,z = v[1],v[2],v[3]
 	local len = sqrt(x*x+y*y+z*z)
-	return {x/len,y/len,z/len}]]
+	return {x/len,y/len,z/len}
 end
 
 function cross(v1, v2)
@@ -71,7 +59,6 @@ function lerp(a,b,alpha)
 end
 
 function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
-	-- Camera matrix
 	local xaxis = normalize(cross(dir, up))
 	local yaxis = cross(xaxis, dir)
 	local m = {
@@ -80,18 +67,10 @@ function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
 		dir[1], dir[2], dir[3], -dot(dir, eye),
 		0, 0, 0, 1
 	}
-	if angle ~= nil then
-		m = mmult(m, {
-			cos(angle), 0, sin(angle), 0,
-			0, 1, 0, 0,
-			-sin(angle), 0, cos(angle), 0,
-			0, 0, 0, 1
-		})
-	end
+	if (angle ~= nil) m = mmult(m, {cos(angle), 0, sin(angle), 0, 0, 1, 0, 0, -sin(angle), 0, cos(angle), 0, 0, 0, 0, 1})
 
 	sorted = {}
 
-	-- Tranform all objects
 	for c = 1, #obj.v do
 		local v = obj.v[c]
 		local v1, v2, v3 = v[1], v[2], v[3]
@@ -107,7 +86,6 @@ function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
 
 		if p1z < zfar or p2z < zfar or p3z < zfar then
 			if p1z > znear and p2z > znear and p3z > znear then
-				-- Back-culling
 				local s1x,s1y,s2x,s2y,s3x,s3y = p1[4],p1[5],p2[4],p2[5],p3[4],p3[5]
 
 				if min(s1x, min(s2x, s3x)) < tmaxx and
@@ -116,14 +94,12 @@ function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
 					add(sorted, {z_paint, s1x, s1y, s2x, s2y, s3x, s3y, tri[1]})
 				end
 			elseif p1z > znear or p2z > znear or p3z > znear then
-				-- Z-clipping
 				local p1x,p2x,p3x,p1y,p2y,p3y = p1[1],p2[1],p3[1],p1[2],p2[2],p3[2]
 				if (p1z<p2z) p1z,p2z,p1x,p2x,p1y,p2y = p2z,p1z,p2x,p1x,p2y,p1y
 				if (p1z<p3z) p1z,p3z,p1x,p3x,p1y,p3y = p3z,p1z,p3x,p1x,p3y,p1y
 				if (p2z<p3z) p2z,p3z,p2x,p3x,p2y,p3y = p3z,p2z,p3x,p2x,p3y,p2y
 
 				if p1z > znear and p2z > znear then
-					-- 4 points
 					local n2x,n2y,n2z = z_clip_line(p2x,p2y,p2z,p3x,p3y,p3z,znear)
 					local n3x,n3y,n3z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
 
@@ -136,7 +112,6 @@ function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
 						add(sorted, {z_paint, s2x, s2y, s4x, s4y, s3x, n2y/n2z, tri[1]})
 					end
 				else
-					-- 3 points
 					local n1x,n1y,n1z = z_clip_line(p1x,p1y,p1z,p2x,p2y,p2z,znear)
 					local n2x,n2y,n2z = z_clip_line(p1x,p1y,p1z,p3x,p3y,p3z,znear)
 
@@ -150,17 +125,9 @@ function m3d(obj, eye, dir, up, zp, sortmax, sortmin, angle)
 		end
 	end
 
-	-- Sort faces and draw them
 	radix_sort(sorted, sortmax, 1, #sorted, sortmin)
 	for c = 1, #sorted do
 		local tri = sorted[c]
-		triangle(
-			64 - sc * tri[2], 64 - sc * tri[3],
-			64 - sc * tri[4], 64 - sc * tri[5],
-			64 - sc * tri[6], 64 - sc * tri[7],
-			tri[8]
-		)
+		triangle(64 - sc * tri[2], 64 - sc * tri[3], 64 - sc * tri[4], 64 - sc * tri[5], 64 - sc * tri[6], 64 - sc * tri[7], tri[8])
 	end
-
-	total_tris += #sorted
 end

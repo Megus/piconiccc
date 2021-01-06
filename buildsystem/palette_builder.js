@@ -12,7 +12,7 @@ const picoPalette = [
 
 const modelPalettes = [
   ["oxygenein", "Y", "G", "E", "N", "E1", "X", "O"],
-  ["tonnel1"],
+  ["tonnel1", "tonnel0"],
   ["tonnel2"],
   ["tonnel3"],
   ["rotor", "rotorin"],
@@ -40,7 +40,17 @@ const manualMapping = [
     }
   },
   // Tonnel 1
-  {palette: [], usedColors: {}},
+  {
+    palette: [0x80, 0x84, 0x04, 0x86, 0x06],
+    usedColors: {
+      "#2F0F0F": 0x11,
+      "#3F1F0F": 0x02,
+      "#4F2F0F": 0x12,
+      "#5F3F1F": 0x13,
+      "#6F4F2F": 0x23,
+      "#7F5F3F": 0x33,
+      "#7F6F4F": 0x44,
+    }},
   // Tonnel 2
   {
     palette: [0x81, 0x01, 0x8c, 0x0c, 0x05, 0x06, 0x0a],
@@ -83,6 +93,7 @@ const manualMapping = [
   {
     palette: [0x80, 0x85, 0x05, 0x0d, 0x86, 0x06, 0x0a],
     usedColors: {
+      "#000000": 0x00,
       "#1F1F0F": 0x03,
       "#2F2F1F": 0x23,
       "#3F3F2F": 0x33,
