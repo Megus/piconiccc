@@ -4,39 +4,16 @@ function fx_intro()
   local fr = 0
   pal({129, 130, 1, 131, 141, 140, 12}, 1)
 
-  local function add_text(text, ox, oy)
-    cls()
-    print(text, 0, 0, 7)
-    local f, a = fr + 60, 0x4300
-    memset(a, 0, 512)
-    memcpy(a, 0x6000, 512)
-    for y = oy, oy + 23, 3 do
-      for x = ox, ox + 383, 6 do
-        local v = peek(a)
-        if v & 15 ~= 0 then
-          add(dots, {x, y, f + rnd(#text * 20)})
-          f += 1
-        end
-        if v & 0xf0 ~= 0 then
-          add(dots, {x + 3, y, f + rnd(#text * 20)})
-          f += 1
-        end
-        a += 1
-      end
-    end
-  end
-
-
 return function()
-  add_text("this is", 22, 11)
+  add_text(dots, "this is", 22, 11, fr)
   wait_frames(60)
-  add_text("not your", 16, 32)
+  add_text(dots, "not your", 16, 32, fr)
   wait_frames(60)
-  add_text("regular", 22, 53)
+  add_text(dots, "regular", 22, 53, fr)
   wait_frames(60)
-  add_text("stniccc", 22, 74)
+  add_text(dots, "stniccc", 22, 74, fr)
   wait_frames(60)
-  add_text("clone", 34, 95)
+  add_text(dots, "clone", 34, 95, fr)
   wait_sync()
 end,
 

@@ -34,7 +34,6 @@ module.exports.compressModels = function (convertedData) {
   const bFP = [];
 
   for (const name in models) {
-    //console.log(name);
     const model = models[name];
     compressed.models.push({
       name: name,

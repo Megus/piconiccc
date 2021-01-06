@@ -54,7 +54,7 @@ const luaCode = "\
 #include main.lua\n\
 #include misc.lua\n\
 #include demoengine.lua\n\
-#include eg_triangle.lua\n\
+#include triangle.lua\n\
 #include 3d.lua\n\
 #include data.lua\n\
 #include huffman.lua\n\
