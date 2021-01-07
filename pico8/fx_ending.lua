@@ -2,9 +2,12 @@ greetz = "lexaloffle|ate bit|hprg|triad|mATTcURRENT|fairlight|nuance|proxima|ser
 
 function fx_ending()
 
-local fade,gr,dots,gframe,gp,gidx={0,0x81,1,0x84,4,0x8e,0x9f,0x9f,0x9f,0x8e,4,0x84,1,0x81},split(greetz,"|",false),{},300,1,1
+memcpy(0x3100,emus,emusl)
+memcpy(0x3420,esfx,esfxl)
+music(0)
+local fade,gr,dots,gframe,gp,gidx={0,0x81,1,0x84,4,0x8e,0x8e,0x8e,4,0x84,1,0x81},split(greetz,"|",false),{},300,1,1
 nframe,dframe,triangle=200,0,striangle
-pal({1,11,7,4,5,6,7},1)
+pal({1,11,7,0x81,5,6,7},1)
 
 return function()
 	while true do
@@ -49,8 +52,8 @@ function()
 		end
 		x+=dx[y]
 		if x<128 and x>-3 then
-			rectfill(x-1,y-1,x+2,y+2,0)
-			rectfill(x,y,x+1,y+1,3)
+			--rectfill(x-1,y-1,x+3,y+3,0)
+			rectfill(x,y,x+2,y+2,3)
 		end
 	end
 
@@ -68,5 +71,4 @@ function()
 	oprint("cpu: " ..stat(1), 0, -16, 3)
 	camera()
 end
-
 end

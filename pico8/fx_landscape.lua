@@ -13,9 +13,8 @@ function fx_landscape()
 	end
 
 return function()
-	while true do
-		wait_frames(60)
-		a1,a2,a3,t1,t2,t3=rnd(40)+10,rnd(30)+10,rnd(20)+5,rnd(200)+100,rnd(200)+100,rnd(200)+100
+	while loop_sync() do
+		if (frame%95==0) a1,a2,a3,t1,t2,t3=rnd(40)+10,rnd(30)+10,rnd(20)+5,rnd(200)+100,rnd(200)+100,rnd(200)+100
 	end
 end,
 
@@ -28,8 +27,8 @@ function()
 end,
 
 function()
-	if (frame==0) cls(4)
-	if (frame==1) cls(3)
+	if (frame%95==0) cls(4)
+	if (frame%95==1) cls(3)
 	for c=1,128 do
 		my[c]=128
 	end

@@ -39,13 +39,29 @@ const compressedLogo = huffman.compress(logo.data);
 compressedData.arcs.push([compressedData.binary.length, compressedLogo.tree]);
 compressedData.binary.push(...compressedLogo.binary);
 
+// Music
+const music1 = p8tools.readP8("../nic21.p8");
+const music2 = p8tools.readP8("../nic-epilogue-3.p8");
+music2.sfx.splice(0, 8);
+const musicBinary = p8tools.music2binary(music2.music);
+const sfxBinary = p8tools.sfx2binary(music2.sfx);
+const musicStart = compressedData.binary.length;
+const musicLength = musicBinary.length;
+compressedData.binary.push(...musicBinary);
+const sfxStart = compressedData.binary.length;
+const sfxLength = sfxBinary.length;
+compressedData.binary.push(...sfxBinary);
+
+console.log(`Total binary size: ${compressedData.binary.length}`);
+
 // Write demo data
-const luaData = `colors=${luaTools.json2lua(picoPalette)}\n\
-fp=${luaTools.json2lua(convertedData.fp4)}\n\
-renderlist=${luaTools.json2lua(convertedRenderList)}\n\
-arcs=${luaTools.json2lua(compressedData.arcs)}\n\
-objects=${luaTools.json2lua(compressedData.models)}\n\
-campath=${luaTools.json2lua(convertedCamera)}\
+const luaData = `colors,fp,renderlist,arcs,objects,campath,emus,emusl,esfx,esfxl=${luaTools.json2lua(picoPalette)},\
+${luaTools.json2lua(convertedData.fp4)},\
+${luaTools.json2lua(convertedRenderList)},\
+${luaTools.json2lua(compressedData.arcs)},\
+${luaTools.json2lua(compressedData.models)},\
+${luaTools.json2lua(convertedCamera)},\
+${musicStart},${musicLength},${sfxStart},${sfxLength}\
 `;
 fs.writeFileSync("../pico8/data.lua", luaData);
 
@@ -59,6 +75,7 @@ const luaCode = "\
 #include data.lua\n\
 #include huffman.lua\n\
 #include loader.lua\n\
+#include fx_fade.lua\n\
 #include fx_intro.lua\n\
 #include fx_landscape.lua\n\
 #include fx_ball.lua\n\
@@ -73,4 +90,6 @@ p8tools.writeP8("../pico8/piconiccc.p8", {
   label: logo.data,
   title: "piconiccc",
   credits: "by megus, demarche & stardust",
+  sfx: music1.sfx,
+  music: music1.music,
 });

@@ -25,13 +25,10 @@ function fx_ball()
 	end
 
 return function()
-	while(1) do
-		gmode=2
-		wait_frames(100)
-		gmode=1
-		wait_frames(32)
+	while loop_sync() do
+		if (frame%95==0) gmode = 2
+		if (frame%95==72) gmode = 1
 	end
-	wait_sync()
 end,
 
 function()
@@ -74,7 +71,7 @@ function()
 	end
 
 	if gmode==1 then
-		for c=1,frame do
+		for c=1,frame%24 do
 			local y=flr(rnd(128))
 			memcpy(0x6000+y*64,y*64,64)
 		end

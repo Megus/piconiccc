@@ -1,4 +1,4 @@
-sc_idx,mfx_idx=1,1
+sc_idx,mfx_idx,ptn,otick=1,1,0,0
 
 function loop_int(r)
 	yield()
@@ -37,7 +37,10 @@ function toggle_loop(a)
 end
 
 function _update60()
-	mfx_time=stat(25)+stat(26)/4096
+	local tick = stat(26)
+	if (tick<otick) ptn+=1
+	otick=tick
+	mfx_time=ptn+tick/4096
 
 	if mfx_time>=mfx_scenario[mfx_idx] then
 		local cmd=mfx_scenario[mfx_idx+1]
@@ -60,4 +63,5 @@ end
 function _draw()
 	if (fx_bg~=-1) cls(fx_bg or 0)
 	fx_draw()
+	oprint(ptn,0,0,15)
 end
