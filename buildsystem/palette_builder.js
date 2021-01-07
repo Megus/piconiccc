@@ -118,6 +118,7 @@ const manualMapping = [
   {
     palette: [0x80, 0x84, 0x04, 0x83, 0x03, 0x05, 0x86],
     usedColors: {
+      "#000000": 0x00,
       "#0F1F0F": 0x14,
       "#1F2F1F": 0x15,
       "#2F3F2F": 0x25,
