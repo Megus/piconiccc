@@ -34,14 +34,14 @@ const convertedRenderList = renderList.convertRenderList(modelRenderList);
 const compressedData = compressor.compressModels(convertedData);
 
 // PICONICCC image
-const logo = p8tools.png2pico("./piconiccc.png", p8tools.defaultPalette);
+const logo = p8tools.png2pico("./res/piconiccc.png", p8tools.defaultPalette);
 const compressedLogo = huffman.compress(logo.data);
 compressedData.arcs.push([compressedData.binary.length, compressedLogo.tree]);
 compressedData.binary.push(...compressedLogo.binary);
 
 // Music
-const music1 = p8tools.readP8("../nic21.p8");
-const music2 = p8tools.readP8("../nic-epilogue-3.p8");
+const music1 = p8tools.readP8("./res/nic21.p8");
+const music2 = p8tools.readP8("./res/nic-epilogue-3.p8");
 music2.sfx.splice(0, 8);
 const musicBinary = p8tools.music2binary(music2.music);
 const sfxBinary = p8tools.sfx2binary(music2.sfx);
