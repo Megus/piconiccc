@@ -26,14 +26,9 @@ function wait_sync()
 end
 
 function next_fx()
-	pal()
 	fx_coupdate,fx_update,fx_draw,fx_bg=scenario[sc_idx]()
 	fx_coupdate,frame=cocreate(fx_coupdate),-1
 	sc_idx+=1
-end
-
-function toggle_loop(a)
-	poke(a,bxor(peek(a),0x80))
 end
 
 function _update60()
@@ -45,15 +40,7 @@ function _update60()
 	if mfx_time>=mfx_scenario[mfx_idx] then
 		local cmd=mfx_scenario[mfx_idx+1]
 		mfx_idx+=2
-		if band(cmd,0x0.8)==0 then
-			poke4(0x5f40,cmd)
-		else
-			toggle_loop(mfx_l1)
-			toggle_loop(mfx_l2)
-			mfx_l1,mfx_l2=0x3100+band(cmd,0x3f00)/64,0x3101+band(cmd,0x3f)*4
-			toggle_loop(mfx_l1)
-			toggle_loop(mfx_l2)
-		end
+		poke4(0x5f40,cmd)
 	end
 
 	if (not coresume(fx_coupdate)) next_fx()
@@ -63,5 +50,5 @@ end
 function _draw()
 	if (fx_bg~=-1) cls(fx_bg or 0)
 	fx_draw()
-	oprint(ptn,0,0,15)
+	--oprint(ptn,0,0,15)
 end

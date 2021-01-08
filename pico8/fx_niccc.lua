@@ -3,23 +3,36 @@ function fx_niccc()
 nframe,dframe,triangle=0,0,eg_triangle
 pal(0,0,1)
 pal(8,0,1)
+local cg,lp=0,true
 
 return function()
+	local omt=ptn
+	while loop_sync() do
+		nframe+=0.4
+		if (ptn~=omt and ptn%2==0) cg=8
+		omt=ptn
+	end
+	lp,cg=false,8
 	wait_sync()
 end,
 
 function()
+	if (lp) cg=max(cg-0.3,0)
 	dframe+=1
-	if btn(1) then
-		nframe+=1
-	elseif btn(0) then
-		nframe-=1
-	else
-		nframe+=0.5
-	end
-	if (nframe >= 1799) nframe=0
 end,
-draw3d
+function()
+	if (lp) cls(0)
+	camera(flr(rnd(cg)-cg/2),0)
+	if (lp) draw3d()
+	if (cg>0) then
+		local n=rnd(30)+10
+		for c=1,n do
+			local y=flr(rnd(119))+1
+			memcpy(0x6000+y*64+flr(rnd(cg)-cg/2),0x6000+y*64,128*flr(rnd(4)+1))
+		end
+	end
+end,
+-1
 end
 
 function draw3d(usepals)
@@ -85,8 +98,8 @@ modelsort = {
 	arch2={max,2,0x.2},
 	arch1={max,2,0x.4},
 	tonnel4={max,1,0x.8},
-	rotor={max,0x.8,0x.08},
-	rotorin={max,0x.8,0x.02},
+	rotor={max,0x.8,0x.04},
+	rotorin={max,0x.8,0x.01},
 	tonnel3={max,2,0x.4},
 	tonnel2={max,1,0x.04},
 	tonnel1={max,4,0x.01},

@@ -79,6 +79,7 @@ const luaCode = "\
 #include fx_intro.lua\n\
 #include fx_landscape.lua\n\
 #include fx_ball.lua\n\
+#include fx_logo.lua\n\
 #include fx_niccc.lua\n\
 #include fx_ending.lua\n\
 #include script.lua\n\

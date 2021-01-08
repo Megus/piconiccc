@@ -1,6 +1,6 @@
 function fx_ball()
 	pal()
-	local gpal,sn,gmode,balls={1,5,6,15,10},15,2,{{o={0,0,0},a={1.6,0.91,0.4},g={}},{o={0,0,0},a={0.94,0.33,0.43},g={}}}
+	local gpal,sn,gmode,balls,at={1,5,6,15,10},15,2,{{o={0,0,0},a={1.6,0.91,0.4},g={}},{o={0,0,0},a={0.94,0.33,0.43},g={}}},0
 
 	local function pj(u,v,r,o)
 		local y,r,s=cos(v/sn/2)+o[2],u/sn+r,sin(v/sn/2)
@@ -26,6 +26,7 @@ function fx_ball()
 
 return function()
 	while loop_sync() do
+		if (frame%48==24) at+=0.2
 		if (frame%95==0) gmode = 2
 		if (frame%95==72) gmode = 1
 	end
@@ -33,11 +34,11 @@ end,
 
 function()
 	for c=1,#balls do
-		local t=time()/4+c/3
+		local t=time()/2+c/2.7+at
 		local b=balls[c]
 		b.o={sin(t*b.a[1]),cos(t*b.a[2])+3,10+3*sin(t*b.a[3])}
 		for g in all(b.g) do
-			if rnd()<0.2 then
+			if rnd()<0.4 then
 				for d=#g,2,-1 do
 					g[d][4],g[d][3],g[d][2],g[d][1]=g[d-1][4],g[d-1][3],g[d-1][2],g[d-1][1]
 				end
@@ -48,7 +49,8 @@ function()
 end,
 
 function()
-	local r=time()/5
+	cls((gmode==1) and rnd({0,1,5}) or 0)
+	local r=time()/3
 	for c = 1, #balls do
 		local b=balls[c]
 
@@ -76,6 +78,7 @@ function()
 			memcpy(0x6000+y*64,y*64,64)
 		end
 	end
-end
+end,
+-1
 
 end

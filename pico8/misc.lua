@@ -1,7 +1,7 @@
 function oprint(str,x,y,col)
 	for c=0,2 do
 		for d=0,2 do
-			print(str,x+d,y+d,0)
+			print(str,x+c,y+d,0)
 		end
 	end
 	print(str,x+1,y+1,col)
