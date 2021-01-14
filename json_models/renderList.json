@@ -1,0 +1,86 @@
+[
+  {
+    "model": "cubes",
+    "campath": "room"
+  },
+  {
+    "model": "cubes2",
+    "campath": "room"
+  },
+  {
+    "model": "room",
+    "campath": "arch2"
+  },
+  {
+    "model": "tonnel5",
+    "campath": "arch2"
+  },
+  {
+    "model": "arch2",
+    "campath": "arch2"
+  },
+  {
+    "model": "arch1",
+    "campath": "rotor"
+  },
+  {
+    "model": "tonnel4",
+    "campath": "rotor"
+  },
+  {
+    "model": "rotor",
+    "campath": "rotor"
+  },
+  {
+    "model": "rotorin",
+    "campath": "rotor"
+  },
+  {
+    "model": "tonnel3",
+    "campath": "tonnel2"
+  },
+  {
+    "model": "tonnel2",
+    "campath": "tonnel2"
+  },
+  {
+    "model": "tonnel1",
+    "campath": "tonnel2"
+  },
+  {
+    "model": "tonnel0",
+    "campath": "tonnel0"
+  },
+  {
+    "model": "O",
+    "campath": "oxygene"
+  },
+  {
+    "model": "X",
+    "campath": "oxygene"
+  },
+  {
+    "model": "E1",
+    "campath": "oxygene"
+  },
+  {
+    "model": "N",
+    "campath": "oxygene"
+  },
+  {
+    "model": "E",
+    "campath": "oxygene"
+  },
+  {
+    "model": "G",
+    "campath": "oxygene"
+  },
+  {
+    "model": "Y",
+    "campath": "oxygene"
+  },
+  {
+    "model": "oxygenein",
+    "campath": "oxygene"
+  }
+]

@@ -20,6 +20,11 @@ eval(fs.readFileSync("../editor/math3d.js").toString());
 
 init_models();
 
+// Write JSON model data
+fs.writeFileSync("../json_models/models.json", JSON.stringify(models, null, 2));
+fs.writeFileSync("../json_models/camera.json", JSON.stringify(camPathList, null, 2));
+fs.writeFileSync("../json_models/renderList.json", JSON.stringify(modelRenderList, null, 2));
+
 // Convert models
 const convertedData = converter.convertModels(models);
 const convertedModels = convertedData.models;
