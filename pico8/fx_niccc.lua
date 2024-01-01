@@ -8,7 +8,7 @@ local cg,lp=0,true
 return function()
 	local omt=ptn
 	while loop_sync() do
-		nframe+=0.4
+		if (nframe<1798) nframe+=0.4
 		if (ptn~=omt and ptn%2==0) cg=8
 		omt=ptn
 	end
